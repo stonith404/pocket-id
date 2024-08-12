@@ -1,6 +1,6 @@
 services:
   pocket-id:
-    image: sotnith404/pocket-id:latest
+    image: stonith404/pocket-id:latest
     restart: unless-stopped
     env_file: .env
     ports:
