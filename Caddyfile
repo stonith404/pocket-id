@@ -1,0 +1,10 @@
+:80 {
+    reverse_proxy /api/* http://localhost:8080
+    reverse_proxy /.well-known/* http://localhost:8080
+    reverse_proxy /* http://localhost:3000
+
+    log {
+        output file /var/log/caddy/access.log
+        level WARN
+    }
+}

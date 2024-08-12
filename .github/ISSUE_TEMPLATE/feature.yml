@@ -1,0 +1,25 @@
+name: 🚀 Feature
+description: "Submit a proposal for a new feature"
+title: "🚀 Feature: "
+labels: [feature]
+body:
+  - type: textarea
+    id: feature-description
+    validations:
+      required: true
+    attributes:
+      label: "Feature description"
+      description: "A clear and concise description of what the feature is."
+      placeholder: "You should add ..."
+  - type: textarea
+    id: pitch
+    validations:
+      required: true
+    attributes:
+      label: "Pitch"
+      description: "Please explain why this feature should be implemented and how it would be used. Add examples, if applicable."
+      placeholder: "In my use-case, ..."
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, please check if the feature hasn't been proposed before.

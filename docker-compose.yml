@@ -1,0 +1,9 @@
+services:
+  pocket-id:
+    image: pocket-id
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - 3000:80
+    volumes:
+      - "./data:/app/backend/data"

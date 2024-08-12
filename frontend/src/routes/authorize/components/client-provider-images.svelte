@@ -1,0 +1,70 @@
+<script lang="ts">
+	import Logo from '$lib/components/logo.svelte';
+	import CheckmarkAnimated from '$lib/icons/checkmark-animated.svelte';
+	import ConnectArrow from '$lib/icons/connect-arrow.svelte';
+	import CrossAnimated from '$lib/icons/cross-animated.svelte';
+	import type { OidcClient } from '$lib/types/oidc.type';
+
+	const {
+		success,
+		error,
+		client
+	}: {
+		success: boolean;
+		error: boolean;
+		client: OidcClient;
+	} = $props();
+
+	let animationDone = $state(false);
+
+	$effect(() => {
+		if (success || error) {
+			setTimeout(() => {
+				animationDone = true;
+			}, 500);
+		} else {
+			animationDone = false;
+		}
+	});
+</script>
+
+<div class="flex justify-center gap-3">
+	<div
+		class=" bg-muted rounded-2xl p-3 transition-transform duration-500 ease-in {success || error
+			? 'translate-x-[108px]'
+			: ''}"
+	>
+		<Logo class="h-10 w-10" />
+	</div>
+
+	<ConnectArrow
+		class="arrow-fade-out h-w-32 w-32 {success || error ? 'opacity-0' : 'opacity-100'}"
+	/>
+	<div
+		class="rounded-2xl p-3 [transition:transform_500ms_ease-in,background-color_200ms] {success ||
+		error
+			? '-translate-x-[108px]'
+			: ''} {animationDone ? (success ? 'bg-green-200' : 'bg-red-200') : 'bg-muted'}"
+	>
+		{#if animationDone && success}
+			<div class="flex h-10 w-10 items-center justify-center">
+				<CheckmarkAnimated class="h-7 w-7" />
+			</div>
+		{:else if animationDone && error}
+			<div class="flex h-10 w-10 items-center justify-center">
+				<CrossAnimated class="h-5 w-5" />
+			</div>
+		{:else if client.hasLogo}
+			<img
+				class="h-10 w-10"
+				src="/api/oidc/clients/{client.id}/logo"
+				draggable={false}
+				alt="Client Logo"
+			/>
+		{:else}
+			<div class="flex h-10 w-10 items-center justify-center text-3xl font-bold">
+				{client.name.charAt(0).toUpperCase()}
+			</div>
+		{/if}
+	</div>
+</div>

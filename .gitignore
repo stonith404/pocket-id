@@ -1,0 +1,37 @@
+# JetBrains
+**/.idea
+
+node_modules
+
+# Output
+.output
+.vercel
+/frontend/.svelte-kit
+/frontend/build
+/backend/bin
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Application specific
+data
+/frontend/tests/.auth
+pocket-id-backend

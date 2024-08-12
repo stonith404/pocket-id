@@ -1,0 +1,37 @@
+name: "🐛 Bug Report"
+description: "Report something that is not working as expected"
+title: "🐛 Bug Report: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out our bug report form 🙏
+  - type: textarea
+    id: steps-to-reproduce
+    validations:
+      required: true
+    attributes:
+      label: "Reproduction steps"
+      description: "How do you trigger this bug? Please walk us through it step by step."
+      placeholder: "When I ..."
+  - type: textarea
+    id: expected-behavior
+    validations:
+      required: true
+    attributes:
+      label: "Expected behavior"
+      description: "What did you think would happen?"
+      placeholder: "It should ..."
+  - type: textarea
+    id: actual-behavior
+    validations:
+      required: true
+    attributes:
+      label: "Actual Behavior"
+      description: "What did actually happen? Add screenshots, if applicable."
+      placeholder: "It actually ..."
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, please check if the issues hasn't been raised before.
