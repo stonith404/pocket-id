@@ -148,7 +148,7 @@ func createOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"token": oneTimeAccessToken})
+	c.JSON(http.StatusCreated, gin.H{"token": oneTimeAccessToken.Token})
 }
 
 func exchangeOneTimeAccessTokenHandler(c *gin.Context) {
