@@ -21,7 +21,7 @@
 		{/if}
 	</div>
 	<img
-		src="/images/sign-in.jpg"
+		src="/api/application-configuration/background-image"
 		class="h-screen w-[calc(100vw-650px)] rounded-l-[60px] object-cover"
 		alt="Login background"
 	/>
