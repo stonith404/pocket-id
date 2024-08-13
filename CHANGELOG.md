@@ -1,3 +1,18 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.1.1...v) (2024-08-13)
+
+
+### Features
+
+* add option to change session duration ([475b932](https://github.com/stonith404/pocket-id/commit/475b932f9d0ec029ada844072e9d89bebd4e902c))
+
+
+### Bug Fixes
+
+* a non admin user was able to make himself an admin ([df0cd38](https://github.com/stonith404/pocket-id/commit/df0cd38deeea516c47b26a080eed522f19f7290f))
+* background image not loading ([7b44189](https://github.com/stonith404/pocket-id/commit/7b4418958ebfffffd216ef5ba7313cfaad9bc9fa))
+* background image on mobile ([4a808c8](https://github.com/stonith404/pocket-id/commit/4a808c86ac204f9b58cfa02f5ceb064162a87076))
+* disable search engine indexing ([8395492](https://github.com/stonith404/pocket-id/commit/83954926f5ee328ebf75a75bb47b380ec0680378))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.1.0...v) (2024-08-12)
 
 
