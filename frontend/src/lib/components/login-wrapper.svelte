@@ -28,7 +28,7 @@
 </div>
 
 <div
-	class="flex h-screen items-center justify-center bg-[url('/images/sign-in.jpg')] bg-cover bg-center text-center lg:hidden"
+	class="flex h-screen items-center justify-center bg-[url('/api/application-configuration/background-image')] bg-cover bg-center text-center lg:hidden"
 >
 	<Card.Root class="mx-3">
 		<Card.CardContent class="px-4 py-10 sm:p-10">
