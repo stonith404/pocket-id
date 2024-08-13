@@ -117,11 +117,11 @@ func createUserHandler(c *gin.Context) {
 }
 
 func updateUserHandler(c *gin.Context) {
-	updateUser(c, c.Param("id"))
+	updateUser(c, c.Param("id"), false)
 }
 
 func updateCurrentUserHandler(c *gin.Context) {
-	updateUser(c, c.GetString("userID"))
+	updateUser(c, c.GetString("userID"), true)
 }
 
 func createOneTimeAccessTokenHandler(c *gin.Context) {
@@ -222,7 +222,7 @@ func getSetupAccessTokenHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func updateUser(c *gin.Context, userID string) {
+func updateUser(c *gin.Context, userID string, updateOwnUser bool) {
 	var user model.User
 	if err := common.DB.Where("id = ?", userID).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -232,14 +232,22 @@ func updateUser(c *gin.Context, userID string) {
 		utils.UnknownHandlerError(c, err)
 		return
 	}
-
 	var updatedUser model.User
 	if err := c.ShouldBindJSON(&updatedUser); err != nil {
 		utils.HandlerError(c, http.StatusBadRequest, "invalid request body")
 		return
 	}
 
-	if err := common.DB.Model(&user).Updates(&updatedUser).Error; err != nil {
+	user.FirstName = updatedUser.FirstName
+	user.LastName = updatedUser.LastName
+	user.Email = updatedUser.Email
+	user.Username = updatedUser.Username
+	user.Username = updatedUser.Username
+	if !updateOwnUser {
+		user.IsAdmin = updatedUser.IsAdmin
+	}
+
+	if err := common.DB.Save(user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			if err := checkDuplicatedFields(user); err != nil {
 				utils.HandlerError(c, http.StatusBadRequest, err.Error())
@@ -250,8 +258,7 @@ func updateUser(c *gin.Context, userID string) {
 			return
 		}
 	}
-
-	c.JSON(http.StatusOK, updatedUser)
+	c.JSON(http.StatusOK, user)
 }
 
 func checkDuplicatedFields(user model.User) error {

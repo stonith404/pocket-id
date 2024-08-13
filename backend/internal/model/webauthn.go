@@ -21,7 +21,7 @@ type WebauthnCredential struct {
 
 	Name            string                     `json:"name"`
 	CredentialID    string                     `json:"credentialID"`
-	PublicKey       []byte                     `json:"publicKey"`
+	PublicKey       []byte                     `json:"-"`
 	AttestationType string                     `json:"attestationType"`
 	Transport       AuthenticatorTransportList `json:"-"`
 
