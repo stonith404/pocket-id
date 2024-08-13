@@ -98,6 +98,8 @@ func verifyRegistrationHandler(c *gin.Context) {
 		PublicKey:       credential.PublicKey,
 		Transport:       credential.Transport,
 		UserID:          user.ID,
+		BackupEligible:  credential.Flags.BackupEligible,
+		BackupState:     credential.Flags.BackupState,
 	}
 	if err := common.DB.Create(&credentialToStore).Error; err != nil {
 		utils.UnknownHandlerError(c, err)

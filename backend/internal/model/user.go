@@ -35,6 +35,10 @@ func (u User) WebAuthnCredentials() []webauthn.Credential {
 			AttestationType: credential.AttestationType,
 			PublicKey:       credential.PublicKey,
 			Transport:       credential.Transport,
+			Flags: webauthn.CredentialFlags{
+				BackupState:    credential.BackupState,
+				BackupEligible: credential.BackupEligible,
+			},
 		}
 
 	}

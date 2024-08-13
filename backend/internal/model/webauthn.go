@@ -25,6 +25,9 @@ type WebauthnCredential struct {
 	AttestationType string                     `json:"attestationType"`
 	Transport       AuthenticatorTransportList `json:"-"`
 
+	BackupEligible bool `json:"backupEligible"`
+	BackupState    bool `json:"backupState"`
+
 	UserID string
 }
 
