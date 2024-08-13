@@ -1,3 +1,11 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.1.2...v) (2024-08-13)
+
+
+### Bug Fixes
+
+* add missing passkey flags to make icloud passkeys work ([cc407e1](https://github.com/stonith404/pocket-id/commit/cc407e17d409041ed88b959ce13bd581663d55c3))
+* logo not white in dark mode ([5749d05](https://github.com/stonith404/pocket-id/commit/5749d0532fc38bf2fc66571878b7c71643895c9e))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.1.1...v) (2024-08-13)
 
 
