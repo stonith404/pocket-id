@@ -26,6 +26,9 @@ The goal of Pocket ID is to be a simple and easy-to-use. There are other self-ho
 
 You can now sign in with the admin account on `http://localhost/login/setup`.
 
+### Unraid
+Pocket ID is available as a template on the Community Apps store.
+
 ### Stand-alone Installation
 
 Required tools:
