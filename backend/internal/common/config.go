@@ -36,6 +36,11 @@ func NewDefaultDbConfig() model.ApplicationConfiguration {
 			IsPublic: true,
 			Value:    "Pocket ID",
 		},
+		SessionDuration: model.ApplicationConfigurationVariable{
+			Key:   "sessionDuration",
+			Type:  "number",
+			Value: "60",
+		},
 		BackgroundImageType: model.ApplicationConfigurationVariable{
 			Key:        "backgroundImageType",
 			Type:       "string",

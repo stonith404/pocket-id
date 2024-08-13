@@ -12,6 +12,7 @@ type ApplicationConfiguration struct {
 	AppName             ApplicationConfigurationVariable
 	BackgroundImageType ApplicationConfigurationVariable
 	LogoImageType       ApplicationConfigurationVariable
+	SessionDuration     ApplicationConfigurationVariable
 }
 
 type ApplicationConfigurationUpdateDto struct {

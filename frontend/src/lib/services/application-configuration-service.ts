@@ -6,12 +6,12 @@ import APIService from './api-service';
 
 export default class ApplicationConfigurationService extends APIService {
 	async list(showAll = false) {
-		const { data } = await this.api.get<ApplicationConfigurationRawResponse>(
-			'/application-configuration',
-			{
-				params: { showAll }
-			}
-		);
+		let url = '/application-configuration';
+		if (showAll) {
+			url += '/all';
+		}
+
+		const { data } = await this.api.get<ApplicationConfigurationRawResponse>(url);
 
 		const applicationConfiguration: Partial<AllApplicationConfiguration> = {};
 		data.forEach(({ key, value }) => {

@@ -1,6 +1,7 @@
 
 export type AllApplicationConfiguration = {
 	appName: string;
+    sessionDuration: string;
 };
 
 export type ApplicationConfiguration = AllApplicationConfiguration;

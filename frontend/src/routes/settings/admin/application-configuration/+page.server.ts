@@ -5,6 +5,6 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	const applicationConfigurationService = new ApplicationConfigurationService(
 		cookies.get('access_token')
 	);
-	const applicationConfiguration = await applicationConfigurationService.list();
+	const applicationConfiguration = await applicationConfigurationService.list(true);
 	return { applicationConfiguration };
 };

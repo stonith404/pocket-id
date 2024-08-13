@@ -16,6 +16,7 @@ import (
 
 func RegisterConfigurationRoutes(group *gin.RouterGroup) {
 	group.GET("/application-configuration", listApplicationConfigurationHandler)
+	group.GET("/application-configuration/all", middleware.JWTAuth(true), listAllApplicationConfigurationHandler)
 	group.PUT("/application-configuration", updateApplicationConfigurationHandler)
 
 	group.GET("/application-configuration/logo", getLogoHandler)
@@ -27,24 +28,11 @@ func RegisterConfigurationRoutes(group *gin.RouterGroup) {
 }
 
 func listApplicationConfigurationHandler(c *gin.Context) {
-	// Return also the private configuration variables if the user is admin and showAll is true
-	showAll := c.GetBool("userIsAdmin") && c.DefaultQuery("showAll", "false") == "true"
+	listApplicationConfiguration(c, false)
+}
 
-	var configuration []model.ApplicationConfigurationVariable
-	var err error
-
-	if showAll {
-		err = common.DB.Find(&configuration).Error
-	} else {
-		err = common.DB.Find(&configuration, "is_public = true").Error
-	}
-
-	if err != nil {
-		utils.UnknownHandlerError(c, err)
-		return
-	}
-
-	c.JSON(200, configuration)
+func listAllApplicationConfigurationHandler(c *gin.Context) {
+	listApplicationConfiguration(c, true)
 }
 
 func updateApplicationConfigurationHandler(c *gin.Context) {
@@ -187,4 +175,22 @@ func updateImage(c *gin.Context, imageName string, oldImageType string) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func listApplicationConfiguration(c *gin.Context, showAll bool) {
+	var configuration []model.ApplicationConfigurationVariable
+	var err error
+
+	if showAll {
+		err = common.DB.Find(&configuration).Error
+	} else {
+		err = common.DB.Find(&configuration, "is_public = true").Error
+	}
+
+	if err != nil {
+		utils.UnknownHandlerError(c, err)
+		return
+	}
+
+	c.JSON(200, configuration)
 }

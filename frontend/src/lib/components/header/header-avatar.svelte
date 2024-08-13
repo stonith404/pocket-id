@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import WebAuthnService from '$lib/services/webauthn-service';
@@ -12,8 +11,8 @@
 		($userStore!.firstName.charAt(0) + $userStore!.lastName?.charAt(0)).toUpperCase()
 	);
 
-	function logout() {
-		webauthnService.logout();
+	async function logout() {
+		await webauthnService.logout();
 		window.location.reload();
 	}
 </script>
@@ -31,7 +30,7 @@
 					{$userStore?.firstName}
 					{$userStore?.lastName}
 				</p>
-				<p class="text-xs leading-none text-muted-foreground">{$userStore?.email}</p>
+				<p class="text-muted-foreground text-xs leading-none">{$userStore?.email}</p>
 			</div>
 		</DropdownMenu.Label>
 		<DropdownMenu.Separator />

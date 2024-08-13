@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -73,10 +74,11 @@ func GenerateIDToken(user model.User, clientID string, scope string, nonce strin
 
 // GenerateAccessToken generates an access token for the given user.
 func GenerateAccessToken(user model.User) (tokenString string, err error) {
+	sessionDurationInMinutes, _ := strconv.Atoi(DbConfig.SessionDuration.Value)
 	claim := accessTokenJWTClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   user.ID,
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(sessionDurationInMinutes) * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Audience:  jwt.ClaimStrings{utils.GetHostFromURL(EnvConfig.AppURL)},
 		},

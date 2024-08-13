@@ -16,11 +16,21 @@
 	let isLoading = $state(false);
 
 	const updatedApplicationConfiguration: AllApplicationConfiguration = {
-		appName: applicationConfiguration.appName
+		appName: applicationConfiguration.appName,
+		sessionDuration: applicationConfiguration.sessionDuration
 	};
 
 	const formSchema = z.object({
-		appName: z.string().min(2).max(30)
+		appName: z.string().min(2).max(30),
+		sessionDuration: z.string().refine(
+			(val) => {
+				const num = Number(val);
+				return Number.isInteger(num) && num >= 1 && num <= 43200;
+			},
+			{
+				message: 'Session duration must be between 1 and 43200 minutes'
+			}
+		)
 	});
 	type FormSchema = typeof formSchema;
 
@@ -35,10 +45,14 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="flex gap-3">
-		<div class="w-full">
-			<FormInput label="Application Name" bind:input={$inputs.appName} />
-		</div>
+	<div class="flex flex-col gap-5">
+		<FormInput label="Application Name" bind:input={$inputs.appName} />
+
+		<FormInput
+			label="Session Duration"
+			description="The duration of a session in minutes before the user has to sign in again."
+			bind:input={$inputs.sessionDuration}
+		/>
 	</div>
 	<div class="mt-5 flex justify-end">
 		<Button {isLoading} type="submit">Save</Button>

@@ -7,6 +7,7 @@ test('Update general configuration', async ({ page }) => {
 	await page.goto('/settings/admin/application-configuration');
 
 	await page.getByLabel('Name').fill('Updated Name');
+	await page.getByLabel('Session Duration').fill('30');
 	await page.getByRole('button', { name: 'Save' }).first().click();
 
 	await expect(page.getByTestId('application-name')).toHaveText('Updated Name');
