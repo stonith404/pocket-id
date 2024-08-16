@@ -4,12 +4,18 @@ Pocket ID is a simple OIDC provider that allows users to authenticate with their
 
 <img src="https://github.com/user-attachments/assets/953c534c-b667-44e5-b976-a59142f1efb8" width="1200"/>
 
-The goal of Pocket ID is to be a simple and easy-to-use. There are other self-hosted OIDC providers like [Keycloak](https://www.keycloak.org/) or [ORY Hydra](https://www.ory.sh/hydra/) but they are often too complex for simple use cases. Additionally, Pocket ID only support passkey authentication which is a passwordless authentication method.
+The goal of Pocket ID is to be a simple and easy-to-use. There are other self-hosted OIDC providers like [Keycloak](https://www.keycloak.org/) or [ORY Hydra](https://www.ory.sh/hydra/) but they are often too complex for simple use cases.
+
+Additionally, what makes Pocket ID special is that it only supports [passkey](https://www.passkeys.io/) authentication, which means you don’t need a password. Some people might not like this idea at first, but I believe passkeys are the future, and once you try them, you’ll love them. For example, you can now use a physical Yubikey to sign in to all your self-hosted services easily and securely.
 
 ## Setup
 
 > [!WARNING]  
 > Pocket ID is in its early stages and may contain bugs.
+
+### Before you start
+
+Pocket ID requires a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts), meaning it must be served over HTTPS. This is necessary because Pocket ID uses the [WebAuthn API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API) which requires a secure context.
 
 ### Installation with Docker (recommended)
 
@@ -27,6 +33,7 @@ The goal of Pocket ID is to be a simple and easy-to-use. There are other self-ho
 You can now sign in with the admin account on `http://localhost/login/setup`.
 
 ### Unraid
+
 Pocket ID is available as a template on the Community Apps store.
 
 ### Stand-alone Installation
@@ -40,36 +47,37 @@ Required tools:
 - [Caddy](https://caddyserver.com/docs/install) (optional)
 
 1. Copy the `.env.example` file in the `frontend` and `backend` folder to `.env` and change it so that it fits your needs.
-   
+
    ```bash
    cp frontend/.env.example frontend/.env
    cp backend/.env.example backend/.env
    ```
+
 2. Run the following commands:
 
-    ```bash
-    git clone https://github.com/stonith404/pocket-id
-    cd pocket-id
+   ```bash
+   git clone https://github.com/stonith404/pocket-id
+   cd pocket-id
 
-    # Checkout the latest version
-    git fetch --tags && git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+   # Checkout the latest version
+   git fetch --tags && git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
 
-    # Start the backend
-    cd backend/cmd
-    go build -o ../pocket-id-backend
-    cd ..
-    pm2 start pocket-id-backend --name pocket-id-backend
+   # Start the backend
+   cd backend/cmd
+   go build -o ../pocket-id-backend
+   cd ..
+   pm2 start pocket-id-backend --name pocket-id-backend
 
-    # Start the frontend
-    cd ../frontend
-    npm install
-    npm run build
-    pm2 start --name pocket-id-frontend --node-args="--env-file .env" build/index.js
+   # Start the frontend
+   cd ../frontend
+   npm install
+   npm run build
+   pm2 start --name pocket-id-frontend --node-args="--env-file .env" build/index.js
 
-    # Optional: Start Caddy (You can use any other reverse proxy)
-    cd ..
-    pm2 start --name pocket-id-caddy caddy -- run --config Caddyfile
-    ```
+   # Optional: Start Caddy (You can use any other reverse proxy)
+   cd ..
+   pm2 start --name pocket-id-caddy caddy -- run --config Caddyfile
+   ```
 
 You can now sign in with the admin account on `http://localhost/login/setup`.
 
