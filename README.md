@@ -137,13 +137,14 @@ docker compose up -d
 
 ### Environment variables
 
-| Variable         | Default Value       | Recommended to change | Description                                   |
-| ---------------- | ------------------- | --------------------- | --------------------------------------------- |
-| `PUBLIC_APP_URL` | `http://localhost`  | yes                   | The URL where you will access the app.        |
-| `DB_PATH`        | `data/pocket-id.db` | no                    | The path to the SQLite database.              |
-| `UPLOAD_PATH`    | `data/uploads`      | no                    | The path where the uploaded files are stored. |
-| `PORT`           | `3000`              | no                    | The port on which the frontend should listen. |
-| `BACKEND_PORT`   | `8080`              | no                    | The port on which the backend should listen.  |
+| Variable               | Default Value           | Recommended to change | Description                                   |
+| ---------------------- | ----------------------- | --------------------- | --------------------------------------------- |
+| `PUBLIC_APP_URL`       | `http://localhost`      | yes                   | The URL where you will access the app.        |
+| `DB_PATH`              | `data/pocket-id.db`     | no                    | The path to the SQLite database.              |
+| `UPLOAD_PATH`          | `data/uploads`          | no                    | The path where the uploaded files are stored. |
+| `INTERNAL_BACKEND_URL` | `http://localhost:8080` | no                    | The URL where the backend is accessible.      |
+| `PORT`                 | `3000`                  | no                    | The port on which the frontend should listen. |
+| `BACKEND_PORT`         | `8080`                  | no                    | The port on which the backend should listen.  |
 
 ## Contribute
 

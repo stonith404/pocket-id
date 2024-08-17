@@ -1,6 +1,12 @@
+import { env } from '$env/dynamic/private';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { AxiosError } from 'axios';
 import jwt from 'jsonwebtoken';
+
+// Workaround so that we can also import this environment variable into client-side code
+// If we would directly import $env/dynamic/private into the api-service.ts file, it would throw an error
+// this is still secure as process will just be undefined in the browser
+process.env.INTERNAL_BACKEND_URL = env.INTERNAL_BACKEND_URL ?? 'http://localhost:8080';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const accessToken = event.cookies.get('access_token');
