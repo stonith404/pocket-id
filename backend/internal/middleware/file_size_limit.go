@@ -3,11 +3,17 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"golang-rest-api-template/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
 )
 
-func LimitFileSize(maxSize int64) gin.HandlerFunc {
+type FileSizeLimitMiddleware struct{}
+
+func NewFileSizeLimitMiddleware() *FileSizeLimitMiddleware {
+	return &FileSizeLimitMiddleware{}
+}
+
+func (m *FileSizeLimitMiddleware) Add(maxSize int64) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxSize)
 		if err := c.Request.ParseMultipartForm(maxSize); err != nil {

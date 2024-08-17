@@ -35,6 +35,21 @@ test('Create user fails with already taken email', async ({ page }) => {
 	await expect(page.getByRole('status')).toHaveText('Email is already taken');
 });
 
+test('Create user fails with already taken username', async ({ page }) => {
+	const user = users.steve;
+
+	await page.goto('/settings/admin/users');
+
+	await page.getByRole('button', { name: 'Add User' }).click();
+	await page.getByLabel('Firstname').fill(user.firstname);
+	await page.getByLabel('Lastname').fill(user.lastname);
+	await page.getByLabel('Email').fill(user.email);
+	await page.getByLabel('Username').fill(users.tim.username);
+	await page.getByRole('button', { name: 'Save' }).click();
+
+	await expect(page.getByRole('status')).toHaveText('Username is already taken');
+});
+
 test('Create one time access token', async ({ page }) => {
 	await page.goto('/settings/admin/users');
 

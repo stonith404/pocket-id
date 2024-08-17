@@ -1,9 +1,7 @@
 package utils
 
 import (
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type PaginationResponse struct {
@@ -12,10 +10,7 @@ type PaginationResponse struct {
 	CurrentPage int   `json:"currentPage"`
 }
 
-func Paginate(c *gin.Context, db *gorm.DB, result interface{}) (PaginationResponse, error) {
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
-
+func Paginate(page int, pageSize int, db *gorm.DB, result interface{}) (PaginationResponse, error) {
 	if page < 1 {
 		page = 1
 	}

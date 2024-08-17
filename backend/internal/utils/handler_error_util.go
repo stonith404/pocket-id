@@ -1,15 +1,23 @@
 package utils
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"strings"
 )
 
 func UnknownHandlerError(c *gin.Context, err error) {
-	log.Println(err)
-	c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		HandlerError(c, http.StatusNotFound, "Record not found")
+		return
+	} else {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
+	}
+
 }
 
 func HandlerError(c *gin.Context, statusCode int, message string) {

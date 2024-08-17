@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"golang-rest-api-template/internal/common"
-	"golang-rest-api-template/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
 	"sync"
 	"time"
@@ -11,8 +11,13 @@ import (
 	"golang.org/x/time/rate"
 )
 
-// RateLimiter is a Gin middleware for rate limiting based on client IP
-func RateLimiter(limit rate.Limit, burst int) gin.HandlerFunc {
+type RateLimitMiddleware struct{}
+
+func NewRateLimitMiddleware() *RateLimitMiddleware {
+	return &RateLimitMiddleware{}
+}
+
+func (m *RateLimitMiddleware) Add(limit rate.Limit, burst int) gin.HandlerFunc {
 	// Start the cleanup routine
 	go cleanupClients()
 

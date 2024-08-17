@@ -1,4 +1,4 @@
-module golang-rest-api-template
+module github.com/stonith404/pocket-id/backend
 
 go 1.22
 

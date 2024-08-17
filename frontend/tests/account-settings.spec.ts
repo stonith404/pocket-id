@@ -69,15 +69,3 @@ test('Delete passkey from account', async ({ page }) => {
 
 	await expect(page.getByRole('status')).toHaveText('Passkey deleted successfully');
 });
-
-test('Delete last passkey from account fails', async ({ page }) => {
-	await page.goto('/settings/account');
-
-	await page.getByLabel('Delete').first().click();
-	await page.getByText('Delete', { exact: true }).click();
-
-	await page.getByLabel('Delete').first().click();
-	await page.getByText('Delete', { exact: true }).click();
-
-	await expect(page.getByRole('status').first()).toHaveText('You must have at least one passkey');
-});

@@ -1,19 +1,25 @@
-package handler
+package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"golang-rest-api-template/internal/common"
-	"golang-rest-api-template/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
 )
 
-func RegisterWellKnownRoutes(group *gin.RouterGroup) {
-	group.GET("/.well-known/jwks.json", jwks)
-	group.GET("/.well-known/openid-configuration", openIDConfiguration)
+func NewWellKnownController(group *gin.RouterGroup, jwtService *service.JwtService) {
+	wkc := &WellKnownController{jwtService: jwtService}
+	group.GET("/.well-known/jwks.json", wkc.jwksHandler)
+	group.GET("/.well-known/openid-configuration", wkc.openIDConfigurationHandler)
 }
 
-func jwks(c *gin.Context) {
-	jwk, err := common.GetJWK()
+type WellKnownController struct {
+	jwtService *service.JwtService
+}
+
+func (wkc *WellKnownController) jwksHandler(c *gin.Context) {
+	jwk, err := wkc.jwtService.GetJWK()
 	if err != nil {
 		utils.UnknownHandlerError(c, err)
 		return
@@ -22,7 +28,7 @@ func jwks(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"keys": []interface{}{jwk}})
 }
 
-func openIDConfiguration(c *gin.Context) {
+func (wkc *WellKnownController) openIDConfigurationHandler(c *gin.Context) {
 	appUrl := common.EnvConfig.AppURL
 	config := map[string]interface{}{
 		"issuer":                                appUrl,

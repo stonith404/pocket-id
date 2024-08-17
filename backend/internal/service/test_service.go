@@ -1,48 +1,33 @@
-package handler
+package service
 
 import (
 	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/base64"
+	"fmt"
+	"github.com/fxamacker/cbor/v2"
 	"log"
 	"os"
 	"time"
 
-	"github.com/fxamacker/cbor/v2"
-	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
-	"golang-rest-api-template/internal/common"
-	"golang-rest-api-template/internal/model"
-	"golang-rest-api-template/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/model"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
 )
 
-func RegisterTestRoutes(group *gin.RouterGroup) {
-	group.POST("/test/reset", resetAndSeedHandler)
+type TestService struct {
+	db               *gorm.DB
+	appConfigService *AppConfigService
 }
 
-func resetAndSeedHandler(c *gin.Context) {
-	if err := resetDatabase(); err != nil {
-		utils.UnknownHandlerError(c, err)
-		return
-	}
-
-	if err := resetApplicationImages(); err != nil {
-		utils.UnknownHandlerError(c, err)
-		return
-	}
-
-	if err := seedDatabase(); err != nil {
-		utils.UnknownHandlerError(c, err)
-		return
-	}
-
-	c.JSON(200, gin.H{"message": "Database reset and seeded"})
+func NewTestService(db *gorm.DB, appConfigService *AppConfigService) *TestService {
+	return &TestService{db: db, appConfigService: appConfigService}
 }
 
-// seedDatabase seeds the database with initial data and uses a transaction to ensure atomicity.
-func seedDatabase() error {
-	return common.DB.Transaction(func(tx *gorm.DB) error {
+func (s *TestService) SeedDatabase() error {
+	return s.db.Transaction(func(tx *gorm.DB) error {
 		users := []model.User{
 			{
 				Base: model.Base{
@@ -128,11 +113,16 @@ func seedDatabase() error {
 			return err
 		}
 
+		publicKey1, err := getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwcOo5KV169KR67QEHrcYkeXE3CCxv2BgwnSq4VYTQxyLtdmKxegexa8JdwFKhKXa2BMI9xaN15BoL6wSCRFJhg==")
+		publicKey2, err := getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAESq/wR8QbBu3dKnpaw/v0mDxFFDwnJ/L5XHSg2tAmq5x1BpSMmIr3+DxCbybVvGRmWGh8kKhy7SMnK91M6rFHTA==")
+		if err != nil {
+			return err
+		}
 		webauthnCredentials := []model.WebauthnCredential{
 			{
 				Name:            "Passkey 1",
 				CredentialID:    "test-credential-1",
-				PublicKey:       getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwcOo5KV169KR67QEHrcYkeXE3CCxv2BgwnSq4VYTQxyLtdmKxegexa8JdwFKhKXa2BMI9xaN15BoL6wSCRFJhg=="),
+				PublicKey:       publicKey1,
 				AttestationType: "none",
 				Transport:       model.AuthenticatorTransportList{protocol.Internal},
 				UserID:          users[0].ID,
@@ -140,7 +130,7 @@ func seedDatabase() error {
 			{
 				Name:            "Passkey 2",
 				CredentialID:    "test-credential-2",
-				PublicKey:       getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAESq/wR8QbBu3dKnpaw/v0mDxFFDwnJ/L5XHSg2tAmq5x1BpSMmIr3+DxCbybVvGRmWGh8kKhy7SMnK91M6rFHTA=="),
+				PublicKey:       publicKey2,
 				AttestationType: "none",
 				Transport:       model.AuthenticatorTransportList{protocol.Internal},
 				UserID:          users[0].ID,
@@ -165,9 +155,8 @@ func seedDatabase() error {
 	})
 }
 
-// resetDatabase resets the database by deleting all rows from each table.
-func resetDatabase() error {
-	err := common.DB.Transaction(func(tx *gorm.DB) error {
+func (s *TestService) ResetDatabase() error {
+	err := s.db.Transaction(func(tx *gorm.DB) error {
 		var tables []string
 		if err := tx.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name != 'schema_migrations';").Scan(&tables).Error; err != nil {
 			return err
@@ -183,13 +172,11 @@ func resetDatabase() error {
 	if err != nil {
 		return err
 	}
-	common.InitDbConfig()
-	return nil
+	err = s.appConfigService.InitDbConfig()
+	return err
 }
 
-// resetApplicationImages resets the application images by removing existing images and replacing them with the default ones
-func resetApplicationImages() error {
-
+func (s *TestService) ResetApplicationImages() error {
 	if err := os.RemoveAll(common.EnvConfig.UploadPath); err != nil {
 		log.Printf("Error removing directory: %v", err)
 		return err
@@ -204,20 +191,19 @@ func resetApplicationImages() error {
 }
 
 // getCborPublicKey decodes a Base64 encoded public key and returns the CBOR encoded COSE key
-func getCborPublicKey(base64PublicKey string) []byte {
+func getCborPublicKey(base64PublicKey string) ([]byte, error) {
 	decodedKey, err := base64.StdEncoding.DecodeString(base64PublicKey)
 	if err != nil {
-		log.Fatalf("Failed to decode base64 key: %v", err)
+		return nil, fmt.Errorf("failed to decode base64 key: %w", err)
 	}
-
 	pubKey, err := x509.ParsePKIXPublicKey(decodedKey)
 	if err != nil {
-		log.Fatalf("Failed to parse public key: %v", err)
+		return nil, fmt.Errorf("failed to parse public key: %w", err)
 	}
 
 	ecdsaPubKey, ok := pubKey.(*ecdsa.PublicKey)
 	if !ok {
-		log.Fatalf("Not an ECDSA public key")
+		return nil, fmt.Errorf("not an ECDSA public key")
 	}
 
 	coseKey := map[int]interface{}{
@@ -230,8 +216,8 @@ func getCborPublicKey(base64PublicKey string) []byte {
 
 	cborPublicKey, err := cbor.Marshal(coseKey)
 	if err != nil {
-		log.Fatalf("Failed to encode CBOR: %v", err)
+		return nil, fmt.Errorf("failed to marshal COSE key: %w", err)
 	}
 
-	return cborPublicKey
+	return cborPublicKey, nil
 }

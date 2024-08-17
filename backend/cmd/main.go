@@ -1,7 +1,7 @@
 package main
 
 import (
-	"golang-rest-api-template/internal/bootstrap"
+	"github.com/stonith404/pocket-id/backend/internal/bootstrap"
 )
 
 func main() {

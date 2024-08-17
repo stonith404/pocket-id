@@ -12,7 +12,7 @@ type Base struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-func (b *Base) BeforeCreate(db *gorm.DB) (err error) {
+func (b *Base) BeforeCreate(_ *gorm.DB) (err error) {
 	if b.ID == "" {
 		b.ID = uuid.New().String()
 	}

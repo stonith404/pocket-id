@@ -3,28 +3,46 @@ package job
 import (
 	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
-	"golang-rest-api-template/internal/common"
-	"golang-rest-api-template/internal/model"
-	"golang-rest-api-template/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/model"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"gorm.io/gorm"
 	"log"
 	"time"
 )
 
-func RegisterJobs() {
+func RegisterJobs(db *gorm.DB) {
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
 		log.Fatalf("Failed to create a new scheduler: %s", err)
 	}
 
-	registerJob(scheduler, "ClearWebauthnSessions", "0 3 * * *", clearWebauthnSessions)
-	registerJob(scheduler, "ClearOneTimeAccessTokens", "0 3 * * *", clearOneTimeAccessTokens)
-	registerJob(scheduler, "ClearOidcAuthorizationCodes", "0 3 * * *", clearOidcAuthorizationCodes)
+	jobs := &Jobs{db: db}
+
+	registerJob(scheduler, "ClearWebauthnSessions", "0 3 * * *", jobs.clearWebauthnSessions)
+	registerJob(scheduler, "ClearOneTimeAccessTokens", "0 3 * * *", jobs.clearOneTimeAccessTokens)
+	registerJob(scheduler, "ClearOidcAuthorizationCodes", "0 3 * * *", jobs.clearOidcAuthorizationCodes)
 
 	scheduler.Start()
 }
 
-func registerJob(scheduler gocron.Scheduler, name string, interval string, job func() error) {
+type Jobs struct {
+	db *gorm.DB
+}
 
+func (j *Jobs) clearWebauthnSessions() error {
+	return j.db.Delete(&model.WebauthnSession{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+}
+
+func (j *Jobs) clearOneTimeAccessTokens() error {
+	return j.db.Debug().Delete(&model.OneTimeAccessToken{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+}
+
+func (j *Jobs) clearOidcAuthorizationCodes() error {
+	return j.db.Delete(&model.OidcAuthorizationCode{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+
+}
+
+func registerJob(scheduler gocron.Scheduler, name string, interval string, job func() error) {
 	_, err := scheduler.NewJob(
 		gocron.CronJob(interval, false),
 		gocron.NewTask(job),
@@ -41,17 +59,4 @@ func registerJob(scheduler gocron.Scheduler, name string, interval string, job f
 	if err != nil {
 		log.Fatalf("Failed to register job %q: %v", name, err)
 	}
-}
-
-func clearWebauthnSessions() error {
-	return common.DB.Delete(&model.WebauthnSession{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
-}
-
-func clearOneTimeAccessTokens() error {
-	return common.DB.Debug().Delete(&model.OneTimeAccessToken{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
-}
-
-func clearOidcAuthorizationCodes() error {
-	return common.DB.Delete(&model.OidcAuthorizationCode{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
-
 }

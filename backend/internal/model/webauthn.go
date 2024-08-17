@@ -31,6 +31,18 @@ type WebauthnCredential struct {
 	UserID string
 }
 
+type PublicKeyCredentialCreationOptions struct {
+	Response  protocol.PublicKeyCredentialCreationOptions `json:"response"`
+	SessionID string                                      `json:"session_id"`
+	Timeout   time.Duration                               `json:"timeout"`
+}
+
+type PublicKeyCredentialRequestOptions struct {
+	Response  protocol.PublicKeyCredentialRequestOptions `json:"response"`
+	SessionID string                                     `json:"session_id"`
+	Timeout   time.Duration                              `json:"timeout"`
+}
+
 type AuthenticatorTransportList []protocol.AuthenticatorTransport
 
 // Scan and Value methods for GORM to handle the custom type
@@ -45,4 +57,8 @@ func (atl *AuthenticatorTransportList) Scan(value interface{}) error {
 
 func (atl AuthenticatorTransportList) Value() (driver.Value, error) {
 	return json.Marshal(atl)
+}
+
+type WebauthnCredentialUpdateDto struct {
+	Name string `json:"name"`
 }

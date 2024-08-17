@@ -2,15 +2,22 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"golang-rest-api-template/internal/common"
-	"golang-rest-api-template/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
 	"strings"
 )
 
-func JWTAuth(adminOnly bool) gin.HandlerFunc {
-	return func(c *gin.Context) {
+type JwtAuthMiddleware struct {
+	jwtService *service.JwtService
+}
 
+func NewJwtAuthMiddleware(jwtService *service.JwtService) *JwtAuthMiddleware {
+	return &JwtAuthMiddleware{jwtService: jwtService}
+}
+
+func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		// Extract the token from the cookie or the Authorization header
 		token, err := c.Cookie("access_token")
 		if err != nil {
@@ -22,11 +29,9 @@ func JWTAuth(adminOnly bool) gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-
 		}
 
-		// Verify the token
-		claims, err := common.VerifyAccessToken(token)
+		claims, err := m.jwtService.VerifyAccessToken(token)
 		if err != nil {
 			utils.HandlerError(c, http.StatusUnauthorized, "You're not signed in")
 			c.Abort()

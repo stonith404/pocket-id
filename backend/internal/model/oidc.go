@@ -63,3 +63,9 @@ type OidcIdTokenDto struct {
 	ClientID     string `form:"client_id"`
 	ClientSecret string `form:"client_secret"`
 }
+
+type AuthorizeRequest struct {
+	ClientID string `json:"clientID" binding:"required"`
+	Scope    string `json:"scope" binding:"required"`
+	Nonce    string `json:"nonce"`
+}

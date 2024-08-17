@@ -1,51 +1,54 @@
-package common
+package bootstrap
 
 import (
 	"errors"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"github.com/stonith404/pocket-id/backend/internal/common"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
 	"time"
-
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func InitDatabase() {
-	connectDatabase()
-	sqlDb, err := DB.DB()
+func newDatabase() (db *gorm.DB) {
+	db, err := connectDatabase()
 	if err != nil {
-		log.Fatal("failed to get sql db", err)
+		log.Fatalf("failed to connect to database: %v", err)
 	}
+	sqlDb, err := db.DB()
+	if err != nil {
+		log.Fatalf("failed to get sql.DB: %v", err)
+	}
+
 	driver, err := sqlite3.WithInstance(sqlDb, &sqlite3.Config{})
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://migrations",
 		"postgres", driver)
 	if err != nil {
-		log.Fatal("failed to create migration instance", err)
+		log.Fatalf("failed to create migration instance: %v", err)
 	}
 
 	err = m.Up()
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		log.Fatal("failed to run migrations", err)
+		log.Fatalf("failed to apply migrations: %v", err)
 	}
+
+	return db
 }
 
-func connectDatabase() {
-	var database *gorm.DB
-	var err error
+func connectDatabase() (db *gorm.DB, err error) {
+	dbPath := common.EnvConfig.DBPath
 
-	dbPath := EnvConfig.DBPath
-	if EnvConfig.AppEnv == "test" {
+	// Use in-memory database for testing
+	if common.EnvConfig.AppEnv == "test" {
 		dbPath = "file::memory:?cache=shared"
 	}
 
 	for i := 1; i <= 3; i++ {
-		database, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{
+		db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{
 			TranslateError: true,
 			Logger:         getLogger(),
 		})
@@ -57,11 +60,11 @@ func connectDatabase() {
 		}
 	}
 
-	DB = database
+	return db, err
 }
 
 func getLogger() logger.Interface {
-	isProduction := EnvConfig.AppEnv == "production"
+	isProduction := common.EnvConfig.AppEnv == "production"
 
 	var logLevel logger.LogLevel
 	if isProduction {
@@ -70,7 +73,6 @@ func getLogger() logger.Interface {
 		logLevel = logger.Info
 	}
 
-	// Create the GORM logger
 	return logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
