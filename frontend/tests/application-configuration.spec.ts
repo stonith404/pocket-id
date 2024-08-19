@@ -13,11 +13,12 @@ test('Update general configuration', async ({ page }) => {
 	await expect(page.getByRole('status')).toHaveText(
 		'Application configuration updated successfully'
 	);
+	await expect(page.getByTestId('application-name')).toHaveText('Updated Name');
 
 	await page.reload();
 
-	await expect(page.getByTestId('application-name')).toHaveText('Updated Name');
-	await expect(page.getByTestId('session-duration')).toHaveText('30');
+	await expect(page.getByLabel('Name')).toHaveValue('Updated Name');
+	await expect(page.getByLabel('Session Duration')).toHaveValue('30');
 });
 
 test('Update application images', async ({ page }) => {
