@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.2.0...v) (2024-08-19)
+
+
+### Bug Fixes
+
+* session duration can't be updated ([4780548](https://github.com/stonith404/pocket-id/commit/478054884389ed8a08d707fd82da7b31177a67e5))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.1.3...v) (2024-08-19)
 
 
