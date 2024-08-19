@@ -55,7 +55,7 @@ var defaultDbConfig = model.AppConfig{
 }
 
 func (s *AppConfigService) UpdateApplicationConfiguration(input model.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {
-	savedConfigVariables := make([]model.AppConfigVariable, 10)
+	var savedConfigVariables []model.AppConfigVariable
 
 	tx := s.db.Begin()
 	rt := reflect.ValueOf(input).Type()
@@ -78,7 +78,7 @@ func (s *AppConfigService) UpdateApplicationConfiguration(input model.AppConfigU
 			return nil, err
 		}
 
-		savedConfigVariables[i] = applicationConfigurationVariable
+		savedConfigVariables = append(savedConfigVariables, applicationConfigurationVariable)
 	}
 
 	tx.Commit()

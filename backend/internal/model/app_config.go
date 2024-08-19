@@ -16,5 +16,6 @@ type AppConfig struct {
 }
 
 type AppConfigUpdateDto struct {
-	AppName string `json:"appName" binding:"required"`
+	AppName         string `json:"appName" binding:"required"`
+	SessionDuration string `json:"sessionDuration" binding:"required"`
 }

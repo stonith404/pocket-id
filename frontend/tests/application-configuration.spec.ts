@@ -10,10 +10,14 @@ test('Update general configuration', async ({ page }) => {
 	await page.getByLabel('Session Duration').fill('30');
 	await page.getByRole('button', { name: 'Save' }).first().click();
 
-	await expect(page.getByTestId('application-name')).toHaveText('Updated Name');
 	await expect(page.getByRole('status')).toHaveText(
 		'Application configuration updated successfully'
 	);
+
+	await page.reload();
+
+	await expect(page.getByTestId('application-name')).toHaveText('Updated Name');
+	await expect(page.getByTestId('session-duration')).toHaveText('30');
 });
 
 test('Update application images', async ({ page }) => {
