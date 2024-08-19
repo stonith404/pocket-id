@@ -1,3 +1,12 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.1.3...v) (2024-08-19)
+
+
+### Features
+
+* add `INTERNAL_BACKEND_URL` env variable ([0595d73](https://github.com/stonith404/pocket-id/commit/0595d73ea5afbd7937b8f292ffe624139f818f41))
+* add user info endpoint to support more oidc clients ([fdc1921](https://github.com/stonith404/pocket-id/commit/fdc1921f5dcb5ac6beef8d1c9b1b7c53f514cce5))
+* change default logo ([9eec7a3](https://github.com/stonith404/pocket-id/commit/9eec7a3e9eb7f690099f38a5d4cf7c2516ea9ef9))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.1.2...v) (2024-08-13)
 
 
