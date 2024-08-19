@@ -1,8 +1,8 @@
-# <div align="center"><img  src="https://github.com/user-attachments/assets/5b5e0d42-e2b4-4523-add5-ac87042a72f1" width="100"/> </br>Pocket ID</div>
+# <div align="center"><img  src="https://github.com/user-attachments/assets/4ceb2708-9f29-4694-b797-be833efce17d" width="100"/> </br>Pocket ID</div>
 
 Pocket ID is a simple OIDC provider that allows users to authenticate with their passkeys to your services.
 
-<img src="https://github.com/user-attachments/assets/953c534c-b667-44e5-b976-a59142f1efb8" width="1200"/>
+<img src="https://github.com/user-attachments/assets/783dc0c1-1580-476b-9bb1-d9ef1077bc1e" width="1200"/>
 
 The goal of Pocket ID is to be a simple and easy-to-use. There are other self-hosted OIDC providers like [Keycloak](https://www.keycloak.org/) or [ORY Hydra](https://www.ory.sh/hydra/) but they are often too complex for simple use cases.
 
