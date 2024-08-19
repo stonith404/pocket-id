@@ -8,6 +8,7 @@ import (
 type UserAuthorizedOidcClient struct {
 	Scope  string
 	UserID string `json:"userId" gorm:"primary_key;"`
+	User   User
 
 	ClientID string `json:"clientId" gorm:"primary_key;"`
 	Client   OidcClient

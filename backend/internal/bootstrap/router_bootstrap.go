@@ -47,7 +47,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	// Set up API routes
 	apiGroup := r.Group("/api")
 	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService, jwtService)
-	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService)
+	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
 	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService)
 	controller.NewApplicationConfigurationController(apiGroup, jwtAuthMiddleware, appConfigService)
 

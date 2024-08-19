@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 	"mime/multipart"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -54,46 +55,50 @@ func (s *OidcService) AuthorizeNewClient(req model.AuthorizeNewClientDto, userID
 	return s.createAuthorizationCode(req.ClientID, userID, req.Scope, req.Nonce)
 }
 
-func (s *OidcService) CreateIDToken(req model.OidcIdTokenDto) (string, error) {
-	if req.GrantType != "authorization_code" {
-		return "", common.ErrOidcGrantTypeNotSupported
+func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret string) (string, string, error) {
+	if grantType != "authorization_code" {
+		return "", "", common.ErrOidcGrantTypeNotSupported
 	}
 
-	clientID := req.ClientID
-	clientSecret := req.ClientSecret
-
 	if clientID == "" || clientSecret == "" {
-		return "", common.ErrOidcMissingClientCredentials
+		return "", "", common.ErrOidcMissingClientCredentials
 	}
 
 	var client model.OidcClient
 	if err := s.db.First(&client, "id = ?", clientID).Error; err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(client.Secret), []byte(clientSecret))
 	if err != nil {
-		return "", common.ErrOidcClientSecretInvalid
+		return "", "", common.ErrOidcClientSecretInvalid
 	}
 
 	var authorizationCodeMetaData model.OidcAuthorizationCode
-	err = s.db.Preload("User").First(&authorizationCodeMetaData, "code = ?", req.Code).Error
+	err = s.db.Preload("User").First(&authorizationCodeMetaData, "code = ?", code).Error
 	if err != nil {
-		return "", common.ErrOidcInvalidAuthorizationCode
+		return "", "", common.ErrOidcInvalidAuthorizationCode
 	}
 
 	if authorizationCodeMetaData.ClientID != clientID && authorizationCodeMetaData.ExpiresAt.Before(time.Now()) {
-		return "", common.ErrOidcInvalidAuthorizationCode
+		return "", "", common.ErrOidcInvalidAuthorizationCode
 	}
 
-	idToken, err := s.jwtService.GenerateIDToken(authorizationCodeMetaData.User, clientID, authorizationCodeMetaData.Scope, authorizationCodeMetaData.Nonce)
+	userClaims, err := s.GetUserClaimsForClient(authorizationCodeMetaData.UserID, clientID)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
+
+	idToken, err := s.jwtService.GenerateIDToken(userClaims, clientID, authorizationCodeMetaData.Nonce)
+	if err != nil {
+		return "", "", err
+	}
+
+	accessToken, err := s.jwtService.GenerateOauthAccessToken(authorizationCodeMetaData.User, clientID)
 
 	s.db.Delete(&authorizationCodeMetaData)
 
-	return idToken, nil
+	return idToken, accessToken, nil
 }
 
 func (s *OidcService) GetClient(clientID string) (*model.OidcClient, error) {
@@ -257,6 +262,41 @@ func (s *OidcService) DeleteClientLogo(clientID string) error {
 	}
 
 	return nil
+}
+
+func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (map[string]interface{}, error) {
+	var authorizedOidcClient model.UserAuthorizedOidcClient
+	if err := s.db.Preload("User").First(&authorizedOidcClient, "user_id = ? AND client_id = ?", userID, clientID).Error; err != nil {
+		return nil, err
+	}
+
+	user := authorizedOidcClient.User
+	scope := authorizedOidcClient.Scope
+
+	claims := map[string]interface{}{
+		"sub": user.ID,
+	}
+
+	if strings.Contains(scope, "email") {
+		claims["email"] = user.Email
+	}
+
+	profileClaims := map[string]interface{}{
+		"given_name":         user.FirstName,
+		"family_name":        user.LastName,
+		"preferred_username": user.Username,
+	}
+
+	if strings.Contains(scope, "profile") {
+		for k, v := range profileClaims {
+			claims[k] = v
+		}
+	}
+	if strings.Contains(scope, "email") {
+		claims["email"] = user.Email
+	}
+
+	return claims, nil
 }
 
 func (s *OidcService) createAuthorizationCode(clientID string, userID string, scope string, nonce string) (string, error) {

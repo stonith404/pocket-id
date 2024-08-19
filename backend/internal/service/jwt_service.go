@@ -18,7 +18,6 @@ import (
 	"path/filepath"
 	"slices"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -54,7 +53,6 @@ type AccessTokenJWTClaims struct {
 type JWK struct {
 	Kty string `json:"kty"`
 	Use string `json:"use"`
-	Kid string `json:"kid"`
 	Alg string `json:"alg"`
 	N   string `json:"n"`
 	E   string `json:"e"`
@@ -87,37 +85,6 @@ func (s *JwtService) loadOrGenerateKeys() error {
 	}
 
 	return nil
-}
-
-func (s *JwtService) GenerateIDToken(user model.User, clientID string, scope string, nonce string) (string, error) {
-	profileClaims := map[string]interface{}{
-		"given_name":         user.FirstName,
-		"family_name":        user.LastName,
-		"email":              user.Email,
-		"preferred_username": user.Username,
-	}
-
-	claims := jwt.MapClaims{
-		"sub": user.ID,
-		"aud": clientID,
-		"exp": jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
-		"iat": jwt.NewNumericDate(time.Now()),
-	}
-
-	if nonce != "" {
-		claims["nonce"] = nonce
-	}
-	if strings.Contains(scope, "profile") {
-		for k, v := range profileClaims {
-			claims[k] = v
-		}
-	}
-	if strings.Contains(scope, "email") {
-		claims["email"] = user.Email
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
-	return token.SignedString(s.privateKey)
 }
 
 func (s *JwtService) GenerateAccessToken(user model.User) (string, error) {
@@ -154,6 +121,53 @@ func (s *JwtService) VerifyAccessToken(tokenString string) (*AccessTokenJWTClaim
 	return claims, nil
 }
 
+func (s *JwtService) GenerateIDToken(userClaims map[string]interface{}, clientID string, nonce string) (string, error) {
+	claims := jwt.MapClaims{
+		"aud": clientID,
+		"exp": jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+		"iat": jwt.NewNumericDate(time.Now()),
+		"iss": common.EnvConfig.AppURL,
+	}
+
+	for k, v := range userClaims {
+		claims[k] = v
+	}
+
+	if nonce != "" {
+		claims["nonce"] = nonce
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+	return token.SignedString(s.privateKey)
+}
+func (s *JwtService) GenerateOauthAccessToken(user model.User, clientID string) (string, error) {
+	claim := jwt.RegisteredClaims{
+		Subject:   user.ID,
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
+		IssuedAt:  jwt.NewNumericDate(time.Now()),
+		Audience:  jwt.ClaimStrings{clientID},
+		Issuer:    common.EnvConfig.AppURL,
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claim)
+	return token.SignedString(s.privateKey)
+}
+
+func (s *JwtService) VerifyOauthAccessToken(tokenString string) (*jwt.RegisteredClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return s.publicKey, nil
+	})
+	if err != nil || !token.Valid {
+		return nil, errors.New("couldn't handle this token")
+	}
+
+	claims, isValid := token.Claims.(*jwt.RegisteredClaims)
+	if !isValid {
+		return nil, errors.New("can't parse claims")
+	}
+
+	return claims, nil
+}
+
 // GetJWK returns the JSON Web Key (JWK) for the public key.
 func (s *JwtService) GetJWK() (JWK, error) {
 	if s.publicKey == nil {
@@ -163,7 +177,6 @@ func (s *JwtService) GetJWK() (JWK, error) {
 	jwk := JWK{
 		Kty: "RSA",
 		Use: "sig",
-		Kid: "1",
 		Alg: "RS256",
 		N:   base64.RawURLEncoding.EncodeToString(s.publicKey.N.Bytes()),
 		E:   base64.RawURLEncoding.EncodeToString(big.NewInt(int64(s.publicKey.E)).Bytes()),
