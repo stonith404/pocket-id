@@ -91,9 +91,16 @@ You may need the following information:
 
 - **Authorization URL**: `https://<your-domain>/authorize`
 - **Token URL**: `https://<your-domain>/api/oidc/token`
+- **Userinfo URL**: `https://<your-domain>/api/oidc/userinfo`
 - **Certificate URL**: `https://<your-domain>/.well-known/jwks.json`
 - **OIDC Discovery URL**: `https://<your-domain>/.well-known/openid-configuration`
 - **PKCE**: `false` as this is not supported yet.
+
+### Proxy Services with Pocket ID
+
+As the goal of Pocket ID is to stay simple, we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/) to add authentication to your services that don't support OIDC.
+
+See the [guide](docs/proxy-services.md) for more information.
 
 ### Update
 
