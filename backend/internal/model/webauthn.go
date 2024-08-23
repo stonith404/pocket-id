@@ -19,11 +19,11 @@ type WebauthnSession struct {
 type WebauthnCredential struct {
 	Base
 
-	Name            string                     `json:"name"`
-	CredentialID    string                     `json:"credentialID"`
-	PublicKey       []byte                     `json:"-"`
-	AttestationType string                     `json:"attestationType"`
-	Transport       AuthenticatorTransportList `json:"-"`
+	Name            string
+	CredentialID    string
+	PublicKey       []byte
+	AttestationType string
+	Transport       AuthenticatorTransportList
 
 	BackupEligible bool `json:"backupEligible"`
 	BackupState    bool `json:"backupState"`
@@ -32,15 +32,15 @@ type WebauthnCredential struct {
 }
 
 type PublicKeyCredentialCreationOptions struct {
-	Response  protocol.PublicKeyCredentialCreationOptions `json:"response"`
-	SessionID string                                      `json:"session_id"`
-	Timeout   time.Duration                               `json:"timeout"`
+	Response  protocol.PublicKeyCredentialCreationOptions
+	SessionID string
+	Timeout   time.Duration
 }
 
 type PublicKeyCredentialRequestOptions struct {
-	Response  protocol.PublicKeyCredentialRequestOptions `json:"response"`
-	SessionID string                                     `json:"session_id"`
-	Timeout   time.Duration                              `json:"timeout"`
+	Response  protocol.PublicKeyCredentialRequestOptions
+	SessionID string
+	Timeout   time.Duration
 }
 
 type AuthenticatorTransportList []protocol.AuthenticatorTransport
@@ -57,8 +57,4 @@ func (atl *AuthenticatorTransportList) Scan(value interface{}) error {
 
 func (atl AuthenticatorTransportList) Value() (driver.Value, error) {
 	return json.Marshal(atl)
-}
-
-type WebauthnCredentialUpdateDto struct {
-	Name string `json:"name"`
 }

@@ -21,7 +21,7 @@ type WellKnownController struct {
 func (wkc *WellKnownController) jwksHandler(c *gin.Context) {
 	jwk, err := wkc.jwtService.GetJWK()
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 

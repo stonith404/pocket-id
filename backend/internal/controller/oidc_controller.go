@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
-	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
@@ -40,18 +40,18 @@ type OidcController struct {
 }
 
 func (oc *OidcController) authorizeHandler(c *gin.Context) {
-	var parsedBody model.AuthorizeRequest
-	if err := c.ShouldBindJSON(&parsedBody); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+	var input dto.AuthorizeOidcClientDto
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
-	code, err := oc.oidcService.Authorize(parsedBody, c.GetString("userID"))
+	code, err := oc.oidcService.Authorize(input, c.GetString("userID"))
 	if err != nil {
 		if errors.Is(err, common.ErrOidcMissingAuthorization) {
-			utils.HandlerError(c, http.StatusForbidden, err.Error())
+			utils.CustomControllerError(c, http.StatusForbidden, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
@@ -60,15 +60,15 @@ func (oc *OidcController) authorizeHandler(c *gin.Context) {
 }
 
 func (oc *OidcController) authorizeNewClientHandler(c *gin.Context) {
-	var parsedBody model.AuthorizeNewClientDto
-	if err := c.ShouldBindJSON(&parsedBody); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+	var input dto.AuthorizeOidcClientDto
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
-	code, err := oc.oidcService.AuthorizeNewClient(parsedBody, c.GetString("userID"))
+	code, err := oc.oidcService.AuthorizeNewClient(input, c.GetString("userID"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -76,35 +76,35 @@ func (oc *OidcController) authorizeNewClientHandler(c *gin.Context) {
 }
 
 func (oc *OidcController) createIDTokenHandler(c *gin.Context) {
-	var body model.OidcIdTokenDto
+	var input dto.OidcIdTokenDto
 
-	if err := c.ShouldBind(&body); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+	if err := c.ShouldBind(&input); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
-	clientID := body.ClientID
-	clientSecret := body.ClientSecret
+	clientID := input.ClientID
+	clientSecret := input.ClientSecret
 
 	// Client id and secret can also be passed over the Authorization header
 	if clientID == "" || clientSecret == "" {
 		var ok bool
 		clientID, clientSecret, ok = c.Request.BasicAuth()
 		if !ok {
-			utils.HandlerError(c, http.StatusBadRequest, "Client id and secret not provided")
+			utils.CustomControllerError(c, http.StatusBadRequest, "Client id and secret not provided")
 			return
 		}
 	}
 
-	idToken, accessToken, err := oc.oidcService.CreateTokens(body.Code, body.GrantType, clientID, clientSecret)
+	idToken, accessToken, err := oc.oidcService.CreateTokens(input.Code, input.GrantType, clientID, clientSecret)
 	if err != nil {
 		if errors.Is(err, common.ErrOidcGrantTypeNotSupported) ||
 			errors.Is(err, common.ErrOidcMissingClientCredentials) ||
 			errors.Is(err, common.ErrOidcClientSecretInvalid) ||
 			errors.Is(err, common.ErrOidcInvalidAuthorizationCode) {
-			utils.HandlerError(c, http.StatusBadRequest, err.Error())
+			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
@@ -116,14 +116,14 @@ func (oc *OidcController) userInfoHandler(c *gin.Context) {
 	token := strings.Split(c.GetHeader("Authorization"), " ")[1]
 	jwtClaims, err := oc.jwtService.VerifyOauthAccessToken(token)
 	if err != nil {
-		utils.HandlerError(c, http.StatusUnauthorized, common.ErrTokenInvalidOrExpired.Error())
+		utils.CustomControllerError(c, http.StatusUnauthorized, common.ErrTokenInvalidOrExpired.Error())
 		return
 	}
 	userID := jwtClaims.Subject
 	clientId := jwtClaims.Audience[0]
 	claims, err := oc.oidcService.GetUserClaimsForClient(userID, clientId)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -134,11 +134,28 @@ func (oc *OidcController) getClientHandler(c *gin.Context) {
 	clientId := c.Param("id")
 	client, err := oc.oidcService.GetClient(clientId)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, client)
+	// Return a different DTO based on the user's role
+	if c.GetBool("userIsAdmin") {
+		clientDto := dto.OidcClientDto{}
+		err = dto.MapStruct(client, &clientDto)
+		if err == nil {
+			c.JSON(http.StatusOK, clientDto)
+			return
+		}
+	} else {
+		clientDto := dto.PublicOidcClientDto{}
+		err = dto.MapStruct(client, &clientDto)
+		if err == nil {
+			c.JSON(http.StatusOK, clientDto)
+			return
+		}
+	}
+
+	utils.ControllerError(c, err)
 }
 
 func (oc *OidcController) listClientsHandler(c *gin.Context) {
@@ -148,36 +165,48 @@ func (oc *OidcController) listClientsHandler(c *gin.Context) {
 
 	clients, pagination, err := oc.oidcService.ListClients(searchTerm, page, pageSize)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
+		return
+	}
+
+	var clientsDto []dto.OidcClientDto
+	if err := dto.MapStructList(clients, &clientsDto); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data":       clients,
+		"data":       clientsDto,
 		"pagination": pagination,
 	})
 }
 
 func (oc *OidcController) createClientHandler(c *gin.Context) {
-	var input model.OidcClientCreateDto
+	var input dto.OidcClientCreateDto
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+		utils.ControllerError(c, err)
 		return
 	}
 
 	client, err := oc.oidcService.CreateClient(input, c.GetString("userID"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, client)
+	var clientDto dto.OidcClientDto
+	if err := dto.MapStruct(client, &clientDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, clientDto)
 }
 
 func (oc *OidcController) deleteClientHandler(c *gin.Context) {
 	err := oc.oidcService.DeleteClient(c.Param("id"))
 	if err != nil {
-		utils.HandlerError(c, http.StatusNotFound, "OIDC client not found")
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -185,25 +214,31 @@ func (oc *OidcController) deleteClientHandler(c *gin.Context) {
 }
 
 func (oc *OidcController) updateClientHandler(c *gin.Context) {
-	var input model.OidcClientCreateDto
+	var input dto.OidcClientCreateDto
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+		utils.ControllerError(c, err)
 		return
 	}
 
 	client, err := oc.oidcService.UpdateClient(c.Param("id"), input)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusNoContent, client)
+	var clientDto dto.OidcClientDto
+	if err := dto.MapStruct(client, &clientDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, clientDto)
 }
 
 func (oc *OidcController) createClientSecretHandler(c *gin.Context) {
 	secret, err := oc.oidcService.CreateClientSecret(c.Param("id"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -213,7 +248,7 @@ func (oc *OidcController) createClientSecretHandler(c *gin.Context) {
 func (oc *OidcController) getClientLogoHandler(c *gin.Context) {
 	imagePath, mimeType, err := oc.oidcService.GetClientLogo(c.Param("id"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -224,16 +259,16 @@ func (oc *OidcController) getClientLogoHandler(c *gin.Context) {
 func (oc *OidcController) updateClientLogoHandler(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+		utils.ControllerError(c, err)
 		return
 	}
 
 	err = oc.oidcService.UpdateClientLogo(c.Param("id"), file)
 	if err != nil {
 		if errors.Is(err, common.ErrFileTypeNotSupported) {
-			utils.HandlerError(c, http.StatusBadRequest, err.Error())
+			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
@@ -244,7 +279,7 @@ func (oc *OidcController) updateClientLogoHandler(c *gin.Context) {
 func (oc *OidcController) deleteClientLogoHandler(c *gin.Context) {
 	err := oc.oidcService.DeleteClientLogo(c.Param("id"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 

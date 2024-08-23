@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
@@ -46,17 +47,24 @@ func (s *UserService) DeleteUser(userID string) error {
 	return s.db.Delete(&user).Error
 }
 
-func (s *UserService) CreateUser(user *model.User) error {
+func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
+	user := &model.User{
+		FirstName: input.FirstName,
+		LastName:  input.LastName,
+		Email:     input.Email,
+		Username:  input.Username,
+		IsAdmin:   input.IsAdmin,
+	}
 	if err := s.db.Create(user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			return s.checkDuplicatedFields(*user)
+			return model.User{}, s.checkDuplicatedFields(*user)
 		}
-		return err
+		return model.User{}, err
 	}
-	return nil
+	return *user, nil
 }
 
-func (s *UserService) UpdateUser(userID string, updatedUser model.User, updateOwnUser bool) (model.User, error) {
+func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, updateOwnUser bool) (model.User, error) {
 	var user model.User
 	if err := s.db.Where("id = ?", userID).First(&user).Error; err != nil {
 		return model.User{}, err

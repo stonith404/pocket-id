@@ -67,10 +67,10 @@ func (s *WebAuthnService) BeginRegistration(userID string) (*model.PublicKeyCred
 	}, nil
 }
 
-func (s *WebAuthnService) VerifyRegistration(sessionID, userID string, r *http.Request) (*model.WebauthnCredential, error) {
+func (s *WebAuthnService) VerifyRegistration(sessionID, userID string, r *http.Request) (model.WebauthnCredential, error) {
 	var storedSession model.WebauthnSession
 	if err := s.db.First(&storedSession, "id = ?", sessionID).Error; err != nil {
-		return nil, err
+		return model.WebauthnCredential{}, err
 	}
 
 	session := webauthn.SessionData{
@@ -81,12 +81,12 @@ func (s *WebAuthnService) VerifyRegistration(sessionID, userID string, r *http.R
 
 	var user model.User
 	if err := s.db.Find(&user, "id = ?", userID).Error; err != nil {
-		return nil, err
+		return model.WebauthnCredential{}, err
 	}
 
 	credential, err := s.webAuthn.FinishRegistration(&user, session, r)
 	if err != nil {
-		return nil, err
+		return model.WebauthnCredential{}, err
 	}
 
 	credentialToStore := model.WebauthnCredential{
@@ -100,10 +100,10 @@ func (s *WebAuthnService) VerifyRegistration(sessionID, userID string, r *http.R
 		BackupState:     credential.Flags.BackupState,
 	}
 	if err := s.db.Create(&credentialToStore).Error; err != nil {
-		return nil, err
+		return model.WebauthnCredential{}, err
 	}
 
-	return &credentialToStore, nil
+	return credentialToStore, nil
 }
 
 func (s *WebAuthnService) BeginLogin() (*model.PublicKeyCredentialRequestOptions, error) {
@@ -129,10 +129,10 @@ func (s *WebAuthnService) BeginLogin() (*model.PublicKeyCredentialRequestOptions
 	}, nil
 }
 
-func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssertionData *protocol.ParsedCredentialAssertionData) (*model.User, error) {
+func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssertionData *protocol.ParsedCredentialAssertionData) (model.User, error) {
 	var storedSession model.WebauthnSession
 	if err := s.db.First(&storedSession, "id = ?", sessionID).Error; err != nil {
-		return nil, err
+		return model.User{}, err
 	}
 
 	session := webauthn.SessionData{
@@ -149,14 +149,14 @@ func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssert
 	}, session, credentialAssertionData)
 
 	if err != nil {
-		return nil, common.ErrInvalidCredentials
+		return model.User{}, err
 	}
 
 	if err := s.db.Find(&user, "id = ?", userID).Error; err != nil {
-		return nil, err
+		return model.User{}, err
 	}
 
-	return user, nil
+	return *user, nil
 }
 
 func (s *WebAuthnService) ListCredentials(userID string) ([]model.WebauthnCredential, error) {
@@ -180,17 +180,17 @@ func (s *WebAuthnService) DeleteCredential(userID, credentialID string) error {
 	return nil
 }
 
-func (s *WebAuthnService) UpdateCredential(userID, credentialID, name string) error {
+func (s *WebAuthnService) UpdateCredential(userID, credentialID, name string) (model.WebauthnCredential, error) {
 	var credential model.WebauthnCredential
 	if err := s.db.Where("id = ? AND user_id = ?", credentialID, userID).First(&credential).Error; err != nil {
-		return err
+		return credential, err
 	}
 
 	credential.Name = name
 
 	if err := s.db.Save(&credential).Error; err != nil {
-		return err
+		return credential, err
 	}
 
-	return nil
+	return credential, nil
 }

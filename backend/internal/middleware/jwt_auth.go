@@ -9,11 +9,12 @@ import (
 )
 
 type JwtAuthMiddleware struct {
-	jwtService *service.JwtService
+	jwtService            *service.JwtService
+	ignoreUnauthenticated bool
 }
 
-func NewJwtAuthMiddleware(jwtService *service.JwtService) *JwtAuthMiddleware {
-	return &JwtAuthMiddleware{jwtService: jwtService}
+func NewJwtAuthMiddleware(jwtService *service.JwtService, ignoreUnauthenticated bool) *JwtAuthMiddleware {
+	return &JwtAuthMiddleware{jwtService: jwtService, ignoreUnauthenticated: ignoreUnauthenticated}
 }
 
 func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
@@ -24,23 +25,29 @@ func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
 			authorizationHeaderSplitted := strings.Split(c.GetHeader("Authorization"), " ")
 			if len(authorizationHeaderSplitted) == 2 {
 				token = authorizationHeaderSplitted[1]
+			} else if m.ignoreUnauthenticated {
+				c.Next()
+				return
 			} else {
-				utils.HandlerError(c, http.StatusUnauthorized, "You're not signed in")
+				utils.CustomControllerError(c, http.StatusUnauthorized, "You're not signed in")
 				c.Abort()
 				return
 			}
 		}
 
 		claims, err := m.jwtService.VerifyAccessToken(token)
-		if err != nil {
-			utils.HandlerError(c, http.StatusUnauthorized, "You're not signed in")
+		if err != nil && m.ignoreUnauthenticated {
+			c.Next()
+			return
+		} else if err != nil {
+			utils.CustomControllerError(c, http.StatusUnauthorized, "You're not signed in")
 			c.Abort()
 			return
 		}
 
 		// Check if the user is an admin
 		if adminOnly && !claims.IsAdmin {
-			utils.HandlerError(c, http.StatusForbidden, "You don't have permission to access this resource")
+			utils.CustomControllerError(c, http.StatusForbidden, "You don't have permission to access this resource")
 			c.Abort()
 			return
 		}

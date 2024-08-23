@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
@@ -54,7 +55,7 @@ var defaultDbConfig = model.AppConfig{
 	},
 }
 
-func (s *AppConfigService) UpdateApplicationConfiguration(input model.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {
+func (s *AppConfigService) UpdateApplicationConfiguration(input dto.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {
 	var savedConfigVariables []model.AppConfigVariable
 
 	tx := s.db.Begin()

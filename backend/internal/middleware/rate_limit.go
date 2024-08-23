@@ -33,7 +33,7 @@ func (m *RateLimitMiddleware) Add(limit rate.Limit, burst int) gin.HandlerFunc {
 
 		limiter := getLimiter(ip, limit, burst)
 		if !limiter.Allow() {
-			utils.HandlerError(c, http.StatusTooManyRequests, "Too many requests. Please wait a while before trying again.")
+			utils.CustomControllerError(c, http.StatusTooManyRequests, "Too many requests. Please wait a while before trying again.")
 			c.Abort()
 			return
 		}

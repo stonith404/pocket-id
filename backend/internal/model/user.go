@@ -9,13 +9,13 @@ import (
 type User struct {
 	Base
 
-	Username  string `json:"username"`
-	Email     string `json:"email" `
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	IsAdmin   bool   `json:"isAdmin"`
+	Username  string
+	Email     string
+	FirstName string
+	LastName  string
+	IsAdmin   bool
 
-	Credentials []WebauthnCredential `json:"-"`
+	Credentials []WebauthnCredential
 }
 
 func (u User) WebAuthnID() []byte { return []byte(u.ID) }
@@ -59,19 +59,9 @@ func (u User) WebAuthnCredentialDescriptors() (descriptors []protocol.Credential
 
 type OneTimeAccessToken struct {
 	Base
-	Token     string    `json:"token"`
-	ExpiresAt time.Time `json:"expiresAt"`
+	Token     string
+	ExpiresAt time.Time
 
-	UserID string `json:"userId"`
+	UserID string
 	User   User
-}
-
-type OneTimeAccessTokenCreateDto struct {
-	UserID    string    `json:"userId" binding:"required"`
-	ExpiresAt time.Time `json:"expiresAt" binding:"required"`
-}
-
-type LoginUserDto struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
 }

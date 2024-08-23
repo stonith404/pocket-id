@@ -27,12 +27,6 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	r := gin.Default()
 	r.Use(gin.Logger())
 
-	// Add middleware
-	r.Use(
-		middleware.NewCorsMiddleware().Add(),
-		middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60),
-	)
-
 	// Initialize services
 	webauthnService := service.NewWebAuthnService(db, appConfigService)
 	jwtService := service.NewJwtService(appConfigService)
@@ -40,8 +34,13 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	oidcService := service.NewOidcService(db, jwtService)
 	testService := service.NewTestService(db, appConfigService)
 
+	// Add global middleware
+	r.Use(middleware.NewCorsMiddleware().Add())
+	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
+	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
+
 	// Initialize middleware
-	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService)
+	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)
 	fileSizeLimitMiddleware := middleware.NewFileSizeLimitMiddleware()
 
 	// Set up API routes
@@ -49,7 +48,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService, jwtService)
 	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
 	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService)
-	controller.NewApplicationConfigurationController(apiGroup, jwtAuthMiddleware, appConfigService)
+	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService)
 
 	// Add test controller in non-production environments
 	if common.EnvConfig.AppEnv != "production" {

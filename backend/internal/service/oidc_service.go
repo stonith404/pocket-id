@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"golang.org/x/crypto/bcrypt"
@@ -26,7 +27,7 @@ func NewOidcService(db *gorm.DB, jwtService *JwtService) *OidcService {
 	}
 }
 
-func (s *OidcService) Authorize(req model.AuthorizeRequest, userID string) (string, error) {
+func (s *OidcService) Authorize(req dto.AuthorizeOidcClientDto, userID string) (string, error) {
 	var userAuthorizedOIDCClient model.UserAuthorizedOidcClient
 	s.db.First(&userAuthorizedOIDCClient, "client_id = ? AND user_id = ?", req.ClientID, userID)
 
@@ -37,7 +38,7 @@ func (s *OidcService) Authorize(req model.AuthorizeRequest, userID string) (stri
 	return s.createAuthorizationCode(req.ClientID, userID, req.Scope, req.Nonce)
 }
 
-func (s *OidcService) AuthorizeNewClient(req model.AuthorizeNewClientDto, userID string) (string, error) {
+func (s *OidcService) AuthorizeNewClient(req dto.AuthorizeOidcClientDto, userID string) (string, error) {
 	userAuthorizedClient := model.UserAuthorizedOidcClient{
 		UserID:   userID,
 		ClientID: req.ClientID,
@@ -101,18 +102,18 @@ func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret strin
 	return idToken, accessToken, nil
 }
 
-func (s *OidcService) GetClient(clientID string) (*model.OidcClient, error) {
+func (s *OidcService) GetClient(clientID string) (model.OidcClient, error) {
 	var client model.OidcClient
-	if err := s.db.First(&client, "id = ?", clientID).Error; err != nil {
-		return nil, err
+	if err := s.db.Preload("CreatedBy").First(&client, "id = ?", clientID).Error; err != nil {
+		return model.OidcClient{}, err
 	}
-	return &client, nil
+	return client, nil
 }
 
 func (s *OidcService) ListClients(searchTerm string, page int, pageSize int) ([]model.OidcClient, utils.PaginationResponse, error) {
 	var clients []model.OidcClient
 
-	query := s.db.Model(&model.OidcClient{})
+	query := s.db.Preload("CreatedBy").Model(&model.OidcClient{})
 	if searchTerm != "" {
 		searchPattern := "%" + searchTerm + "%"
 		query = query.Where("name LIKE ?", searchPattern)
@@ -126,34 +127,34 @@ func (s *OidcService) ListClients(searchTerm string, page int, pageSize int) ([]
 	return clients, pagination, nil
 }
 
-func (s *OidcService) CreateClient(input model.OidcClientCreateDto, userID string) (*model.OidcClient, error) {
+func (s *OidcService) CreateClient(input dto.OidcClientCreateDto, userID string) (model.OidcClient, error) {
 	client := model.OidcClient{
-		Name:        input.Name,
-		CallbackURL: input.CallbackURL,
-		CreatedByID: userID,
+		Name:         input.Name,
+		CallbackURLs: input.CallbackURLs,
+		CreatedByID:  userID,
 	}
 
 	if err := s.db.Create(&client).Error; err != nil {
-		return nil, err
+		return model.OidcClient{}, err
 	}
 
-	return &client, nil
+	return client, nil
 }
 
-func (s *OidcService) UpdateClient(clientID string, input model.OidcClientCreateDto) (*model.OidcClient, error) {
+func (s *OidcService) UpdateClient(clientID string, input dto.OidcClientCreateDto) (model.OidcClient, error) {
 	var client model.OidcClient
-	if err := s.db.First(&client, "id = ?", clientID).Error; err != nil {
-		return nil, err
+	if err := s.db.Preload("CreatedBy").First(&client, "id = ?", clientID).Error; err != nil {
+		return model.OidcClient{}, err
 	}
 
 	client.Name = input.Name
-	client.CallbackURL = input.CallbackURL
+	client.CallbackURLs = input.CallbackURLs
 
 	if err := s.db.Save(&client).Error; err != nil {
-		return nil, err
+		return model.OidcClient{}, err
 	}
 
-	return &client, nil
+	return client, nil
 }
 
 func (s *OidcService) DeleteClient(clientID string) error {

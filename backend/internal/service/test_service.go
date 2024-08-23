@@ -61,20 +61,20 @@ func (s *TestService) SeedDatabase() error {
 				Base: model.Base{
 					ID: "3654a746-35d4-4321-ac61-0bdcff2b4055",
 				},
-				Name:        "Nextcloud",
-				Secret:      "$2a$10$9dypwot8nGuCjT6wQWWpJOckZfRprhe2EkwpKizxS/fpVHrOLEJHC", // w2mUeZISmEvIDMEDvpY0PnxQIpj1m3zY
-				CallbackURL: "http://nextcloud/auth/callback",
-				ImageType:   utils.StringPointer("png"),
-				CreatedByID: users[0].ID,
+				Name:         "Nextcloud",
+				Secret:       "$2a$10$9dypwot8nGuCjT6wQWWpJOckZfRprhe2EkwpKizxS/fpVHrOLEJHC", // w2mUeZISmEvIDMEDvpY0PnxQIpj1m3zY
+				CallbackURLs: model.CallbackURLs{"http://nextcloud/auth/callback"},
+				ImageType:    utils.StringPointer("png"),
+				CreatedByID:  users[0].ID,
 			},
 			{
 				Base: model.Base{
 					ID: "606c7782-f2b1-49e5-8ea9-26eb1b06d018",
 				},
-				Name:        "Immich",
-				Secret:      "$2a$10$Ak.FP8riD1ssy2AGGbG.gOpnp/rBpymd74j0nxNMtW0GG1Lb4gzxe", // PYjrE9u4v9GVqXKi52eur0eb2Ci4kc0x
-				CallbackURL: "http://immich/auth/callback",
-				CreatedByID: users[0].ID,
+				Name:         "Immich",
+				Secret:       "$2a$10$Ak.FP8riD1ssy2AGGbG.gOpnp/rBpymd74j0nxNMtW0GG1Lb4gzxe", // PYjrE9u4v9GVqXKi52eur0eb2Ci4kc0x
+				CallbackURLs: model.CallbackURLs{"http://immich/auth/callback"},
+				CreatedByID:  users[0].ID,
 			},
 		}
 		for _, client := range oidcClients {

@@ -1,36 +1,20 @@
 package model
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
 	"gorm.io/gorm"
 	"time"
 )
 
 type UserAuthorizedOidcClient struct {
 	Scope  string
-	UserID string `json:"userId" gorm:"primary_key;"`
+	UserID string `gorm:"primary_key;"`
 	User   User
 
-	ClientID string `json:"clientId" gorm:"primary_key;"`
+	ClientID string `gorm:"primary_key;"`
 	Client   OidcClient
-}
-
-type OidcClient struct {
-	Base
-
-	Name        string  `json:"name"`
-	Secret      string  `json:"-"`
-	CallbackURL string  `json:"callbackURL"`
-	ImageType   *string `json:"-"`
-	HasLogo     bool    `gorm:"-" json:"hasLogo"`
-
-	CreatedByID string
-	CreatedBy   User
-}
-
-func (c *OidcClient) AfterFind(_ *gorm.DB) (err error) {
-	// Compute HasLogo field
-	c.HasLogo = c.ImageType != nil && *c.ImageType != ""
-	return nil
 }
 
 type OidcAuthorizationCode struct {
@@ -47,26 +31,38 @@ type OidcAuthorizationCode struct {
 	ClientID string
 }
 
-type OidcClientCreateDto struct {
-	Name        string `json:"name" binding:"required"`
-	CallbackURL string `json:"callbackURL" binding:"required"`
+type OidcClient struct {
+	Base
+
+	Name         string
+	Secret       string
+	CallbackURLs CallbackURLs
+	ImageType    *string
+	HasLogo      bool `gorm:"-"`
+
+	CreatedByID string
+	CreatedBy   User
 }
 
-type AuthorizeNewClientDto struct {
-	ClientID string `json:"clientID" binding:"required"`
-	Scope    string `json:"scope" binding:"required"`
-	Nonce    string `json:"nonce"`
+func (c *OidcClient) AfterFind(_ *gorm.DB) (err error) {
+	// Compute HasLogo field
+	c.HasLogo = c.ImageType != nil && *c.ImageType != ""
+	return nil
 }
 
-type OidcIdTokenDto struct {
-	GrantType    string `form:"grant_type" binding:"required"`
-	Code         string `form:"code" binding:"required"`
-	ClientID     string `form:"client_id"`
-	ClientSecret string `form:"client_secret"`
+type CallbackURLs []string
+
+func (s *CallbackURLs) Scan(value interface{}) error {
+	switch v := value.(type) {
+	case []byte:
+		return json.Unmarshal(v, s)
+	case string:
+		return json.Unmarshal([]byte(v), s)
+	default:
+		return errors.New("type assertion to []byte or string failed")
+	}
 }
 
-type AuthorizeRequest struct {
-	ClientID string `json:"clientID" binding:"required"`
-	Scope    string `json:"scope" binding:"required"`
-	Nonce    string `json:"nonce"`
+func (atl CallbackURLs) Value() (driver.Value, error) {
+	return json.Marshal(atl)
 }

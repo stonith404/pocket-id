@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
-	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"golang.org/x/time/rate"
@@ -43,12 +43,18 @@ func (uc *UserController) listUsersHandler(c *gin.Context) {
 
 	users, pagination, err := uc.UserService.ListUsers(searchTerm, page, pageSize)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
+		return
+	}
+
+	var usersDto []dto.UserDto
+	if err := dto.MapStructList(users, &usersDto); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data":       users,
+		"data":       usersDto,
 		"pagination": pagination,
 	})
 }
@@ -56,25 +62,38 @@ func (uc *UserController) listUsersHandler(c *gin.Context) {
 func (uc *UserController) getUserHandler(c *gin.Context) {
 	user, err := uc.UserService.GetUser(c.Param("id"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, userDto)
 }
 
 func (uc *UserController) getCurrentUserHandler(c *gin.Context) {
 	user, err := uc.UserService.GetUser(c.GetString("userID"))
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
-	c.JSON(http.StatusOK, user)
+
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, userDto)
 }
 
 func (uc *UserController) deleteUserHandler(c *gin.Context) {
 	if err := uc.UserService.DeleteUser(c.Param("id")); err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -82,22 +101,29 @@ func (uc *UserController) deleteUserHandler(c *gin.Context) {
 }
 
 func (uc *UserController) createUserHandler(c *gin.Context) {
-	var user model.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+	var input dto.UserCreateDto
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
-	if err := uc.UserService.CreateUser(&user); err != nil {
+	user, err := uc.UserService.CreateUser(input)
+	if err != nil {
 		if errors.Is(err, common.ErrEmailTaken) || errors.Is(err, common.ErrUsernameTaken) {
-			utils.HandlerError(c, http.StatusConflict, err.Error())
+			utils.CustomControllerError(c, http.StatusConflict, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
 
-	c.JSON(http.StatusCreated, user)
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, userDto)
 }
 
 func (uc *UserController) updateUserHandler(c *gin.Context) {
@@ -109,15 +135,15 @@ func (uc *UserController) updateCurrentUserHandler(c *gin.Context) {
 }
 
 func (uc *UserController) createOneTimeAccessTokenHandler(c *gin.Context) {
-	var input model.OneTimeAccessTokenCreateDto
+	var input dto.OneTimeAccessTokenCreateDto
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+		utils.ControllerError(c, err)
 		return
 	}
 
 	token, err := uc.UserService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -128,9 +154,9 @@ func (uc *UserController) exchangeOneTimeAccessTokenHandler(c *gin.Context) {
 	user, token, err := uc.UserService.ExchangeOneTimeAccessToken(c.Param("token"))
 	if err != nil {
 		if errors.Is(err, common.ErrTokenInvalidOrExpired) {
-			utils.HandlerError(c, http.StatusUnauthorized, err.Error())
+			utils.CustomControllerError(c, http.StatusUnauthorized, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
@@ -143,21 +169,27 @@ func (uc *UserController) getSetupAccessTokenHandler(c *gin.Context) {
 	user, token, err := uc.UserService.SetupInitialAdmin()
 	if err != nil {
 		if errors.Is(err, common.ErrSetupAlreadyCompleted) {
-			utils.HandlerError(c, http.StatusBadRequest, err.Error())
+			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
 
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
 	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", false, true)
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, userDto)
 }
 
 func (uc *UserController) updateUser(c *gin.Context, updateOwnUser bool) {
-	var updatedUser model.User
-	if err := c.ShouldBindJSON(&updatedUser); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+	var input dto.UserCreateDto
+	if err := c.ShouldBindJSON(&input); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -168,15 +200,21 @@ func (uc *UserController) updateUser(c *gin.Context, updateOwnUser bool) {
 		userID = c.Param("id")
 	}
 
-	user, err := uc.UserService.UpdateUser(userID, updatedUser, updateOwnUser)
+	user, err := uc.UserService.UpdateUser(userID, input, updateOwnUser)
 	if err != nil {
 		if errors.Is(err, common.ErrEmailTaken) || errors.Is(err, common.ErrUsernameTaken) {
-			utils.HandlerError(c, http.StatusConflict, err.Error())
+			utils.CustomControllerError(c, http.StatusConflict, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, userDto)
 }

@@ -3,9 +3,8 @@ package controller
 import (
 	"errors"
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	"log"
 	"net/http"
 	"time"
 
@@ -40,8 +39,7 @@ func (wc *WebauthnController) beginRegistrationHandler(c *gin.Context) {
 	userID := c.GetString("userID")
 	options, err := wc.webAuthnService.BeginRegistration(userID)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
-		log.Println(err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -52,24 +50,30 @@ func (wc *WebauthnController) beginRegistrationHandler(c *gin.Context) {
 func (wc *WebauthnController) verifyRegistrationHandler(c *gin.Context) {
 	sessionID, err := c.Cookie("session_id")
 	if err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, "Session ID missing")
+		utils.CustomControllerError(c, http.StatusBadRequest, "Session ID missing")
 		return
 	}
 
 	userID := c.GetString("userID")
 	credential, err := wc.webAuthnService.VerifyRegistration(sessionID, userID, c.Request)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, credential)
+	var credentialDto dto.WebauthnCredentialDto
+	if err := dto.MapStruct(credential, &credentialDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, credentialDto)
 }
 
 func (wc *WebauthnController) beginLoginHandler(c *gin.Context) {
 	options, err := wc.webAuthnService.BeginLogin()
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -80,13 +84,13 @@ func (wc *WebauthnController) beginLoginHandler(c *gin.Context) {
 func (wc *WebauthnController) verifyLoginHandler(c *gin.Context) {
 	sessionID, err := c.Cookie("session_id")
 	if err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, "Session ID missing")
+		utils.CustomControllerError(c, http.StatusBadRequest, "Session ID missing")
 		return
 	}
 
 	credentialAssertionData, err := protocol.ParseCredentialRequestResponseBody(c.Request.Body)
 	if err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -94,32 +98,44 @@ func (wc *WebauthnController) verifyLoginHandler(c *gin.Context) {
 	user, err := wc.webAuthnService.VerifyLogin(sessionID, userID, credentialAssertionData)
 	if err != nil {
 		if errors.Is(err, common.ErrInvalidCredentials) {
-			utils.HandlerError(c, http.StatusUnauthorized, err.Error())
+			utils.CustomControllerError(c, http.StatusUnauthorized, err.Error())
 		} else {
-			utils.UnknownHandlerError(c, err)
+			utils.ControllerError(c, err)
 		}
 		return
 	}
 
-	token, err := wc.jwtService.GenerateAccessToken(*user)
+	token, err := wc.jwtService.GenerateAccessToken(user)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
+		return
+	}
+
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
 		return
 	}
 
 	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", false, true)
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, userDto)
 }
 
 func (wc *WebauthnController) listCredentialsHandler(c *gin.Context) {
 	userID := c.GetString("userID")
 	credentials, err := wc.webAuthnService.ListCredentials(userID)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, credentials)
+	var credentialDtos []dto.WebauthnCredentialDto
+	if err := dto.MapStructList(credentials, &credentialDtos); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, credentialDtos)
 }
 
 func (wc *WebauthnController) deleteCredentialHandler(c *gin.Context) {
@@ -128,7 +144,7 @@ func (wc *WebauthnController) deleteCredentialHandler(c *gin.Context) {
 
 	err := wc.webAuthnService.DeleteCredential(userID, credentialID)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
@@ -139,19 +155,25 @@ func (wc *WebauthnController) updateCredentialHandler(c *gin.Context) {
 	userID := c.GetString("userID")
 	credentialID := c.Param("id")
 
-	var input model.WebauthnCredentialUpdateDto
+	var input dto.WebauthnCredentialUpdateDto
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.HandlerError(c, http.StatusBadRequest, common.ErrInvalidBody.Error())
+		utils.ControllerError(c, err)
 		return
 	}
 
-	err := wc.webAuthnService.UpdateCredential(userID, credentialID, input.Name)
+	credential, err := wc.webAuthnService.UpdateCredential(userID, credentialID, input.Name)
 	if err != nil {
-		utils.UnknownHandlerError(c, err)
+		utils.ControllerError(c, err)
 		return
 	}
 
-	c.Status(http.StatusNoContent)
+	var credentialDto dto.WebauthnCredentialDto
+	if err := dto.MapStruct(credential, &credentialDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, credentialDto)
 }
 
 func (wc *WebauthnController) logoutHandler(c *gin.Context) {
