@@ -1,7 +1,6 @@
 create table oidc_clients_dg_tmp
 (
-    id            TEXT not null
-        primary key,
+    id            TEXT not null primary key,
     created_at    DATETIME,
     name          TEXT,
     secret        TEXT,
@@ -16,7 +15,7 @@ select id,
        created_at,
        name,
        secret,
-       CAST(json_group_array(json_quote(callback_url)) AS BLOB),
+       CAST('["' || callback_url || '"]' AS BLOB),
        image_type,
        created_by_id
 from oidc_clients;

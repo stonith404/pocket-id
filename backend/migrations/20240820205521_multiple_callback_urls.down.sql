@@ -1,7 +1,6 @@
 create table oidc_clients
 (
-    id            TEXT not null
-        primary key,
+    id            TEXT not null primary key,
     created_at    DATETIME,
     name          TEXT,
     secret        TEXT,
@@ -12,14 +11,13 @@ create table oidc_clients
 );
 
 insert into oidc_clients(id, created_at, name, secret, callback_url, image_type, created_by_id)
-select
-    id,
-    created_at,
-    name,
-    secret,
-    json_extract(callback_urls, '$[0]'),
-    image_type,
-    created_by_id
+select id,
+       created_at,
+       name,
+       secret,
+       json_extract(callback_urls, '$[0]'),
+       image_type,
+       created_by_id
 from oidc_clients_dg_tmp;
 
 drop table oidc_clients_dg_tmp;
