@@ -1,3 +1,15 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.2.1...v) (2024-08-23)
+
+
+### Features
+
+* add support for multiple callback urls ([8166e2e](https://github.com/stonith404/pocket-id/commit/8166e2ead7fc71a0b7a45950b05c5c65a60833b6))
+
+
+### Bug Fixes
+
+* db migration for multiple callback urls ([552d7cc](https://github.com/stonith404/pocket-id/commit/552d7ccfa58d7922ecb94bdfe6a86651b4cf2745))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.2.0...v) (2024-08-19)
 
 
