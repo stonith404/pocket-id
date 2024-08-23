@@ -10,6 +10,7 @@
 	} from '$lib/types/oidc.type';
 	import { createForm } from '$lib/utils/form-util';
 	import { z } from 'zod';
+	import OidcCallbackUrlInput from './oidc-callback-url-input.svelte';
 
 	let {
 		callback,
@@ -27,12 +28,12 @@
 
 	const client: OidcClientCreate = {
 		name: existingClient?.name || '',
-		callbackURL: existingClient?.callbackURL || ''
+		callbackURLs: existingClient?.callbackURLs || [""]
 	};
 
 	const formSchema = z.object({
 		name: z.string().min(2).max(50),
-		callbackURL: z.string().url()
+		callbackURLs: z.array(z.string().url()).nonempty()
 	});
 
 	type FormSchema = typeof formSchema;
@@ -70,32 +71,40 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="mt-3 grid grid-cols-2 gap-3">
-		<FormInput label="Name" bind:input={$inputs.name} />
-		<FormInput label="Callback URL" bind:input={$inputs.callbackURL} />
-		<div class="mt-3">
-			<Label for="logo">Logo</Label>
-			<div class="mt-2 flex items-end gap-3">
-				{#if logoDataURL}
-					<div class="h-32 w-32 rounded-2xl bg-muted p-3">
-						<img class="m-auto max-h-full max-w-full object-contain" src={logoDataURL} alt={`${$inputs.name.value} logo`} />
-					</div>
-				{/if}
-				<div class="flex flex-col gap-2">
-					<FileInput
-						id="logo"
-						variant="secondary"
-						accept="image/png, image/jpeg, image/svg+xml"
-						onchange={onLogoChange}
-					>
-						<Button variant="secondary">
-							{existingClient?.hasLogo ? 'Change Logo' : 'Upload Logo'}
-						</Button>
-					</FileInput>
-					{#if logoDataURL}
-						<Button variant="outline" on:click={resetLogo}>Remove Logo</Button>
-					{/if}
+	<div class="flex flex-col gap-3 sm:flex-row">
+		<FormInput label="Name" class="w-full" bind:input={$inputs.name} />
+		<OidcCallbackUrlInput
+			class="w-full"
+			bind:callbackURLs={$inputs.callbackURLs.value}
+			bind:error={$inputs.callbackURLs.error}
+		/>
+	</div>
+	<div class="mt-3">
+		<Label for="logo">Logo</Label>
+		<div class="mt-2 flex items-end gap-3">
+			{#if logoDataURL}
+				<div class="bg-muted h-32 w-32 rounded-2xl p-3">
+					<img
+						class="m-auto max-h-full max-w-full object-contain"
+						src={logoDataURL}
+						alt={`${$inputs.name.value} logo`}
+					/>
 				</div>
+			{/if}
+			<div class="flex flex-col gap-2">
+				<FileInput
+					id="logo"
+					variant="secondary"
+					accept="image/png, image/jpeg, image/svg+xml"
+					onchange={onLogoChange}
+				>
+					<Button variant="secondary">
+						{existingClient?.hasLogo ? 'Change Logo' : 'Upload Logo'}
+					</Button>
+				</FileInput>
+				{#if logoDataURL}
+					<Button variant="outline" on:click={resetLogo}>Remove Logo</Button>
+				{/if}
 			</div>
 		</div>
 	</div>

@@ -52,17 +52,14 @@ func (c *OidcClient) AfterFind(_ *gorm.DB) (err error) {
 
 type CallbackURLs []string
 
-func (s *CallbackURLs) Scan(value interface{}) error {
-	switch v := value.(type) {
-	case []byte:
-		return json.Unmarshal(v, s)
-	case string:
-		return json.Unmarshal([]byte(v), s)
-	default:
-		return errors.New("type assertion to []byte or string failed")
+func (cu *CallbackURLs) Scan(value interface{}) error {
+	if v, ok := value.([]byte); ok {
+		return json.Unmarshal(v, cu)
+	} else {
+		return errors.New("type assertion to []byte failed")
 	}
 }
 
-func (atl CallbackURLs) Value() (driver.Value, error) {
-	return json.Marshal(atl)
+func (cu CallbackURLs) Value() (driver.Value, error) {
+	return json.Marshal(cu)
 }

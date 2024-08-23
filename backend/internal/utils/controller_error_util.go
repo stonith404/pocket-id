@@ -58,7 +58,7 @@ func handleValidationError(validationErrors validator.ValidationErrors) string {
 		default:
 			errorMessage = fmt.Sprintf("%s is invalid", fieldName)
 		}
-		
+
 		errorMessages = append(errorMessages, errorMessage)
 	}
 

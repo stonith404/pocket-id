@@ -57,7 +57,7 @@ CREATE TABLE webauthn_credentials
     credential_id    TEXT NOT NULL UNIQUE,
     public_key       BLOB NOT NULL,
     attestation_type TEXT NOT NULL,
-    transport        TEXT NOT NULL,
+    transport        BLOB NOT NULL,
     user_id          TEXT REFERENCES users
 );
 

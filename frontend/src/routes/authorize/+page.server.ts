@@ -11,6 +11,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 		scope: url.searchParams.get('scope')!,
 		nonce: url.searchParams.get('nonce') || undefined,
 		state: url.searchParams.get('state')!,
+		callbackURL: url.searchParams.get('redirect_uri')!,
 		client
 	};
 };

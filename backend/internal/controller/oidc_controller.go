@@ -40,39 +40,55 @@ type OidcController struct {
 }
 
 func (oc *OidcController) authorizeHandler(c *gin.Context) {
-	var input dto.AuthorizeOidcClientDto
+	var input dto.AuthorizeOidcClientRequestDto
 	if err := c.ShouldBindJSON(&input); err != nil {
 		utils.ControllerError(c, err)
 		return
 	}
 
-	code, err := oc.oidcService.Authorize(input, c.GetString("userID"))
+	code, callbackURL, err := oc.oidcService.Authorize(input, c.GetString("userID"))
 	if err != nil {
 		if errors.Is(err, common.ErrOidcMissingAuthorization) {
 			utils.CustomControllerError(c, http.StatusForbidden, err.Error())
+		} else if errors.Is(err, common.ErrOidcInvalidCallbackURL) {
+			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())
 		} else {
 			utils.ControllerError(c, err)
 		}
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"code": code})
+	response := dto.AuthorizeOidcClientResponseDto{
+		Code:        code,
+		CallbackURL: callbackURL,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func (oc *OidcController) authorizeNewClientHandler(c *gin.Context) {
-	var input dto.AuthorizeOidcClientDto
+	var input dto.AuthorizeOidcClientRequestDto
 	if err := c.ShouldBindJSON(&input); err != nil {
 		utils.ControllerError(c, err)
 		return
 	}
 
-	code, err := oc.oidcService.AuthorizeNewClient(input, c.GetString("userID"))
+	code, callbackURL, err := oc.oidcService.AuthorizeNewClient(input, c.GetString("userID"))
 	if err != nil {
-		utils.ControllerError(c, err)
+		if errors.Is(err, common.ErrOidcInvalidCallbackURL) {
+			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())
+		} else {
+			utils.ControllerError(c, err)
+		}
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"code": code})
+	response := dto.AuthorizeOidcClientResponseDto{
+		Code:        code,
+		CallbackURL: callbackURL,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func (oc *OidcController) createIDTokenHandler(c *gin.Context) {

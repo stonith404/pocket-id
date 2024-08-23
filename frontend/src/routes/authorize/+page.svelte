@@ -24,7 +24,7 @@
 	let authorizationRequired = false;
 
 	export let data: PageData;
-	let { scope, nonce, client, state } = data;
+	let { scope, nonce, client, state, callbackURL } = data;
 
 	async function authorize() {
 		isLoading = true;
@@ -36,9 +36,11 @@
 				await webauthnService.finishLogin(authResponse);
 			}
 
-			await oidService.authorize(client!.id, scope, nonce).then(async (code) => {
-				onSuccess(code);
-			});
+			await oidService
+				.authorize(client!.id, scope, callbackURL, nonce)
+				.then(async ({ code, callbackURL }) => {
+					onSuccess(code, callbackURL);
+				});
 		} catch (e) {
 			if (e instanceof AxiosError && e.response?.status === 403) {
 				authorizationRequired = true;
@@ -52,19 +54,21 @@
 	async function authorizeNewClient() {
 		isLoading = true;
 		try {
-			await oidService.authorizeNewClient(client!.id, scope, nonce).then(async (code) => {
-				onSuccess(code);
-			});
+			await oidService
+				.authorizeNewClient(client!.id, scope, callbackURL, nonce)
+				.then(async ({ code, callbackURL }) => {
+					onSuccess(code, callbackURL);
+				});
 		} catch (e) {
 			errorMessage = getWebauthnErrorMessage(e);
 			isLoading = false;
 		}
 	}
 
-	function onSuccess(code: string) {
+	function onSuccess(code: string, callbackURL: string) {
 		success = true;
 		setTimeout(() => {
-			window.location.href = `${client!.callbackURL}?code=${code}&state=${state}`;
+			window.location.href = `${callbackURL}?code=${code}&state=${state}`;
 		}, 1000);
 	}
 </script>

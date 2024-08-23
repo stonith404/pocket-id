@@ -1,26 +1,28 @@
-import type { OidcClient, OidcClientCreate } from '$lib/types/oidc.type';
+import type { AuthorizeResponse, OidcClient, OidcClientCreate } from '$lib/types/oidc.type';
 import type { Paginated, PaginationRequest } from '$lib/types/pagination.type';
 import APIService from './api-service';
 
 class OidcService extends APIService {
-	async authorize(clientId: string, scope: string, nonce?: string) {
+	async authorize(clientId: string, scope: string, callbackURL : string, nonce?: string) {
 		const res = await this.api.post('/oidc/authorize', {
 			scope,
 			nonce,
+			callbackURL,
 			clientId
 		});
 
-		return res.data.code as string;
+		return res.data as AuthorizeResponse;
 	}
 
-	async authorizeNewClient(clientId: string, scope: string, nonce?: string) {
+	async authorizeNewClient(clientId: string, scope: string, callbackURL: string, nonce?: string) {
 		const res = await this.api.post('/oidc/authorize/new-client', {
 			scope,
 			nonce,
+			callbackURL,
 			clientId
 		});
 
-		return res.data.code as string;
+		return res.data as AuthorizeResponse;
 	}
 
 	async listClients(search?: string, pagination?: PaginationRequest) {

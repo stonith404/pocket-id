@@ -26,9 +26,13 @@
 	};
 
 	const formSchema = z.object({
-		firstName: z.string().min(2).max(50),
-		lastName: z.string().min(2).max(50),
-		username: z.string().min(2).max(50),
+		firstName: z.string().min(2).max(30),
+		lastName: z.string().min(2).max(30),
+		username: z
+			.string()
+			.min(2)
+			.max(30)
+			.regex(/^[a-z0-9_]+$/, 'Only lowercase letters, numbers, and underscores are allowed'),
 		email: z.string().email(),
 		isAdmin: z.boolean()
 	});
@@ -66,10 +70,10 @@
 	<div class="items-top mt-5 flex space-x-2">
 		<Checkbox id="admin-privileges" bind:checked={$inputs.isAdmin.value} />
 		<div class="grid gap-1.5 leading-none">
-			<Label for="admin-privileges" class="text-sm font-medium leading-none mb-0">
+			<Label for="admin-privileges" class="mb-0 text-sm font-medium leading-none">
 				Admin Privileges
 			</Label>
-			<p class="text-[0.8rem] text-muted-foreground">Admins have full access to the admin panel.</p>
+			<p class="text-muted-foreground text-[0.8rem]">Admins have full access to the admin panel.</p>
 		</div>
 	</div>
 	<div class="mt-5 flex justify-end">

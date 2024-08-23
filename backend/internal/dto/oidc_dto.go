@@ -17,10 +17,16 @@ type OidcClientCreateDto struct {
 	CallbackURLs []string `json:"callbackURLs" binding:"required,urlList"`
 }
 
-type AuthorizeOidcClientDto struct {
-	ClientID string `json:"clientID" binding:"required"`
-	Scope    string `json:"scope" binding:"required"`
-	Nonce    string `json:"nonce"`
+type AuthorizeOidcClientRequestDto struct {
+	ClientID    string `json:"clientID" binding:"required"`
+	Scope       string `json:"scope" binding:"required"`
+	CallbackURL string `json:"callbackURL"`
+	Nonce       string `json:"nonce"`
+}
+
+type AuthorizeOidcClientResponseDto struct {
+	Code        string `json:"code"`
+	CallbackURL string `json:"callbackURL"`
 }
 
 type OidcIdTokenDto struct {

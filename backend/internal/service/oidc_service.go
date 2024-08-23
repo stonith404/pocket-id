@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 	"mime/multipart"
 	"os"
+	"slices"
 	"strings"
 	"time"
 )
@@ -27,33 +28,50 @@ func NewOidcService(db *gorm.DB, jwtService *JwtService) *OidcService {
 	}
 }
 
-func (s *OidcService) Authorize(req dto.AuthorizeOidcClientDto, userID string) (string, error) {
+func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID string) (string, string, error) {
 	var userAuthorizedOIDCClient model.UserAuthorizedOidcClient
-	s.db.First(&userAuthorizedOIDCClient, "client_id = ? AND user_id = ?", req.ClientID, userID)
+	s.db.Preload("Client").First(&userAuthorizedOIDCClient, "client_id = ? AND user_id = ?", input.ClientID, userID)
 
-	if userAuthorizedOIDCClient.Scope != req.Scope {
-		return "", common.ErrOidcMissingAuthorization
+	if userAuthorizedOIDCClient.Scope != input.Scope {
+		return "", "", common.ErrOidcMissingAuthorization
 	}
 
-	return s.createAuthorizationCode(req.ClientID, userID, req.Scope, req.Nonce)
+	callbackURL, err := getCallbackURL(userAuthorizedOIDCClient.Client, input.CallbackURL)
+	if err != nil {
+		return "", "", err
+	}
+
+	code, err := s.createAuthorizationCode(input.ClientID, userID, input.Scope, input.Nonce)
+	return code, callbackURL, err
 }
 
-func (s *OidcService) AuthorizeNewClient(req dto.AuthorizeOidcClientDto, userID string) (string, error) {
+func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto, userID string) (string, string, error) {
+	var client model.OidcClient
+	if err := s.db.First(&client, "id = ?", input.ClientID).Error; err != nil {
+		return "", "", err
+	}
+
+	callbackURL, err := getCallbackURL(client, input.CallbackURL)
+	if err != nil {
+		return "", "", err
+	}
+
 	userAuthorizedClient := model.UserAuthorizedOidcClient{
 		UserID:   userID,
-		ClientID: req.ClientID,
-		Scope:    req.Scope,
+		ClientID: input.ClientID,
+		Scope:    input.Scope,
 	}
 
 	if err := s.db.Create(&userAuthorizedClient).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			err = s.db.Model(&userAuthorizedClient).Update("scope", req.Scope).Error
+			err = s.db.Model(&userAuthorizedClient).Update("scope", input.Scope).Error
 		} else {
-			return "", err
+			return "", "", err
 		}
 	}
 
-	return s.createAuthorizationCode(req.ClientID, userID, req.Scope, req.Nonce)
+	code, err := s.createAuthorizationCode(input.ClientID, userID, input.Scope, input.Nonce)
+	return code, callbackURL, err
 }
 
 func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret string) (string, string, error) {
@@ -320,4 +338,15 @@ func (s *OidcService) createAuthorizationCode(clientID string, userID string, sc
 	}
 
 	return randomString, nil
+}
+
+func getCallbackURL(client model.OidcClient, inputCallbackURL string) (callbackURL string, err error) {
+	if inputCallbackURL == "" {
+		return client.CallbackURLs[0], nil
+	}
+	if slices.Contains(client.CallbackURLs, inputCallbackURL) {
+		return inputCallbackURL, nil
+	}
+
+	return "", common.ErrOidcInvalidCallbackURL
 }

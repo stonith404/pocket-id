@@ -6,7 +6,6 @@ var (
 	ErrUsernameTaken                = errors.New("username is already taken")
 	ErrEmailTaken                   = errors.New("email is already taken")
 	ErrSetupAlreadyCompleted        = errors.New("setup already completed")
-	ErrInvalidBody                  = errors.New("invalid request body")
 	ErrTokenInvalidOrExpired        = errors.New("token is invalid or expired")
 	ErrOidcMissingAuthorization     = errors.New("missing authorization")
 	ErrOidcGrantTypeNotSupported    = errors.New("grant type not supported")

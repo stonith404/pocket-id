@@ -47,7 +47,6 @@
 <form onsubmit={onSubmit}>
 	<div class="flex flex-col gap-5">
 		<FormInput label="Application Name" bind:input={$inputs.appName} />
-
 		<FormInput
 			label="Session Duration"
 			description="The duration of a session in minutes before the user has to sign in again."
