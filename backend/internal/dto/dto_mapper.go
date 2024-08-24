@@ -7,6 +7,8 @@ import (
 
 // MapStructList maps a list of source structs to a list of destination structs
 func MapStructList[S any, D any](source []S, destination *[]D) error {
+	*destination = make([]D, 0, len(source))
+
 	for _, item := range source {
 		var destItem D
 		if err := MapStruct(item, &destItem); err != nil {
