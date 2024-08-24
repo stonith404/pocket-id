@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.3.0...v) (2024-08-24)
+
+
+### Bug Fixes
+
+* empty lists don't get returned correctly from the api ([97f7fc4](https://github.com/stonith404/pocket-id/commit/97f7fc4e288c2bb49210072a7a151b58ef44f5b5))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.2.1...v) (2024-08-23)
 
 
