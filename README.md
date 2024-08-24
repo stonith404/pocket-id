@@ -41,7 +41,7 @@ Pocket ID is available as a template on the Community Apps store.
 Required tools:
 
 - [Node.js](https://nodejs.org/en/download/) >= 20
-- [Go](https://golang.org/doc/install) >= 1.22
+- [Go](https://golang.org/doc/install) >= 1.23
 - [Git](https://git-scm.com/downloads)
 - [PM2](https://pm2.keymetrics.io/)
 - [Caddy](https://caddyserver.com/docs/install) (optional)
