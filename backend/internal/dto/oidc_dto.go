@@ -1,13 +1,13 @@
 package dto
 
 type PublicOidcClientDto struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	HaseLogo bool   `json:"hasLogo"`
 }
 
 type OidcClientDto struct {
 	PublicOidcClientDto
-	HasLogo      bool     `json:"hasLogo"`
 	CallbackURLs []string `json:"callbackURLs"`
 	CreatedBy    UserDto  `json:"createdBy"`
 }
