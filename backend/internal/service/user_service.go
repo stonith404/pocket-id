@@ -48,7 +48,7 @@ func (s *UserService) DeleteUser(userID string) error {
 }
 
 func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
-	user := &model.User{
+	user := model.User{
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
 		Email:     input.Email,
@@ -57,11 +57,11 @@ func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
 	}
 	if err := s.db.Create(user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			return model.User{}, s.checkDuplicatedFields(*user)
+			return model.User{}, s.checkDuplicatedFields(user)
 		}
 		return model.User{}, err
 	}
-	return *user, nil
+	return user, nil
 }
 
 func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, updateOwnUser bool) (model.User, error) {
