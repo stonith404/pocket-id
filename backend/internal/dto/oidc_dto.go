@@ -1,9 +1,9 @@
 package dto
 
 type PublicOidcClientDto struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	HaseLogo bool   `json:"hasLogo"`
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	HasLogo bool   `json:"hasLogo"`
 }
 
 type OidcClientDto struct {
