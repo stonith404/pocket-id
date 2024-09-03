@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -10,12 +11,23 @@
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucideChevronLeft, LucideRefreshCcw } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
+	import { slide } from 'svelte/transition';
 	import OidcForm from '../oidc-client-form.svelte';
 
 	let { data } = $props();
 	let client = $state(data);
+	let showAllDetails = $state(false);
 
 	const oidcService = new OidcService();
+
+	const setupDetails = {
+		'Authorization URL': `https://${$page.url.hostname}/authorize`,
+		'OIDC Discovery URL': `https://${$page.url.hostname}/.well-known/openid-configuration`,
+		'Token URL': `https://${$page.url.hostname}/api/oidc/token`,
+		'Userinfo URL': `https://${$page.url.hostname}/api/oidc/userinfo`,
+		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`,
+		PKCE: 'Disabled'
+	};
 
 	async function updateClient(updatedClient: OidcClientCreateWithLogo) {
 		let success = true;
@@ -74,23 +86,43 @@
 		<Card.Title>{client.name}</Card.Title>
 	</Card.Header>
 	<Card.Content>
-		<div class="flex">
-			<Label class="mb-0 w-44">Client ID</Label>
-			<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
-		</div>
-		<div class="mt-3 flex items-center">
-			<Label class="mb-0 w-44">Client secret</Label>
-			<span class="text-muted-foreground text-sm" data-testid="client-secret"
-				>{$clientSecretStore ?? '••••••••••••••••••••••••••••••••'}</span
-			>
-			{#if !$clientSecretStore}
-				<Button
-					class="ml-2"
-					onclick={createClientSecret}
-					size="sm"
-					variant="ghost"
-					aria-label="Create new client secret"><LucideRefreshCcw class="h-3 w-3" /></Button
+		<div class="flex flex-col">
+			<div class="mb-2 flex">
+				<Label class="mb-0 w-44">Client ID</Label>
+				<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
+			</div>
+			<div class="mb-2 mt-1 flex items-center">
+				<Label class="w-44">Client secret</Label>
+				<span class="text-muted-foreground text-sm" data-testid="client-secret"
+					>{$clientSecretStore ?? '••••••••••••••••••••••••••••••••'}</span
 				>
+				{#if !$clientSecretStore}
+					<Button
+						class="ml-2"
+						onclick={createClientSecret}
+						size="sm"
+						variant="ghost"
+						aria-label="Create new client secret"><LucideRefreshCcw class="h-3 w-3" /></Button
+					>
+				{/if}
+			</div>
+			{#if showAllDetails}
+				<div transition:slide>
+					{#each Object.entries(setupDetails) as [key, value]}
+						<div class="mb-5 flex">
+							<Label class="mb-0 w-44">{key}</Label>
+							<span class="text-muted-foreground text-sm">{value}</span>
+						</div>
+					{/each}
+				</div>
+			{/if}
+
+			{#if !showAllDetails}
+				<div class="mt-4 flex justify-center">
+					<Button on:click={() => (showAllDetails = true)} size="sm" variant="ghost"
+						>Show more details</Button
+					>
+				</div>
 			{/if}
 		</div>
 	</Card.Content>
