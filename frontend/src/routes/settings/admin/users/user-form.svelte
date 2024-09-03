@@ -32,7 +32,10 @@
 			.string()
 			.min(2)
 			.max(30)
-			.regex(/^[a-z0-9_]+$/, 'Only lowercase letters, numbers, and underscores are allowed'),
+			.regex(
+				/^[a-z0-9_@.-]+$/,
+				"Username can only contain lowercase letters, numbers, underscores, dots, hyphens, and '@' symbols"
+			),
 		email: z.string().email(),
 		isAdmin: z.boolean()
 	});
