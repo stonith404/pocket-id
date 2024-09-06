@@ -303,6 +303,7 @@ func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (ma
 	profileClaims := map[string]interface{}{
 		"given_name":         user.FirstName,
 		"family_name":        user.LastName,
+		"name":               user.FirstName + " " + user.LastName,
 		"preferred_username": user.Username,
 	}
 
