@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.4.0...v) (2024-09-06)
+
+
+### Features
+
+* add name claim to userinfo endpoint and id token ([4e7574a](https://github.com/stonith404/pocket-id/commit/4e7574a297307395603267c7a3285d538d4111d8))
+
+
+### Bug Fixes
+
+* limit width of content on large screens ([c6f83a5](https://github.com/stonith404/pocket-id/commit/c6f83a581ad385391d77fec7eeb385060742f097))
+* show error message if error occurs while authorizing new client ([8038a11](https://github.com/stonith404/pocket-id/commit/8038a111dd7fa8f5d421b29c3bc0c11d865dc71b))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.3.1...v) (2024-09-03)
 
 
