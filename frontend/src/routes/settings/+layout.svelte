@@ -22,14 +22,16 @@
 </script>
 
 <section>
-	<div class="h-screen w-full">
-		<main class="bg-muted/40 flex min-h-screen flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row">
+	<div class="bg-muted/40 h-screen w-full">
+		<main
+			class="mx-auto flex min-h-screen max-w-[1640px] flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row"
+		>
 			<div>
-				<div class="mx-auto grid w-full max-w-[1440px] gap-2">
+				<div class="mx-auto grid w-full gap-2">
 					<h1 class="mb-5 text-3xl font-semibold">Settings</h1>
 				</div>
 				<div
-					class="mx-auto grid w-full max-w-[1440px] items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
+					class="mx-auto grid items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
 				>
 					<nav class="text-muted-foreground grid gap-4 text-sm">
 						{#each links as { href, label }}
