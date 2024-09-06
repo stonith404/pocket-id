@@ -83,16 +83,17 @@
 	<SignInWrapper>
 		<ClientProviderImages {client} {success} error={!!errorMessage} />
 		<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">Sign in to {client.name}</h1>
-		{#if !authorizationRequired}
+		{#if errorMessage}
 			<p class="text-muted-foreground mb-10 mt-2">
-				{#if errorMessage}
-					{errorMessage}. Please try again.
-				{:else}
-					Do you want to sign in to <b>{client.name}</b> with your
-					<b>{$applicationConfigurationStore.appName}</b> account?
-				{/if}
+				{errorMessage}. Please try again.
 			</p>
-		{:else}
+		{/if}
+		{#if !authorizationRequired && !errorMessage}
+			<p class="text-muted-foreground mb-10 mt-2">
+				Do you want to sign in to <b>{client.name}</b> with your
+				<b>{$applicationConfigurationStore.appName}</b> account?
+			</p>
+		{:else if authorizationRequired}
 			<div transition:slide={{ duration: 300 }}>
 				<Card.Root class="mb-10 mt-6">
 					<Card.Header class="pb-5">
