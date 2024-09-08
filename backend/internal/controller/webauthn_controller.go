@@ -15,8 +15,8 @@ import (
 	"golang.org/x/time/rate"
 )
 
-func NewWebauthnController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, rateLimitMiddleware *middleware.RateLimitMiddleware, webauthnService *service.WebAuthnService, jwtService *service.JwtService) {
-	wc := &WebauthnController{webAuthnService: webauthnService, jwtService: jwtService}
+func NewWebauthnController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, rateLimitMiddleware *middleware.RateLimitMiddleware, webauthnService *service.WebAuthnService) {
+	wc := &WebauthnController{webAuthnService: webauthnService}
 	group.GET("/webauthn/register/start", jwtAuthMiddleware.Add(false), wc.beginRegistrationHandler)
 	group.POST("/webauthn/register/finish", jwtAuthMiddleware.Add(false), wc.verifyRegistrationHandler)
 
@@ -32,7 +32,6 @@ func NewWebauthnController(group *gin.RouterGroup, jwtAuthMiddleware *middleware
 
 type WebauthnController struct {
 	webAuthnService *service.WebAuthnService
-	jwtService      *service.JwtService
 }
 
 func (wc *WebauthnController) beginRegistrationHandler(c *gin.Context) {
@@ -95,19 +94,14 @@ func (wc *WebauthnController) verifyLoginHandler(c *gin.Context) {
 	}
 
 	userID := c.GetString("userID")
-	user, err := wc.webAuthnService.VerifyLogin(sessionID, userID, credentialAssertionData)
+
+	user, token, err := wc.webAuthnService.VerifyLogin(sessionID, userID, credentialAssertionData, c.ClientIP(), c.Request.UserAgent())
 	if err != nil {
 		if errors.Is(err, common.ErrInvalidCredentials) {
 			utils.CustomControllerError(c, http.StatusUnauthorized, err.Error())
 		} else {
 			utils.ControllerError(c, err)
 		}
-		return
-	}
-
-	token, err := wc.jwtService.GenerateAccessToken(user)
-	if err != nil {
-		utils.ControllerError(c, err)
 		return
 	}
 

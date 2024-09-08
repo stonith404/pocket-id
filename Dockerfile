@@ -22,7 +22,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /app/backend/pocket-id-backend .
 # Stage 3: Production Image
 FROM node:20-alpine
 RUN apk add --no-cache caddy
-COPY ./Caddyfile /etc/caddy/Caddyfile
+COPY ./reverse-proxy /etc/caddy/
 
 WORKDIR /app
 COPY --from=frontend-builder /app/frontend/build ./frontend/build
@@ -31,6 +31,7 @@ COPY --from=frontend-builder /app/frontend/package.json ./frontend/package.json
 
 COPY --from=backend-builder /app/backend/pocket-id-backend ./backend/pocket-id-backend
 COPY --from=backend-builder /app/backend/migrations ./backend/migrations
+COPY --from=backend-builder /app/backend/email-templates ./backend/email-templates
 COPY --from=backend-builder /app/backend/images ./backend/images
 
 COPY ./scripts ./scripts

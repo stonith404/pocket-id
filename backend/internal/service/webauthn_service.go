@@ -12,11 +12,13 @@ import (
 )
 
 type WebAuthnService struct {
-	db       *gorm.DB
-	webAuthn *webauthn.WebAuthn
+	db              *gorm.DB
+	webAuthn        *webauthn.WebAuthn
+	jwtService      *JwtService
+	auditLogService *AuditLogService
 }
 
-func NewWebAuthnService(db *gorm.DB, appConfigService *AppConfigService) *WebAuthnService {
+func NewWebAuthnService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService, appConfigService *AppConfigService) *WebAuthnService {
 	webauthnConfig := &webauthn.Config{
 		RPDisplayName: appConfigService.DbConfig.AppName.Value,
 		RPID:          utils.GetHostFromURL(common.EnvConfig.AppURL),
@@ -36,7 +38,7 @@ func NewWebAuthnService(db *gorm.DB, appConfigService *AppConfigService) *WebAut
 	}
 
 	wa, _ := webauthn.New(webauthnConfig)
-	return &WebAuthnService{db: db, webAuthn: wa}
+	return &WebAuthnService{db: db, webAuthn: wa, jwtService: jwtService, auditLogService: auditLogService}
 }
 
 func (s *WebAuthnService) BeginRegistration(userID string) (*model.PublicKeyCredentialCreationOptions, error) {
@@ -129,10 +131,10 @@ func (s *WebAuthnService) BeginLogin() (*model.PublicKeyCredentialRequestOptions
 	}, nil
 }
 
-func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssertionData *protocol.ParsedCredentialAssertionData) (model.User, error) {
+func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssertionData *protocol.ParsedCredentialAssertionData, ipAddress, userAgent string) (model.User, string, error) {
 	var storedSession model.WebauthnSession
 	if err := s.db.First(&storedSession, "id = ?", sessionID).Error; err != nil {
-		return model.User{}, err
+		return model.User{}, "", err
 	}
 
 	session := webauthn.SessionData{
@@ -149,14 +151,21 @@ func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssert
 	}, session, credentialAssertionData)
 
 	if err != nil {
-		return model.User{}, err
+		return model.User{}, "", err
 	}
 
 	if err := s.db.Find(&user, "id = ?", userID).Error; err != nil {
-		return model.User{}, err
+		return model.User{}, "", err
 	}
 
-	return *user, nil
+	token, err := s.jwtService.GenerateAccessToken(*user)
+	if err != nil {
+		return model.User{}, "", err
+	}
+
+	s.auditLogService.CreateNewSignInWithEmail(ipAddress, userAgent, user.ID, model.AuditLogData{})
+
+	return *user, token, nil
 }
 
 func (s *WebAuthnService) ListCredentials(userID string) ([]model.WebauthnCredential, error) {

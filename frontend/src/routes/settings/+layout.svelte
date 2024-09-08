@@ -9,7 +9,10 @@
 		children: Snippet;
 	} = $props();
 
-	let links = $state([{ href: '/settings/account', label: 'My Account' }]);
+	let links = $state([
+		{ href: '/settings/account', label: 'My Account' },
+		{ href: '/settings/audit-log', label: 'Audit Log' }
+	]);
 
 	if ($userStore?.isAdmin) {
 		links = [

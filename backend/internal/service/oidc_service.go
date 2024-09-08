@@ -9,7 +9,6 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"log"
 	"mime/multipart"
 	"os"
 	"slices"
@@ -21,19 +20,19 @@ type OidcService struct {
 	db               *gorm.DB
 	jwtService       *JwtService
 	appConfigService *AppConfigService
-	emailService     *EmailService
+	auditLogService  *AuditLogService
 }
 
-func NewOidcService(db *gorm.DB, jwtService *JwtService, appConfigService *AppConfigService, emailService *EmailService) *OidcService {
+func NewOidcService(db *gorm.DB, jwtService *JwtService, appConfigService *AppConfigService, auditLogService *AuditLogService) *OidcService {
 	return &OidcService{
 		db:               db,
 		jwtService:       jwtService,
 		appConfigService: appConfigService,
-		emailService:     emailService,
+		auditLogService:  auditLogService,
 	}
 }
 
-func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress string) (string, string, error) {
+func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress, userAgent string) (string, string, error) {
 	var userAuthorizedOIDCClient model.UserAuthorizedOidcClient
 	s.db.Preload("Client").First(&userAuthorizedOIDCClient, "client_id = ? AND user_id = ?", input.ClientID, userID)
 
@@ -50,11 +49,13 @@ func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID,
 	if err != nil {
 		return "", "", err
 	}
-	s.sendSignInNotification("login@eliasschneider.com", userAuthorizedOIDCClient.Client.Name, ipAddress)
+
+	s.auditLogService.Create(model.AuditLogEventClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": userAuthorizedOIDCClient.Client.Name})
+
 	return code, callbackURL, nil
 }
 
-func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress string) (string, string, error) {
+func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress, userAgent string) (string, string, error) {
 	var client model.OidcClient
 	if err := s.db.First(&client, "id = ?", input.ClientID).Error; err != nil {
 		return "", "", err
@@ -83,7 +84,8 @@ func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto
 	if err != nil {
 		return "", "", err
 	}
-	s.sendSignInNotification("login@eliasschneider.com", client.Name, ipAddress)
+
+	s.auditLogService.Create(model.AuditLogEventNewClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": client.Name})
 
 	return code, callbackURL, nil
 }
@@ -364,13 +366,4 @@ func getCallbackURL(client model.OidcClient, inputCallbackURL string) (callbackU
 	}
 
 	return "", common.ErrOidcInvalidCallbackURL
-}
-
-func (s *OidcService) sendSignInNotification(email, clientName, ipAddress string) {
-	title := "New Sign-In Detected with " + s.appConfigService.DbConfig.AppName.Value
-	params := map[string]interface{}{"clientName": clientName, "ipAddress": ipAddress, "dateTimeString": time.Now().UTC().Format("2006-01-02 15:04:05 UTC")}
-	err := s.emailService.Send(email, title, "login", params)
-	if err != nil {
-		log.Printf("Failed to send notification: %s\n", err)
-	}
 }
