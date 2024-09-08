@@ -1,29 +1,29 @@
 import type {
-	AllApplicationConfiguration,
-	ApplicationConfigurationRawResponse
+	AllAppConfig,
+	AppConfigRawResponse
 } from '$lib/types/application-configuration';
 import APIService from './api-service';
 
-export default class ApplicationConfigurationService extends APIService {
+export default class AppConfigService extends APIService {
 	async list(showAll = false) {
 		let url = '/application-configuration';
 		if (showAll) {
 			url += '/all';
 		}
 
-		const { data } = await this.api.get<ApplicationConfigurationRawResponse>(url);
+		const { data } = await this.api.get<AppConfigRawResponse>(url);
 
-		const applicationConfiguration: Partial<AllApplicationConfiguration> = {};
+		const appConfig: Partial<AllAppConfig> = {};
 		data.forEach(({ key, value }) => {
-			(applicationConfiguration as any)[key] = value;
+			(appConfig as any)[key] = value;
 		});
 
-		return applicationConfiguration as AllApplicationConfiguration;
+		return appConfig as AllAppConfig;
 	}
 
-	async update(applicationConfiguration: AllApplicationConfiguration) {
-		const res = await this.api.put('/application-configuration', applicationConfiguration);
-		return res.data as AllApplicationConfiguration;
+	async update(appConfig: AllAppConfig) {
+		const res = await this.api.put('/application-configuration', appConfig);
+		return res.data as AllAppConfig;
 	}
 
 	async updateFavicon(favicon: File) {

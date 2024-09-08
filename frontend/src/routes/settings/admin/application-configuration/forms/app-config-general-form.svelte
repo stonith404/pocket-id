@@ -1,23 +1,24 @@
 <script lang="ts">
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import type { AllApplicationConfiguration } from '$lib/types/application-configuration';
+	import type { AllAppConfig } from '$lib/types/application-configuration';
 	import { createForm } from '$lib/utils/form-util';
+	import { toast } from 'svelte-sonner';
 	import { z } from 'zod';
 
 	let {
 		callback,
-		applicationConfiguration
+		appConfig
 	}: {
-		applicationConfiguration: AllApplicationConfiguration;
-		callback: (user: AllApplicationConfiguration) => Promise<void>;
+		appConfig: AllAppConfig;
+		callback: (appConfig: Partial<AllAppConfig>) => Promise<void>;
 	} = $props();
 
 	let isLoading = $state(false);
 
-	const updatedApplicationConfiguration: AllApplicationConfiguration = {
-		appName: applicationConfiguration.appName,
-		sessionDuration: applicationConfiguration.sessionDuration
+	const updatedAppConfig = {
+		appName: appConfig.appName,
+		sessionDuration: appConfig.sessionDuration
 	};
 
 	const formSchema = z.object({
@@ -32,15 +33,15 @@
 			}
 		)
 	});
-	type FormSchema = typeof formSchema;
 
-	const { inputs, ...form } = createForm<FormSchema>(formSchema, updatedApplicationConfiguration);
+	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
 	async function onSubmit() {
 		const data = form.validate();
 		if (!data) return;
 		isLoading = true;
 		await callback(data);
 		isLoading = false;
+		toast.success('Application configuration saved successfully');
 	}
 </script>
 

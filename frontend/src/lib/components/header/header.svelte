@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import applicationConfigurationStore from '$lib/stores/application-configuration-store';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import userStore from '$lib/stores/user-store';
 	import Logo from '../logo.svelte';
 	import HeaderAvatar from './header-avatar.svelte';
@@ -17,7 +17,7 @@
 			{#if !isAuthPage}
 				<Logo class="mr-3 h-10 w-10" />
 				<h1 class="text-lg font-medium" data-testid="application-name">
-					{$applicationConfigurationStore.appName}
+					{$appConfigStore.appName}
 				</h1>
 			{/if}
 		</div>

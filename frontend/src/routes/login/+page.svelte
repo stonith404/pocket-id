@@ -4,7 +4,7 @@
 	import Logo from '$lib/components/logo.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import WebAuthnService from '$lib/services/webauthn-service';
-	import applicationConfigurationStore from '$lib/stores/application-configuration-store';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import userStore from '$lib/stores/user-store';
 	import { getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startAuthentication } from '@simplewebauthn/browser';
@@ -40,7 +40,7 @@
 		</div>
 	</div>
 	<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">
-		Sign in to {$applicationConfigurationStore.appName}
+		Sign in to {$appConfigStore.appName}
 	</h1>
 	<p class="text-muted-foreground mt-2">
 		Authenticate yourself with your passkey to access the admin panel

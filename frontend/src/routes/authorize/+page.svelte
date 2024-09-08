@@ -4,7 +4,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import OidcService from '$lib/services/oidc-service';
 	import WebAuthnService from '$lib/services/webauthn-service';
-	import applicationConfigurationStore from '$lib/stores/application-configuration-store';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import userStore from '$lib/stores/user-store';
 	import { getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startAuthentication } from '@simplewebauthn/browser';
@@ -91,7 +91,7 @@
 		{#if !authorizationRequired && !errorMessage}
 			<p class="text-muted-foreground mb-10 mt-2">
 				Do you want to sign in to <b>{client.name}</b> with your
-				<b>{$applicationConfigurationStore.appName}</b> account?
+				<b>{$appConfigStore.appName}</b> account?
 			</p>
 		{:else if authorizationRequired}
 			<div transition:slide={{ duration: 300 }}>

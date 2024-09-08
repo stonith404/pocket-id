@@ -2,7 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import UserService from '$lib/services/user-service';
-	import applicationConfigurationStore from '$lib/stores/application-configuration-store';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { Paginated } from '$lib/types/pagination.type';
 	import type { User, UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
@@ -42,9 +42,7 @@
 		<div class="flex items-center justify-between">
 			<div>
 				<Card.Title>Create User</Card.Title>
-				<Card.Description
-					>Add a new user to {$applicationConfigurationStore.appName}.</Card.Description
-				>
+				<Card.Description>Add a new user to {$appConfigStore.appName}.</Card.Description>
 			</div>
 			{#if !expandAddUser}
 				<Button on:click={() => (expandAddUser = true)}>Add User</Button>

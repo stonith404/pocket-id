@@ -1,22 +1,22 @@
-import ApplicationConfigurationService from '$lib/services/application-configuration-service';
-import type { ApplicationConfiguration } from '$lib/types/application-configuration';
+import AppConfigService from '$lib/services/app-config-service';
+import type { AppConfig } from '$lib/types/application-configuration';
 import { writable } from 'svelte/store';
 
-const applicationConfigurationStore = writable<ApplicationConfiguration>();
+const appConfigStore = writable<AppConfig>();
 
-const applicationConfigurationService = new ApplicationConfigurationService();
+const appConfigService = new AppConfigService();
 
 const reload = async () => {
-	const applicationConfiguration = await applicationConfigurationService.list();
-	applicationConfigurationStore.set(applicationConfiguration);
+	const appConfig = await appConfigService.list();
+	appConfigStore.set(appConfig);
 };
 
-const set = (applicationConfiguration: ApplicationConfiguration) => {
-	applicationConfigurationStore.set(applicationConfiguration);
-}
+const set = (appConfig: AppConfig) => {
+	appConfigStore.set(appConfig);
+};
 
 export default {
-	subscribe: applicationConfigurationStore.subscribe,
+	subscribe: appConfigStore.subscribe,
 	reload,
 	set
 };

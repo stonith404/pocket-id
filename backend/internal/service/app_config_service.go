@@ -53,9 +53,34 @@ var defaultDbConfig = model.AppConfig{
 		IsInternal: true,
 		Value:      "svg",
 	},
+	EmailEnabled: model.AppConfigVariable{
+		Key:   "emailEnabled",
+		Type:  "bool",
+		Value: "false",
+	},
+	SmtpHost: model.AppConfigVariable{
+		Key:  "smtpHost",
+		Type: "string",
+	},
+	SmtpPort: model.AppConfigVariable{
+		Key:  "smtpPort",
+		Type: "number",
+	},
+	SmtpFrom: model.AppConfigVariable{
+		Key:  "smtpFrom",
+		Type: "string",
+	},
+	SmtpUser: model.AppConfigVariable{
+		Key:  "smtpUser",
+		Type: "string",
+	},
+	SmtpPassword: model.AppConfigVariable{
+		Key:  "smtpPassword",
+		Type: "string",
+	},
 }
 
-func (s *AppConfigService) UpdateApplicationConfiguration(input dto.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {
+func (s *AppConfigService) UpdateAppConfig(input dto.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {
 	var savedConfigVariables []model.AppConfigVariable
 
 	tx := s.db.Begin()
@@ -67,19 +92,19 @@ func (s *AppConfigService) UpdateApplicationConfiguration(input dto.AppConfigUpd
 		key := field.Tag.Get("json")
 		value := rv.FieldByName(field.Name).String()
 
-		var applicationConfigurationVariable model.AppConfigVariable
-		if err := tx.First(&applicationConfigurationVariable, "key = ? AND is_internal = false", key).Error; err != nil {
+		var appConfigVariable model.AppConfigVariable
+		if err := tx.First(&appConfigVariable, "key = ? AND is_internal = false", key).Error; err != nil {
 			tx.Rollback()
 			return nil, err
 		}
 
-		applicationConfigurationVariable.Value = value
-		if err := tx.Save(&applicationConfigurationVariable).Error; err != nil {
+		appConfigVariable.Value = value
+		if err := tx.Save(&appConfigVariable).Error; err != nil {
 			tx.Rollback()
 			return nil, err
 		}
 
-		savedConfigVariables = append(savedConfigVariables, applicationConfigurationVariable)
+		savedConfigVariables = append(savedConfigVariables, appConfigVariable)
 	}
 
 	tx.Commit()
@@ -101,7 +126,7 @@ func (s *AppConfigService) UpdateImageType(imageName string, fileType string) er
 	return s.loadDbConfigFromDb()
 }
 
-func (s *AppConfigService) ListApplicationConfiguration(showAll bool) ([]model.AppConfigVariable, error) {
+func (s *AppConfigService) ListAppConfig(showAll bool) ([]model.AppConfigVariable, error) {
 	var configuration []model.AppConfigVariable
 	var err error
 

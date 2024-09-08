@@ -9,12 +9,16 @@
 		input = $bindable(),
 		label,
 		description,
+		disabled = false,
+		type = 'text',
 		children,
 		...restProps
 	}: HTMLAttributes<HTMLDivElement> & {
 		input?: FormInput<string | boolean | number>;
 		label: string;
 		description?: string;
+		disabled?: boolean;
+		type?: 'text' | 'password' | 'email' | 'number' | 'checkbox';
 		children?: Snippet;
 	} = $props();
 
@@ -30,7 +34,7 @@
 		{#if children}
 			{@render children()}
 		{:else if input}
-			<Input {id} bind:value={input.value} />
+			<Input {id} {type} bind:value={input.value} {disabled} />
 		{/if}
 		{#if input?.error}
 			<p class="mt-1 text-sm text-red-500">{input.error}</p>

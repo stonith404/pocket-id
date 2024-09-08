@@ -1,17 +1,17 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import OIDCService from '$lib/services/oidc-service';
+	import appConfigStore from '$lib/stores/application-configuration-store';
+	import clientSecretStore from '$lib/stores/client-secret-store';
 	import type { OidcClientCreateWithLogo } from '$lib/types/oidc.type';
+	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucideMinus } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import { slide } from 'svelte/transition';
 	import OIDCClientForm from './oidc-client-form.svelte';
 	import OIDCClientList from './oidc-client-list.svelte';
-	import { axiosErrorToast } from '$lib/utils/error-util';
-	import clientSecretStore from '$lib/stores/client-secret-store';
-	import { goto } from '$app/navigation';
-	import applicationConfigurationStore from '$lib/stores/application-configuration-store';
 
 	let { data } = $props();
 	let clients = $state(data);
@@ -22,7 +22,7 @@
 	async function createOIDCClient(client: OidcClientCreateWithLogo) {
 		try {
 			const createdClient = await oidcService.createClient(client);
-			if(client.logo){
+			if (client.logo) {
 				await oidcService.updateClientLogo(createdClient, client.logo);
 			}
 			const clientSecret = await oidcService.createClientSecret(createdClient.id);
@@ -31,7 +31,7 @@
 			toast.success('OIDC client created successfully');
 			return true;
 		} catch (e) {
-			axiosErrorToast(e)
+			axiosErrorToast(e);
 			return false;
 		}
 	}
@@ -46,7 +46,7 @@
 		<div class="flex items-center justify-between">
 			<div>
 				<Card.Title>Create OIDC Client</Card.Title>
-				<Card.Description>Add a new OIDC client to {$applicationConfigurationStore.appName}.</Card.Description>
+				<Card.Description>Add a new OIDC client to {$appConfigStore.appName}.</Card.Description>
 			</div>
 			{#if !expandAddClient}
 				<Button on:click={() => (expandAddClient = true)}>Add OIDC Client</Button>

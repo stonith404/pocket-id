@@ -46,7 +46,7 @@ func (oc *OidcController) authorizeHandler(c *gin.Context) {
 		return
 	}
 
-	code, callbackURL, err := oc.oidcService.Authorize(input, c.GetString("userID"))
+	code, callbackURL, err := oc.oidcService.Authorize(input, c.GetString("userID"), c.ClientIP())
 	if err != nil {
 		if errors.Is(err, common.ErrOidcMissingAuthorization) {
 			utils.CustomControllerError(c, http.StatusForbidden, err.Error())
@@ -73,7 +73,7 @@ func (oc *OidcController) authorizeNewClientHandler(c *gin.Context) {
 		return
 	}
 
-	code, callbackURL, err := oc.oidcService.AuthorizeNewClient(input, c.GetString("userID"))
+	code, callbackURL, err := oc.oidcService.AuthorizeNewClient(input, c.GetString("userID"), c.ClientIP())
 	if err != nil {
 		if errors.Is(err, common.ErrOidcInvalidCallbackURL) {
 			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())

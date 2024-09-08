@@ -30,8 +30,9 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	// Initialize services
 	webauthnService := service.NewWebAuthnService(db, appConfigService)
 	jwtService := service.NewJwtService(appConfigService)
+	emailService := service.NewEmailService(appConfigService)
 	userService := service.NewUserService(db, jwtService)
-	oidcService := service.NewOidcService(db, jwtService)
+	oidcService := service.NewOidcService(db, jwtService, appConfigService, emailService)
 	testService := service.NewTestService(db, appConfigService)
 
 	// Add global middleware
