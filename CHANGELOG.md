@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.4.1...v) (2024-09-09)
+
+
+### Features
+
+* add audit log with email notification ([#26](https://github.com/stonith404/pocket-id/issues/26)) ([9121239](https://github.com/stonith404/pocket-id/commit/9121239dd7c14a2107a984f9f94f54227489a63a))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.4.0...v) (2024-09-06)
 
 
