@@ -20,9 +20,9 @@ func NewAppConfigController(
 	acc := &AppConfigController{
 		appConfigService: appConfigService,
 	}
-	group.GET("/application-configuration", acc.listApplicationConfigurationHandler)
-	group.GET("/application-configuration/all", jwtAuthMiddleware.Add(true), acc.listAllApplicationConfigurationHandler)
-	group.PUT("/application-configuration", acc.updateApplicationConfigurationHandler)
+	group.GET("/application-configuration", acc.listAppConfigHandler)
+	group.GET("/application-configuration/all", jwtAuthMiddleware.Add(true), acc.listAllAppConfigHandler)
+	group.PUT("/application-configuration", acc.updateAppConfigHandler)
 
 	group.GET("/application-configuration/logo", acc.getLogoHandler)
 	group.GET("/application-configuration/background-image", acc.getBackgroundImageHandler)
@@ -36,8 +36,8 @@ type AppConfigController struct {
 	appConfigService *service.AppConfigService
 }
 
-func (acc *AppConfigController) listApplicationConfigurationHandler(c *gin.Context) {
-	configuration, err := acc.appConfigService.ListApplicationConfiguration(false)
+func (acc *AppConfigController) listAppConfigHandler(c *gin.Context) {
+	configuration, err := acc.appConfigService.ListAppConfig(false)
 	if err != nil {
 		utils.ControllerError(c, err)
 		return
@@ -52,8 +52,8 @@ func (acc *AppConfigController) listApplicationConfigurationHandler(c *gin.Conte
 	c.JSON(200, configVariablesDto)
 }
 
-func (acc *AppConfigController) listAllApplicationConfigurationHandler(c *gin.Context) {
-	configuration, err := acc.appConfigService.ListApplicationConfiguration(true)
+func (acc *AppConfigController) listAllAppConfigHandler(c *gin.Context) {
+	configuration, err := acc.appConfigService.ListAppConfig(true)
 	if err != nil {
 		utils.ControllerError(c, err)
 		return
@@ -68,14 +68,14 @@ func (acc *AppConfigController) listAllApplicationConfigurationHandler(c *gin.Co
 	c.JSON(200, configVariablesDto)
 }
 
-func (acc *AppConfigController) updateApplicationConfigurationHandler(c *gin.Context) {
+func (acc *AppConfigController) updateAppConfigHandler(c *gin.Context) {
 	var input dto.AppConfigUpdateDto
 	if err := c.ShouldBindJSON(&input); err != nil {
 		utils.ControllerError(c, err)
 		return
 	}
 
-	savedConfigVariables, err := acc.appConfigService.UpdateApplicationConfiguration(input)
+	savedConfigVariables, err := acc.appConfigService.UpdateAppConfig(input)
 	if err != nil {
 		utils.ControllerError(c, err)
 		return

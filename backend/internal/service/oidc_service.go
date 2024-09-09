@@ -17,18 +17,22 @@ import (
 )
 
 type OidcService struct {
-	db         *gorm.DB
-	jwtService *JwtService
+	db               *gorm.DB
+	jwtService       *JwtService
+	appConfigService *AppConfigService
+	auditLogService  *AuditLogService
 }
 
-func NewOidcService(db *gorm.DB, jwtService *JwtService) *OidcService {
+func NewOidcService(db *gorm.DB, jwtService *JwtService, appConfigService *AppConfigService, auditLogService *AuditLogService) *OidcService {
 	return &OidcService{
-		db:         db,
-		jwtService: jwtService,
+		db:               db,
+		jwtService:       jwtService,
+		appConfigService: appConfigService,
+		auditLogService:  auditLogService,
 	}
 }
 
-func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID string) (string, string, error) {
+func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress, userAgent string) (string, string, error) {
 	var userAuthorizedOIDCClient model.UserAuthorizedOidcClient
 	s.db.Preload("Client").First(&userAuthorizedOIDCClient, "client_id = ? AND user_id = ?", input.ClientID, userID)
 
@@ -42,10 +46,16 @@ func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID 
 	}
 
 	code, err := s.createAuthorizationCode(input.ClientID, userID, input.Scope, input.Nonce)
-	return code, callbackURL, err
+	if err != nil {
+		return "", "", err
+	}
+
+	s.auditLogService.Create(model.AuditLogEventClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": userAuthorizedOIDCClient.Client.Name})
+
+	return code, callbackURL, nil
 }
 
-func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto, userID string) (string, string, error) {
+func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress, userAgent string) (string, string, error) {
 	var client model.OidcClient
 	if err := s.db.First(&client, "id = ?", input.ClientID).Error; err != nil {
 		return "", "", err
@@ -71,7 +81,13 @@ func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto
 	}
 
 	code, err := s.createAuthorizationCode(input.ClientID, userID, input.Scope, input.Nonce)
-	return code, callbackURL, err
+	if err != nil {
+		return "", "", err
+	}
+
+	s.auditLogService.Create(model.AuditLogEventNewClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": client.Name})
+
+	return code, callbackURL, nil
 }
 
 func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret string) (string, string, error) {

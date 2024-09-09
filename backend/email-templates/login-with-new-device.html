@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      background-color: #fff;
+      color: #333;
+      padding: 32px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 40px auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header .logo img {
+      width: 32px;
+      height: 32px;
+      object-fit: cover;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .warning {
+      background-color: #ffd966;
+      color: #7f6000;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.875rem;
+    }
+    .content {
+      background-color: #fafafa;
+      color: #333;
+      padding: 24px;
+      border-radius: 10px;
+    }
+    .content h2 {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .grid div {
+      display: flex;
+      flex-direction: column;
+    }
+    .grid p {
+      margin: 0;
+    }
+    .label {
+      color: #888;
+      font-size: 0.875rem;
+      margin-bottom: 4px;
+    }
+    .message {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  </style>
+  <title>Pocket ID</title>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <img src="{{appUrl}}/api/application-configuration/logo" alt="Pocket ID" />
+        <h1>{{appName}}</h1>
+      </div>
+      <div class="warning">Warning</div>
+    </div>
+    <div class="content">
+      <h2>New Sign-In Detected</h2>
+      <div class="grid">
+        <div>
+          <p class="label">IP Address</p>
+          <p>{{ipAddress}}</p>
+        </div>
+        <div>
+          <p class="label">Device</p>
+          <p>{{device}}</p>
+        </div>
+        <div>
+          <p class="label">Sign-In Time</p>
+          <p>{{dateTimeString}}</p>
+        </div>
+      </div>
+      <p class="message">
+        This sign-in was detected from a new device or location. If you recognize this activity, you can safely ignore
+        this message. If not, please review your account and security settings.
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -21,7 +21,6 @@ func RegisterJobs(db *gorm.DB) {
 	registerJob(scheduler, "ClearWebauthnSessions", "0 3 * * *", jobs.clearWebauthnSessions)
 	registerJob(scheduler, "ClearOneTimeAccessTokens", "0 3 * * *", jobs.clearOneTimeAccessTokens)
 	registerJob(scheduler, "ClearOidcAuthorizationCodes", "0 3 * * *", jobs.clearOidcAuthorizationCodes)
-
 	scheduler.Start()
 }
 
@@ -29,17 +28,24 @@ type Jobs struct {
 	db *gorm.DB
 }
 
+// ClearWebauthnSessions deletes WebAuthn sessions that have expired
 func (j *Jobs) clearWebauthnSessions() error {
 	return j.db.Delete(&model.WebauthnSession{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
 }
 
+// ClearOneTimeAccessTokens deletes one-time access tokens that have expired
 func (j *Jobs) clearOneTimeAccessTokens() error {
 	return j.db.Debug().Delete(&model.OneTimeAccessToken{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
 }
 
+// ClearOidcAuthorizationCodes deletes OIDC authorization codes that have expired
 func (j *Jobs) clearOidcAuthorizationCodes() error {
 	return j.db.Delete(&model.OidcAuthorizationCode{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+}
 
+// ClearAuditLogs deletes audit logs older than 90 days
+func (j *Jobs) clearAuditLogs() error {
+	return j.db.Delete(&model.AuditLog{}, "created_at < ?", utils.FormatDateForDb(time.Now().AddDate(0, 0, -90))).Error
 }
 
 func registerJob(scheduler gocron.Scheduler, name string, interval string, job func() error) {

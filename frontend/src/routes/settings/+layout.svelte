@@ -9,7 +9,10 @@
 		children: Snippet;
 	} = $props();
 
-	let links = $state([{ href: '/settings/account', label: 'My Account' }]);
+	let links = $state([
+		{ href: '/settings/account', label: 'My Account' },
+		{ href: '/settings/audit-log', label: 'Audit Log' }
+	]);
 
 	if ($userStore?.isAdmin) {
 		links = [
@@ -22,10 +25,8 @@
 </script>
 
 <section>
-	<div class="bg-muted/40 h-screen w-full">
-		<main
-			class="mx-auto flex min-h-screen max-w-[1640px] flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row"
-		>
+	<div class="bg-muted/40 min-h-screen w-full">
+		<main class="mx-auto flex max-w-[1640px] flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row">
 			<div>
 				<div class="mx-auto grid w-full gap-2">
 					<h1 class="mb-5 text-3xl font-semibold">Settings</h1>

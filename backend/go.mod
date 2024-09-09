@@ -14,6 +14,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
+	github.com/mileusna/useragent v1.3.4
 	golang.org/x/crypto v0.26.0
 	golang.org/x/time v0.6.0
 	gorm.io/driver/sqlite v1.5.6

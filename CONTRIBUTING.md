@@ -61,7 +61,7 @@ You're all set!
 We use [Caddy](https://caddyserver.com) as a reverse proxy. You can use any other reverse proxy if you want but you have to configure it yourself.
 
 #### Setup
-Run `caddy run --config Caddyfile` in the root folder.
+Run `caddy run --config reverse-proxy/Caddyfile` in the root folder.
 
 ### Testing
 

@@ -147,6 +147,7 @@ docker compose up -d
 | Variable               | Default Value           | Recommended to change | Description                                   |
 | ---------------------- | ----------------------- | --------------------- | --------------------------------------------- |
 | `PUBLIC_APP_URL`       | `http://localhost`      | yes                   | The URL where you will access the app.        |
+| `TRUST_PROXY`          | `false`                 | yes                   | Whether the app is behind a reverse proxy.    |
 | `DB_PATH`              | `data/pocket-id.db`     | no                    | The path to the SQLite database.              |
 | `UPLOAD_PATH`          | `data/uploads`          | no                    | The path where the uploaded files are stored. |
 | `INTERNAL_BACKEND_URL` | `http://localhost:8080` | no                    | The URL where the backend is accessible.      |

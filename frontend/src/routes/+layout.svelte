@@ -4,7 +4,7 @@
 	import Error from '$lib/components/error.svelte';
 	import Header from '$lib/components/header/header.svelte';
 	import { Toaster } from '$lib/components/ui/sonner';
-	import applicationConfigurationStore from '$lib/stores/application-configuration-store';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import userStore from '$lib/stores/user-store';
 	import { ModeWatcher } from 'mode-watcher';
 	import type { Snippet } from 'svelte';
@@ -19,17 +19,17 @@
 		children: Snippet;
 	} = $props();
 
-	const { user, applicationConfiguration } = data;
+	const { user, appConfig } = data;
 
 	if (browser && user) {
 		userStore.setUser(user);
 	}
-	if (applicationConfiguration) {
-		applicationConfigurationStore.set(applicationConfiguration);
+	if (appConfig) {
+		appConfigStore.set(appConfig);
 	}
 </script>
 
-{#if !applicationConfiguration}
+{#if !appConfig}
 	<Error
 		message="A critical error occured. Please contact your administrator."
 		showButton={false}
