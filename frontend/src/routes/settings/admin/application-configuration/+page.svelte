@@ -58,8 +58,8 @@
 	<Card.Header>
 		<Card.Title>Email</Card.Title>
 		<Card.Description>
-			Email configuration is required for sending emails to users. If you disable email, users will
-			not receive emails from the application.
+			Enable email notifications to alert users when a login is detected from a new device or
+			location.
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>

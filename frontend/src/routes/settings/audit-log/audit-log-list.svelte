@@ -13,7 +13,7 @@
 
 	let pagination = $state<PaginationRequest>({
 		page: 1,
-		limit: 10
+		limit: 15
 	});
 
 	function toFriendlyEventString(event: string) {
@@ -26,16 +26,16 @@
 </script>
 
 <Table.Root>
-	<Table.Header>
+	<Table.Header class="whitespace-nowrap">
 		<Table.Row>
-			<Table.Head class="hidden md:table-cell">Time</Table.Head>
-			<Table.Head class="hidden md:table-cell">Event</Table.Head>
+			<Table.Head>Time</Table.Head>
+			<Table.Head>Event</Table.Head>
 			<Table.Head>IP Address</Table.Head>
 			<Table.Head>Device</Table.Head>
 			<Table.Head>Client</Table.Head>
 		</Table.Row>
 	</Table.Header>
-	<Table.Body>
+	<Table.Body class="whitespace-nowrap">
 		{#if auditLogs.data.length === 0}
 			<Table.Row>
 				<Table.Cell colspan={6} class="text-center">No logs found</Table.Cell>
@@ -43,10 +43,8 @@
 		{:else}
 			{#each auditLogs.data as auditLog}
 				<Table.Row>
-					<Table.Cell class="hidden md:table-cell"
-						>{new Date(auditLog.createdAt).toLocaleString()}</Table.Cell
-					>
-					<Table.Cell class="hidden lg:table-cell">
+					<Table.Cell>{new Date(auditLog.createdAt).toLocaleString()}</Table.Cell>
+					<Table.Cell>
 						<Badge variant="outline">{toFriendlyEventString(auditLog.event)}</Badge>
 					</Table.Cell>
 					<Table.Cell>{auditLog.ipAddress}</Table.Cell>
