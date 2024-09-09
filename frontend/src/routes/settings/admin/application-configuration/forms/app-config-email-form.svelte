@@ -44,7 +44,7 @@
 			...data,
 			emailEnabled: 'true'
 		}).finally(() => (isLoading = false));
-		toast.success('Email configuration saved successfully');
+		toast.success('Email configuration updated successfully');
 		return true;
 	}
 

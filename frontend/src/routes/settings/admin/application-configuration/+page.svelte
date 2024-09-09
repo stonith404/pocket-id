@@ -20,7 +20,10 @@
 				...appConfig,
 				...updatedAppConfig
 			})
-			.catch(axiosErrorToast);
+			.catch((e) => {
+				axiosErrorToast(e);
+				throw e;
+			});
 		await appConfigStore.reload();
 	}
 

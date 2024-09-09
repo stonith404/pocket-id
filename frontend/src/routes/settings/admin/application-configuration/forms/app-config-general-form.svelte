@@ -39,9 +39,8 @@
 		const data = form.validate();
 		if (!data) return;
 		isLoading = true;
-		await callback(data);
-		isLoading = false;
-		toast.success('Application configuration saved successfully');
+		await callback(data).finally(() => (isLoading = false));
+		toast.success('Application configuration updated successfully');
 	}
 </script>
 
