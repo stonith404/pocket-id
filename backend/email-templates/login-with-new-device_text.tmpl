@@ -1,0 +1,12 @@
+{{ define "base" -}}
+New Sign-In Detected
+====================
+
+IP Address: {{ .Data.IPAddress }}
+Device:     {{ .Data.Device }}
+Time:       {{ .Data.DateTime.Format "2006-01-02 15:04:05 UTC"}}
+
+This sign-in was detected from a new device or location. If you recognize
+this activity, you can safely ignore this message. If not, please review
+your account and security settings.
+{{ end -}}

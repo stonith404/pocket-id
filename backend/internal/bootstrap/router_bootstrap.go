@@ -28,7 +28,11 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	r.Use(gin.Logger())
 
 	// Initialize services
-	emailService := service.NewEmailService(appConfigService)
+	emailService, err := service.NewEmailService(appConfigService)
+	if err != nil {
+		log.Fatalf("Unable to create email service: %s", err)
+	}
+
 	auditLogService := service.NewAuditLogService(db, appConfigService, emailService)
 	jwtService := service.NewJwtService(appConfigService)
 	webauthnService := service.NewWebAuthnService(db, jwtService, auditLogService, appConfigService)

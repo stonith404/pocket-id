@@ -1,62 +1,87 @@
 package service
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/utils/email"
+	htemplate "html/template"
+	"mime/multipart"
+	"mime/quotedprintable"
 	"net/smtp"
-	"os"
-	"strings"
+	"net/textproto"
+	ttemplate "text/template"
 )
 
 type EmailService struct {
 	appConfigService *AppConfigService
+	htmlTemplates    map[string]*htemplate.Template
+	textTemplates    map[string]*ttemplate.Template
 }
 
-func NewEmailService(appConfigService *AppConfigService) *EmailService {
+func NewEmailService(appConfigService *AppConfigService) (*EmailService, error) {
+	//TODO: -> config
+	var templateDir = "./email-templates/"
+
+	htmlTemplates, err := email.PrepareHTMLTemplates(templateDir, emailTemplatesPaths)
+	if err != nil {
+		return nil, fmt.Errorf("prepare html templates: %w", err)
+	}
+
+	textTemplates, err := email.PrepareTextTemplates(templateDir, emailTemplatesPaths)
+	if err != nil {
+		return nil, fmt.Errorf("prepare html templates: %w", err)
+	}
+
 	return &EmailService{
-		appConfigService: appConfigService}
+		appConfigService: appConfigService,
+		htmlTemplates:    htmlTemplates,
+		textTemplates:    textTemplates,
+	}, nil
 }
 
-// Send sends an email notification
-func (s *EmailService) Send(toEmail, title, templateName string, templateParameters map[string]interface{}) error {
+func SendEmail[V any](srv *EmailService, toEmail string, template email.Template[V], tData *V) error {
 	// Check if SMTP settings are set
-	if s.appConfigService.DbConfig.EmailEnabled.Value != "true" {
+	if srv.appConfigService.DbConfig.EmailEnabled.Value != "true" {
 		return errors.New("email not enabled")
 	}
 
-	// Construct the email message
-	subject := fmt.Sprintf("Subject: %s\n", title)
-	subject += "From: " + s.appConfigService.DbConfig.SmtpFrom.Value + "\n"
-	subject += "To: " + toEmail + "\n"
-	subject += "Content-Type: text/html; charset=UTF-8\n"
+	data := &email.TemplateData[V]{
+		AppName: srv.appConfigService.DbConfig.AppName.Value,
+		LogoURL: common.EnvConfig.AppURL + "/api/application-configuration/logo",
+		Data:    tData,
+	}
 
-	body, err := os.ReadFile(fmt.Sprintf("./email-templates/%s.html", templateName))
-	bodyString := string(body)
+	body, boundary, err := prepareBody(srv, template, data)
 	if err != nil {
-		return fmt.Errorf("failed to read email template: %w", err)
+		return fmt.Errorf("prepare email body for '%s': %w", template.Path, err)
 	}
 
-	// Replace template parameters
-	templateParameters["appName"] = s.appConfigService.DbConfig.AppName.Value
-	templateParameters["appUrl"] = common.EnvConfig.AppURL
-	
-	for key, value := range templateParameters {
-		bodyString = strings.ReplaceAll(bodyString, fmt.Sprintf("{{%s}}", key), fmt.Sprintf("%v", value))
-	}
-
-	emailBody := []byte(subject + bodyString)
+	// Construct the email message
+	c := email.NewComposer()
+	c.AddHeader("Subject", template.Title(data))
+	c.AddHeaderRaw("From", srv.appConfigService.DbConfig.SmtpFrom.Value)
+	c.AddHeaderRaw("To", toEmail)
+	c.AddHeaderRaw("Content-Type",
+		fmt.Sprintf("multipart/alternative;\n boundary=%s;\n charset=UTF-8", boundary),
+	)
+	c.Body(body)
 
 	// Set up the authentication information.
-	auth := smtp.PlainAuth("", s.appConfigService.DbConfig.SmtpUser.Value, s.appConfigService.DbConfig.SmtpPassword.Value, s.appConfigService.DbConfig.SmtpHost.Value)
+	auth := smtp.PlainAuth("",
+		srv.appConfigService.DbConfig.SmtpUser.Value,
+		srv.appConfigService.DbConfig.SmtpPassword.Value,
+		srv.appConfigService.DbConfig.SmtpHost.Value,
+	)
 
 	// Send the email
 	err = smtp.SendMail(
-		s.appConfigService.DbConfig.SmtpHost.Value+":"+s.appConfigService.DbConfig.SmtpPort.Value,
+		srv.appConfigService.DbConfig.SmtpHost.Value+":"+srv.appConfigService.DbConfig.SmtpPort.Value,
 		auth,
-		s.appConfigService.DbConfig.SmtpFrom.Value,
+		srv.appConfigService.DbConfig.SmtpFrom.Value,
 		[]string{toEmail},
-		emailBody,
+		[]byte(c.String()),
 	)
 
 	if err != nil {
@@ -64,4 +89,46 @@ func (s *EmailService) Send(toEmail, title, templateName string, templateParamet
 	}
 
 	return nil
+}
+
+func prepareBody[V any](srv *EmailService, template email.Template[V], data *email.TemplateData[V]) (string, string, error) {
+	body := bytes.NewBuffer(nil)
+	mpart := multipart.NewWriter(body)
+
+	// prepare text part
+	var textHeader = textproto.MIMEHeader{}
+	textHeader.Add("Content-Type", "text/plain;\n charset=UTF-8")
+	textHeader.Add("Content-Transfer-Encoding", "quoted-printable")
+	textPart, err := mpart.CreatePart(textHeader)
+	if err != nil {
+		return "", "", fmt.Errorf("create text part: %w", err)
+	}
+
+	textQp := quotedprintable.NewWriter(textPart)
+	err = email.GetTemplate(srv.textTemplates, template).ExecuteTemplate(textQp, "root", data)
+	if err != nil {
+		return "", "", fmt.Errorf("execute text template: %w", err)
+	}
+
+	// prepare html part
+	var htmlHeader = textproto.MIMEHeader{}
+	htmlHeader.Add("Content-Type", "text/html;\n charset=UTF-8")
+	htmlHeader.Add("Content-Transfer-Encoding", "quoted-printable")
+	htmlPart, err := mpart.CreatePart(htmlHeader)
+	if err != nil {
+		return "", "", fmt.Errorf("create html part: %w", err)
+	}
+
+	htmlQp := quotedprintable.NewWriter(htmlPart)
+	err = email.GetTemplate(srv.htmlTemplates, template).ExecuteTemplate(htmlQp, "root", data)
+	if err != nil {
+		return "", "", fmt.Errorf("execute html template: %w", err)
+	}
+
+	err = mpart.Close()
+	if err != nil {
+		return "", "", fmt.Errorf("close multipart: %w", err)
+	}
+
+	return body.String(), mpart.Boundary(), nil
 }
