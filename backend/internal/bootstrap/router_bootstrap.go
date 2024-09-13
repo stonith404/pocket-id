@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,8 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	r.Use(gin.Logger())
 
 	// Initialize services
-	emailService, err := service.NewEmailService(appConfigService)
+	templateDir := os.DirFS(common.EnvConfig.EmailTemplatesPath)
+	emailService, err := service.NewEmailService(appConfigService, templateDir)
 	if err != nil {
 		log.Fatalf("Unable to create email service: %s", err)
 	}

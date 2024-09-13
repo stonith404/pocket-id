@@ -7,6 +7,7 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	htemplate "html/template"
+	"io/fs"
 	"mime/multipart"
 	"mime/quotedprintable"
 	"net/smtp"
@@ -20,10 +21,7 @@ type EmailService struct {
 	textTemplates    map[string]*ttemplate.Template
 }
 
-func NewEmailService(appConfigService *AppConfigService) (*EmailService, error) {
-	//TODO: -> config
-	var templateDir = "./email-templates/"
-
+func NewEmailService(appConfigService *AppConfigService, templateDir fs.FS) (*EmailService, error) {
 	htmlTemplates, err := email.PrepareHTMLTemplates(templateDir, emailTemplatesPaths)
 	if err != nil {
 		return nil, fmt.Errorf("prepare html templates: %w", err)

@@ -3,6 +3,7 @@ package email
 import (
 	"fmt"
 	htemplate "html/template"
+	"io/fs"
 	"path"
 	ttemplate "text/template"
 )
@@ -31,17 +32,17 @@ type clonable[V pareseable[V]] interface {
 }
 
 type pareseable[V any] interface {
-	ParseFiles(...string) (V, error)
+	ParseFS(fs.FS, ...string) (V, error)
 }
 
-func prepareTemplate[V pareseable[V]](template string, rootTemplate clonable[V], templateDir string, suffix string) (V, error) {
+func prepareTemplate[V pareseable[V]](template string, rootTemplate clonable[V], templateDir fs.FS, suffix string) (V, error) {
 	tmpl, err := rootTemplate.Clone()
 	if err != nil {
 		return *new(V), fmt.Errorf("clone root html template: %w", err)
 	}
 
-	filename := path.Join(templateDir, fmt.Sprintf("%s%s", template, suffix))
-	_, err = tmpl.ParseFiles(filename)
+	filename := fmt.Sprintf("%s%s", template, suffix)
+	_, err = tmpl.ParseFS(templateDir, filename)
 	if err != nil {
 		return *new(V), fmt.Errorf("parsing html template '%s': %w", template, err)
 	}
@@ -49,9 +50,9 @@ func prepareTemplate[V pareseable[V]](template string, rootTemplate clonable[V],
 	return tmpl, nil
 }
 
-func PrepareTextTemplates(templateDir string, templates []string) (map[string]*ttemplate.Template, error) {
-	components := path.Join(templateDir, TEMPLATE_COMPONENTS_DIR, "*_text.tmpl")
-	rootTmpl, err := ttemplate.ParseGlob(components)
+func PrepareTextTemplates(templateDir fs.FS, templates []string) (map[string]*ttemplate.Template, error) {
+	components := path.Join(TEMPLATE_COMPONENTS_DIR, "*_text.tmpl")
+	rootTmpl, err := ttemplate.ParseFS(templateDir, components)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse templates '%s': %w", components, err)
 	}
@@ -72,9 +73,9 @@ func PrepareTextTemplates(templateDir string, templates []string) (map[string]*t
 	return textTemplates, nil
 }
 
-func PrepareHTMLTemplates(templateDir string, templates []string) (map[string]*htemplate.Template, error) {
-	components := path.Join(templateDir, TEMPLATE_COMPONENTS_DIR, "*_html.tmpl")
-	rootTmpl, err := htemplate.ParseGlob(components)
+func PrepareHTMLTemplates(templateDir fs.FS, templates []string) (map[string]*htemplate.Template, error) {
+	components := path.Join(TEMPLATE_COMPONENTS_DIR, "*_html.tmpl")
+	rootTmpl, err := htemplate.ParseFS(templateDir, components)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse templates '%s': %w", components, err)
 	}

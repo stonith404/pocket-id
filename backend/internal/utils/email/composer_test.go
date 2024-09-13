@@ -30,9 +30,9 @@ func TestGenHeaderQ(t *testing.T) {
 		{
 			name:  "Subject",
 			value: "Příšerně žluťoučký kůn úpěl ďábelské ódy 🐎",
-			expected: "Subject: =?utf-8?q?P=C5=99=C3=AD=C5=A1ern=C4=9B_=C5=BElu=C5=A5ou=C4=8Dk=C3=BD?=\n" +
-				" =?utf-8?q?_k=C5=AFn_=C3=BAp=C4=9Bl_=C4=8F=C3=A1belsk=C3=A9_=C3=B3dy_?=\n" +
-				" =?utf-8?q?=F0=9F=90=8E?=",
+			expected: "Subject: =?utf-8?q?P=C5=99=C3=AD=C5=A1ern=C4=9B_=C5=BElu=C5=A5ou=C4=8Dk?=\n" +
+				"    =?utf-8?q?=C3=BD_k=C5=AFn_=C3=BAp=C4=9Bl_=C4=8F=C3=A1belsk=C3=A9_=C3=B3?=\n" +
+				"    =?utf-8?q?dy_=F0=9F=90=8E?=",
 			maxWidth: 80,
 		},
 	}
