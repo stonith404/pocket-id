@@ -41,7 +41,7 @@ func NewEmailService(appConfigService *AppConfigService) (*EmailService, error) 
 	}, nil
 }
 
-func SendEmail[V any](srv *EmailService, toEmail string, template email.Template[V], tData *V) error {
+func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.Template[V], tData *V) error {
 	// Check if SMTP settings are set
 	if srv.appConfigService.DbConfig.EmailEnabled.Value != "true" {
 		return errors.New("email not enabled")
@@ -61,8 +61,13 @@ func SendEmail[V any](srv *EmailService, toEmail string, template email.Template
 	// Construct the email message
 	c := email.NewComposer()
 	c.AddHeader("Subject", template.Title(data))
-	c.AddHeaderRaw("From", srv.appConfigService.DbConfig.SmtpFrom.Value)
-	c.AddHeaderRaw("To", toEmail)
+	c.AddAddressHeader("From", []email.Address{
+		{
+			Email: srv.appConfigService.DbConfig.SmtpFrom.Value,
+			Name:  srv.appConfigService.DbConfig.AppName.Value,
+		},
+	})
+	c.AddAddressHeader("To", []email.Address{toEmail})
 	c.AddHeaderRaw("Content-Type",
 		fmt.Sprintf("multipart/alternative;\n boundary=%s;\n charset=UTF-8", boundary),
 	)
@@ -80,7 +85,7 @@ func SendEmail[V any](srv *EmailService, toEmail string, template email.Template
 		srv.appConfigService.DbConfig.SmtpHost.Value+":"+srv.appConfigService.DbConfig.SmtpPort.Value,
 		auth,
 		srv.appConfigService.DbConfig.SmtpFrom.Value,
-		[]string{toEmail},
+		[]string{toEmail.Email},
 		[]byte(c.String()),
 	)
 
