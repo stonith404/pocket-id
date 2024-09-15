@@ -8,7 +8,7 @@ import (
 	ttemplate "text/template"
 )
 
-const TEMPLATE_COMPONENTS_DIR = "components"
+const templateComponentsDir = "components"
 
 type Template[V any] struct {
 	Path  string
@@ -51,7 +51,7 @@ func prepareTemplate[V pareseable[V]](template string, rootTemplate clonable[V],
 }
 
 func PrepareTextTemplates(templateDir fs.FS, templates []string) (map[string]*ttemplate.Template, error) {
-	components := path.Join(TEMPLATE_COMPONENTS_DIR, "*_text.tmpl")
+	components := path.Join(templateComponentsDir, "*_text.tmpl")
 	rootTmpl, err := ttemplate.ParseFS(templateDir, components)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse templates '%s': %w", components, err)
@@ -74,7 +74,7 @@ func PrepareTextTemplates(templateDir fs.FS, templates []string) (map[string]*tt
 }
 
 func PrepareHTMLTemplates(templateDir fs.FS, templates []string) (map[string]*htemplate.Template, error) {
-	components := path.Join(TEMPLATE_COMPONENTS_DIR, "*_html.tmpl")
+	components := path.Join(templateComponentsDir, "*_html.tmpl")
 	rootTmpl, err := htemplate.ParseFS(templateDir, components)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse templates '%s': %w", components, err)
