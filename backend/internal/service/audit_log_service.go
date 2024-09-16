@@ -4,6 +4,7 @@ import (
 	userAgentParser "github.com/mileusna/useragent"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	"gorm.io/gorm"
 	"log"
 )
@@ -55,14 +56,16 @@ func (s *AuditLogService) CreateNewSignInWithEmail(ipAddress, userAgent, userID 
 			var user model.User
 			s.db.Where("id = ?", userID).First(&user)
 
-			title := "New device login with " + s.appConfigService.DbConfig.AppName.Value
-			err := s.emailService.Send(user.Email, title, "login-with-new-device", map[string]interface{}{
-				"ipAddress":      ipAddress,
-				"device":         s.DeviceStringFromUserAgent(userAgent),
-				"dateTimeString": createdAuditLog.CreatedAt.UTC().Format("2006-01-02 15:04:05 UTC"),
+			err := SendEmail(s.emailService, email.Address{
+				Name:  user.Username,
+				Email: user.Email,
+			}, NewLoginTemplate, &NewLoginTemplateData{
+				IPAddress: ipAddress,
+				Device:    s.DeviceStringFromUserAgent(userAgent),
+				DateTime:  createdAuditLog.CreatedAt.UTC(),
 			})
 			if err != nil {
-				log.Printf("Failed to send email: %v\n", err)
+				log.Printf("Failed to send email to '%s': %v\n", user.Email, err)
 			}
 		}()
 	}

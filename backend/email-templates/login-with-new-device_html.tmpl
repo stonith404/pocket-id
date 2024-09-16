@@ -1,0 +1,30 @@
+{{ define "base" }}
+    <div class="header">
+        <div class="logo">
+            <img src="{{ .LogoURL }}" alt="Pocket ID"/>
+            <h1>{{ .AppName }}</h1>
+        </div>
+        <div class="warning">Warning</div>
+    </div>
+    <div class="content">
+        <h2>New Sign-In Detected</h2>
+        <div class="grid">
+            <div>
+                <p class="label">IP Address</p>
+                <p>{{ .Data.IPAddress}}</p>
+            </div>
+            <div>
+                <p class="label">Device</p>
+                <p>{{ .Data.Device }}</p>
+            </div>
+            <div>
+                <p class="label">Sign-In Time</p>
+                <p>{{ .Data.DateTime.Format "2006-01-02 15:04:05 UTC"}}</p>
+            </div>
+        </div>
+        <p class="message">
+            This sign-in was detected from a new device or location. If you recognize this activity, you can
+            safely ignore this message. If not, please review your account and security settings.
+        </p>
+    </div>
+{{ end -}}
