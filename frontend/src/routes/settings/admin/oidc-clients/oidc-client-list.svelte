@@ -7,6 +7,7 @@
 	import OIDCService from '$lib/services/oidc-service';
 	import type { OidcClient } from '$lib/types/oidc.type';
 	import type { Paginated, PaginationRequest } from '$lib/types/pagination.type';
+	import { debounced } from '$lib/utils/debounce-util';
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucidePencil, LucideTrash } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
@@ -27,6 +28,10 @@
 		limit: 10
 	});
 	let search = $state('');
+
+	const debouncedSearch = debounced(async (searchValue: string) => {
+		clients = await oidcService.listClients(searchValue, pagination);
+	}, 400);
 
 	async function deleteClient(client: OidcClient) {
 		openConfirmDialog({
@@ -53,8 +58,7 @@
 	type="search"
 	placeholder="Search clients"
 	bind:value={search}
-	on:input={async (e) =>
-		(clients = await oidcService.listClients((e.target as HTMLInputElement).value, pagination))}
+	on:input={(e) => debouncedSearch((e.target as HTMLInputElement).value)}
 />
 <Table.Root>
 	<Table.Header class="sr-only">

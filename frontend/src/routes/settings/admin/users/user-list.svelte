@@ -33,7 +33,9 @@
 	});
 	let search = $state('');
 
-	const debouncedFetchUsers = debounced(userService.list, 500);
+	const debouncedSearch = debounced(async (searchValue: string) => {
+		users = await userService.list(searchValue, pagination);
+	}, 400);
 
 	async function deleteUser(user: User) {
 		openConfirmDialog({
@@ -69,12 +71,11 @@
 	type="search"
 	placeholder="Search users"
 	bind:value={search}
-	on:input={async (e) =>
-		(users = await userService.list((e.target as HTMLInputElement).value, pagination))}
+	on:input={(e) => debouncedSearch((e.target as HTMLInputElement).value)}
 />
 <Table.Root>
 	<Table.Header>
-		<Table.Row> 
+		<Table.Row>
 			<Table.Head class="hidden md:table-cell">First name</Table.Head>
 			<Table.Head class="hidden md:table-cell">Last name</Table.Head>
 			<Table.Head>Email</Table.Head>
