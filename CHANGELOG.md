@@ -1,3 +1,15 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.5.0...v) (2024-09-16)
+
+
+### Features
+
+* **email:** improve email templating ([#27](https://github.com/stonith404/pocket-id/issues/27)) ([64cf562](https://github.com/stonith404/pocket-id/commit/64cf56276a07169bc601a11be905c1eea67c4750))
+
+
+### Bug Fixes
+
+* debounce oidc client and user search ([9c2848d](https://github.com/stonith404/pocket-id/commit/9c2848db1d93c230afc6c5f64e498e9f6df8c8a7))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.4.1...v) (2024-09-09)
 
 
