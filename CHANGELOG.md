@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.5.1...v) (2024-09-19)
+
+
+### Bug Fixes
+
+* updated application name doesn't apply to webauthn credential ([924bb14](https://github.com/stonith404/pocket-id/commit/924bb1468bbd8e42fa6a530ef740be73ce3b3914))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.5.0...v) (2024-09-16)
 
 
