@@ -12,10 +12,11 @@ import (
 )
 
 type WebAuthnService struct {
-	db              *gorm.DB
-	webAuthn        *webauthn.WebAuthn
-	jwtService      *JwtService
-	auditLogService *AuditLogService
+	db               *gorm.DB
+	webAuthn         *webauthn.WebAuthn
+	jwtService       *JwtService
+	auditLogService  *AuditLogService
+	appConfigService *AppConfigService
 }
 
 func NewWebAuthnService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService, appConfigService *AppConfigService) *WebAuthnService {
@@ -36,12 +37,13 @@ func NewWebAuthnService(db *gorm.DB, jwtService *JwtService, auditLogService *Au
 			},
 		},
 	}
-
 	wa, _ := webauthn.New(webauthnConfig)
-	return &WebAuthnService{db: db, webAuthn: wa, jwtService: jwtService, auditLogService: auditLogService}
+	return &WebAuthnService{db: db, webAuthn: wa, jwtService: jwtService, auditLogService: auditLogService, appConfigService: appConfigService}
 }
 
 func (s *WebAuthnService) BeginRegistration(userID string) (*model.PublicKeyCredentialCreationOptions, error) {
+	s.updateWebAuthnConfig()
+
 	var user model.User
 	if err := s.db.Preload("Credentials").Find(&user, "id = ?", userID).Error; err != nil {
 		return nil, err
@@ -202,4 +204,9 @@ func (s *WebAuthnService) UpdateCredential(userID, credentialID, name string) (m
 	}
 
 	return credential, nil
+}
+
+// updateWebAuthnConfig updates the WebAuthn configuration with the app name as it can change during runtime
+func (s *WebAuthnService) updateWebAuthnConfig() {
+	s.webAuthn.Config.RPDisplayName = s.appConfigService.DbConfig.AppName.Value
 }
