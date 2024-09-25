@@ -38,10 +38,10 @@
 <form onsubmit={onSubmit}>
 	<div class="flex flex-col gap-3 sm:flex-row">
 		<div class="w-full">
-			<FormInput label="Firstname" bind:input={$inputs.firstName} />
+			<FormInput label="First name" bind:input={$inputs.firstName} />
 		</div>
 		<div class="w-full">
-			<FormInput label="Lastname" bind:input={$inputs.lastName} />
+			<FormInput label="Last name" bind:input={$inputs.lastName} />
 		</div>
 	</div>
 	<div class="mt-3 flex flex-col gap-3 sm:flex-row">
