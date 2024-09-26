@@ -8,8 +8,8 @@ test.beforeEach(cleanupBackend);
 test('Update account details', async ({ page }) => {
 	await page.goto('/settings/account');
 
-	await page.getByLabel('Firstname').fill('Timothy');
-	await page.getByLabel('Lastname').fill('Apple');
+	await page.getByLabel('First name').fill('Timothy');
+	await page.getByLabel('Last name').fill('Apple');
 	await page.getByLabel('Email').fill('timothy.apple@test.com');
 	await page.getByLabel('Username').fill('timothy');
 	await page.getByRole('button', { name: 'Save' }).click();

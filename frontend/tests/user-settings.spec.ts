@@ -10,8 +10,8 @@ test('Create user', async ({ page }) => {
 	await page.goto('/settings/admin/users');
 
 	await page.getByRole('button', { name: 'Add User' }).click();
-	await page.getByLabel('Firstname').fill(user.firstname);
-	await page.getByLabel('Lastname').fill(user.lastname);
+	await page.getByLabel('First name').fill(user.firstname);
+	await page.getByLabel('Last name').fill(user.lastname);
 	await page.getByLabel('Email').fill(user.email);
 	await page.getByLabel('Username').fill(user.username);
 	await page.getByRole('button', { name: 'Save' }).click();
@@ -26,8 +26,8 @@ test('Create user fails with already taken email', async ({ page }) => {
 	await page.goto('/settings/admin/users');
 
 	await page.getByRole('button', { name: 'Add User' }).click();
-	await page.getByLabel('Firstname').fill(user.firstname);
-	await page.getByLabel('Lastname').fill(user.lastname);
+	await page.getByLabel('First name').fill(user.firstname);
+	await page.getByLabel('Last name').fill(user.lastname);
 	await page.getByLabel('Email').fill(users.tim.email);
 	await page.getByLabel('Username').fill(user.username);
 	await page.getByRole('button', { name: 'Save' }).click();
@@ -41,8 +41,8 @@ test('Create user fails with already taken username', async ({ page }) => {
 	await page.goto('/settings/admin/users');
 
 	await page.getByRole('button', { name: 'Add User' }).click();
-	await page.getByLabel('Firstname').fill(user.firstname);
-	await page.getByLabel('Lastname').fill(user.lastname);
+	await page.getByLabel('First name').fill(user.firstname);
+	await page.getByLabel('Last name').fill(user.lastname);
 	await page.getByLabel('Email').fill(user.email);
 	await page.getByLabel('Username').fill(users.tim.username);
 	await page.getByRole('button', { name: 'Save' }).click();
@@ -91,8 +91,8 @@ test('Update user', async ({ page }) => {
 		.click();
 	await page.getByRole('menuitem', { name: 'Edit' }).click();
 
-	await page.getByLabel('Firstname').fill('Crack');
-	await page.getByLabel('Lastname').fill('Apple');
+	await page.getByLabel('First name').fill('Crack');
+	await page.getByLabel('Last name').fill('Apple');
 	await page.getByLabel('Email').fill('crack.apple@test.com');
 	await page.getByLabel('Username').fill('crack');
 	await page.getByRole('button', { name: 'Save' }).click();
