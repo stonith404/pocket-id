@@ -1,3 +1,11 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.5.2...v) (2024-09-26)
+
+
+### Bug Fixes
+
+* add space to "Firstname" and "Lastname" label ([#31](https://github.com/stonith404/pocket-id/issues/31)) ([d6a9bb4](https://github.com/stonith404/pocket-id/commit/d6a9bb4c09efb8102da172e49c36c070b341f0fc))
+* port environment variables get ignored in caddyfile ([3c67765](https://github.com/stonith404/pocket-id/commit/3c67765992d7369a79812bc8cd216c9ba12fd96e))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.5.1...v) (2024-09-19)
 
 
