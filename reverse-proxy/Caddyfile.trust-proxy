@@ -1,16 +1,16 @@
 :80 {
-    reverse_proxy /api/* http://localhost:{$BACKEND_PORT:8080}  {
-            trusted_proxies 0.0.0.0/0
-        }
-    reverse_proxy /.well-known/* http://localhost:{$BACKEND_PORT:8080}  {
-            trusted_proxies 0.0.0.0/0
-        }
-    reverse_proxy /* http://localhost:{$PORT:3000}  {
-            trusted_proxies 0.0.0.0/0
-        }
+	reverse_proxy /api/* http://localhost:{$BACKEND_PORT:8080} {
+		trusted_proxies 0.0.0.0/0
+	}
+	reverse_proxy /.well-known/* http://localhost:{$BACKEND_PORT:8080} {
+		trusted_proxies 0.0.0.0/0
+	}
+	reverse_proxy /* http://localhost:{$PORT:3000} {
+		trusted_proxies 0.0.0.0/0
+	}
 
-    log {
-        output file /var/log/caddy/access.log
-        level WARN
-    }
+	log {
+		output file /var/log/caddy/access.log
+		level WARN
+	}
 }
