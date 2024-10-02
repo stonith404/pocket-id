@@ -42,7 +42,7 @@
   "dependencies": {
     "@simplewebauthn/browser": "^10.0.0",
     "axios": "^1.7.5",
-    "bits-ui": "^0.21.13",
+    "bits-ui": "^0.21.15",
     "clsx": "^2.1.1",
     "crypto": "^1.0.1",
     "formsnap": "^1.0.1",

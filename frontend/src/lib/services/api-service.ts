@@ -13,7 +13,7 @@ abstract class APIService {
 		if (browser) {
 			this.api.defaults.baseURL = '/api';
 		} else {
-			this.api.defaults.baseURL = process?.env?.INTERNAL_BACKEND_URL + '/api';
+			this.api.defaults.baseURL = process!.env!.INTERNAL_BACKEND_URL + '/api';
 		}
 	}
 }

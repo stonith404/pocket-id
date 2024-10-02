@@ -57,13 +57,35 @@ func mapStructInternal(sourceVal reflect.Value, destVal reflect.Value) error {
 			// Handle direct assignment for simple types
 			if sourceField.Type() == destField.Type() {
 				destField.Set(sourceField)
+
 			} else if sourceField.Kind() == reflect.Slice && destField.Kind() == reflect.Slice {
 				// Handle slices
 				if sourceField.Type().Elem() == destField.Type().Elem() {
+					// Direct assignment for slices of primitive types or non-struct elements
 					newSlice := reflect.MakeSlice(destField.Type(), sourceField.Len(), sourceField.Cap())
 
 					for j := 0; j < sourceField.Len(); j++ {
 						newSlice.Index(j).Set(sourceField.Index(j))
+					}
+
+					destField.Set(newSlice)
+
+				} else if sourceField.Type().Elem().Kind() == reflect.Struct && destField.Type().Elem().Kind() == reflect.Struct {
+					// Recursively map slices of structs
+					newSlice := reflect.MakeSlice(destField.Type(), sourceField.Len(), sourceField.Cap())
+
+					for j := 0; j < sourceField.Len(); j++ {
+						// Get the element from both source and destination slice
+						sourceElem := sourceField.Index(j)
+						destElem := reflect.New(destField.Type().Elem()).Elem()
+
+						// Recursively map the struct elements
+						if err := mapStructInternal(sourceElem, destElem); err != nil {
+							return err
+						}
+
+						// Set the mapped element in the new slice
+						newSlice.Index(j).Set(destElem)
 					}
 
 					destField.Set(newSlice)

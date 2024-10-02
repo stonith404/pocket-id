@@ -4,14 +4,8 @@ import APIService from './api-service';
 
 class AuditLogService extends APIService {
 	async list(pagination?: PaginationRequest) {
-		const page = pagination?.page || 1;
-		const limit = pagination?.limit || 10;
-
 		const res = await this.api.get('/audit-logs', {
-			params: {
-				page,
-				limit
-			}
+			params: pagination
 		});
 		return res.data as Paginated<AuditLog>;
 	}

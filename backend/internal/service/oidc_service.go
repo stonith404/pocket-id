@@ -301,15 +301,21 @@ func (s *OidcService) DeleteClientLogo(clientID string) error {
 
 func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (map[string]interface{}, error) {
 	var authorizedOidcClient model.UserAuthorizedOidcClient
-	if err := s.db.Preload("User").First(&authorizedOidcClient, "user_id = ? AND client_id = ?", userID, clientID).Error; err != nil {
+	if err := s.db.Preload("User.UserGroups").First(&authorizedOidcClient, "user_id = ? AND client_id = ?", userID, clientID).Error; err != nil {
 		return nil, err
 	}
 
 	user := authorizedOidcClient.User
 	scope := authorizedOidcClient.Scope
 
+	userGroups := make([]string, len(user.UserGroups))
+	for i, group := range user.UserGroups {
+		userGroups[i] = group.Name
+	}
+
 	claims := map[string]interface{}{
-		"sub": user.ID,
+		"sub":    user.ID,
+		"groups": userGroups,
 	}
 
 	if strings.Contains(scope, "email") {

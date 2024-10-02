@@ -15,4 +15,5 @@ var (
 	ErrOidcInvalidCallbackURL       = errors.New("invalid callback URL")
 	ErrFileTypeNotSupported         = errors.New("file type not supported")
 	ErrInvalidCredentials           = errors.New("no user found with provided credentials")
+	ErrNameAlreadyInUse             = errors.New("name is already in use")
 )

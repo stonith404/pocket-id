@@ -4,14 +4,10 @@ import APIService from './api-service';
 
 export default class UserService extends APIService {
 	async list(search?: string, pagination?: PaginationRequest) {
-		const page = pagination?.page || 1;
-		const limit = pagination?.limit || 10;
-
 		const res = await this.api.get('/users', {
 			params: {
 				search,
-				page,
-				limit
+				...pagination
 			}
 		});
 		return res.data as Paginated<User>;

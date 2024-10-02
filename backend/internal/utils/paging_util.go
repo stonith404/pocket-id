@@ -5,9 +5,10 @@ import (
 )
 
 type PaginationResponse struct {
-	TotalPages  int64 `json:"totalPages"`
-	TotalItems  int64 `json:"totalItems"`
-	CurrentPage int   `json:"currentPage"`
+	TotalPages   int64 `json:"totalPages"`
+	TotalItems   int64 `json:"totalItems"`
+	CurrentPage  int   `json:"currentPage"`
+	ItemsPerPage int   `json:"itemsPerPage"`
 }
 
 func Paginate(page int, pageSize int, db *gorm.DB, result interface{}) (PaginationResponse, error) {
@@ -33,8 +34,9 @@ func Paginate(page int, pageSize int, db *gorm.DB, result interface{}) (Paginati
 	}
 
 	return PaginationResponse{
-		TotalPages:  (totalItems + int64(pageSize) - 1) / int64(pageSize),
-		TotalItems:  totalItems,
-		CurrentPage: page,
+		TotalPages:   (totalItems + int64(pageSize) - 1) / int64(pageSize),
+		TotalItems:   totalItems,
+		CurrentPage:  page,
+		ItemsPerPage: pageSize,
 	}, nil
 }

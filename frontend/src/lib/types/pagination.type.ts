@@ -7,6 +7,7 @@ export type PaginationResponse = {
 	totalPages: number;
 	totalItems: number;
 	currentPage: number;
+	itemsPerPage: number;
 };
 
 export type Paginated<T> = {

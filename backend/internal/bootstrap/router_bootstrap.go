@@ -41,6 +41,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	userService := service.NewUserService(db, jwtService)
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService)
 	testService := service.NewTestService(db, appConfigService)
+	userGroupService := service.NewUserGroupService(db)
 
 	r.Use(middleware.NewCorsMiddleware().Add())
 	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
@@ -57,6 +58,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService)
 	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
+	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
 
 	// Add test controller in non-production environments
 	if common.EnvConfig.AppEnv != "production" {

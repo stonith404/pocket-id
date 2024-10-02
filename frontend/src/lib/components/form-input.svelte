@@ -3,7 +3,7 @@
 	import type { FormInput } from '$lib/utils/form-util';
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { Input } from './ui/input';
+	import { Input, type FormInputEvent } from './ui/input';
 
 	let {
 		input = $bindable(),
@@ -12,6 +12,7 @@
 		disabled = false,
 		type = 'text',
 		children,
+		onInput,
 		...restProps
 	}: HTMLAttributes<HTMLDivElement> & {
 		input?: FormInput<string | boolean | number>;
@@ -19,6 +20,7 @@
 		description?: string;
 		disabled?: boolean;
 		type?: 'text' | 'password' | 'email' | 'number' | 'checkbox';
+		onInput?: (e: FormInputEvent) => void;
 		children?: Snippet;
 	} = $props();
 
@@ -34,7 +36,7 @@
 		{#if children}
 			{@render children()}
 		{:else if input}
-			<Input {id} {type} bind:value={input.value} {disabled} />
+			<Input {id} {type} bind:value={input.value} {disabled} on:input={(e) => onInput?.(e)} />
 		{/if}
 		{#if input?.error}
 			<p class="mt-1 text-sm text-red-500">{input.error}</p>

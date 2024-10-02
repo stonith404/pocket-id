@@ -8,7 +8,7 @@
 		id,
 		imageClass,
 		label,
-		image = $bindable<File | null>(null),
+		image = $bindable(),
 		imageURL,
 		accept = 'image/png, image/jpeg, image/svg+xml',
 		...restProps

@@ -9,7 +9,7 @@
 	import { LucideMinus } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import { slide } from 'svelte/transition';
-	import CreateUser from './user-form.svelte';
+	import UserForm from './user-form.svelte';
 	import UserList from './user-list.svelte';
 
 	let { data } = $props();
@@ -56,7 +56,7 @@
 	{#if expandAddUser}
 		<div transition:slide>
 			<Card.Content>
-				<CreateUser callback={createUser} />
+				<UserForm callback={createUser} />
 			</Card.Content>
 		</div>
 	{/if}

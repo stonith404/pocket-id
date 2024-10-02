@@ -3,7 +3,7 @@ import type { Paginated, PaginationRequest } from '$lib/types/pagination.type';
 import APIService from './api-service';
 
 class OidcService extends APIService {
-	async authorize(clientId: string, scope: string, callbackURL : string, nonce?: string) {
+	async authorize(clientId: string, scope: string, callbackURL: string, nonce?: string) {
 		const res = await this.api.post('/oidc/authorize', {
 			scope,
 			nonce,
@@ -26,14 +26,10 @@ class OidcService extends APIService {
 	}
 
 	async listClients(search?: string, pagination?: PaginationRequest) {
-		const page = pagination?.page || 1;
-		const limit = pagination?.limit || 10;
-
 		const res = await this.api.get('/oidc/clients', {
 			params: {
 				search,
-				page,
-				limit
+				...pagination
 			}
 		});
 		return res.data as Paginated<OidcClient>;

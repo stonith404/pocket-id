@@ -15,6 +15,7 @@ type User struct {
 	LastName  string
 	IsAdmin   bool
 
+	UserGroups  []UserGroup `gorm:"many2many:user_groups_users;"`
 	Credentials []WebauthnCredential
 }
 
