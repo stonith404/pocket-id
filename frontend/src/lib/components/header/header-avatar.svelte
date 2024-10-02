@@ -3,6 +3,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import WebAuthnService from '$lib/services/webauthn-service';
 	import userStore from '$lib/stores/user-store';
+	import { createSHA256hash } from '$lib/utils/crypto-util';
 	import { LucideLogOut, LucideUser } from 'lucide-svelte';
 
 	const webauthnService = new WebAuthnService();
@@ -10,6 +11,13 @@
 	let initials = $derived(
 		($userStore!.firstName.charAt(0) + $userStore!.lastName?.charAt(0)).toUpperCase()
 	);
+
+	let gravatarURL: string | undefined = $state();
+	if ($userStore) {
+		createSHA256hash($userStore.email).then((email) => {
+			gravatarURL = `https://www.gravatar.com/avatar/${email}`;
+		});
+	}
 
 	async function logout() {
 		await webauthnService.logout();
@@ -19,7 +27,8 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger
-		><Avatar.Root>
+		><Avatar.Root class="h-9 w-9">
+			<Avatar.Image src={gravatarURL} />
 			<Avatar.Fallback>{initials}</Avatar.Fallback>
 		</Avatar.Root></DropdownMenu.Trigger
 	>
