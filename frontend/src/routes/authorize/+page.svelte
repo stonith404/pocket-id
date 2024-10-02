@@ -9,7 +9,7 @@
 	import { getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startAuthentication } from '@simplewebauthn/browser';
 	import { AxiosError } from 'axios';
-	import { LucideMail, LucideUser } from 'lucide-svelte';
+	import { LucideMail, LucideUser, LucideUsers } from 'lucide-svelte';
 	import { slide } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import ClientProviderImages from './components/client-provider-images.svelte';
@@ -111,6 +111,13 @@
 									icon={LucideUser}
 									name="Profile"
 									description="View your profile information"
+								/>
+							{/if}
+							{#if scope!.includes('groups')}
+								<ScopeItem
+									icon={LucideUsers}
+									name="Groups"
+									description="View the groups you are a member of"
 								/>
 							{/if}
 						</div>

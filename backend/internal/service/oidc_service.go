@@ -308,18 +308,20 @@ func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (ma
 	user := authorizedOidcClient.User
 	scope := authorizedOidcClient.Scope
 
-	userGroups := make([]string, len(user.UserGroups))
-	for i, group := range user.UserGroups {
-		userGroups[i] = group.Name
-	}
-
 	claims := map[string]interface{}{
-		"sub":    user.ID,
-		"groups": userGroups,
+		"sub": user.ID,
 	}
 
 	if strings.Contains(scope, "email") {
 		claims["email"] = user.Email
+	}
+
+	if strings.Contains(scope, "groups") {
+		userGroups := make([]string, len(user.UserGroups))
+		for i, group := range user.UserGroups {
+			userGroups[i] = group.Name
+		}
+		claims["groups"] = userGroups
 	}
 
 	profileClaims := map[string]interface{}{

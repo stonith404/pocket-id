@@ -95,6 +95,7 @@ You may need the following information:
 - **Certificate URL**: `https://<your-domain>/.well-known/jwks.json`
 - **OIDC Discovery URL**: `https://<your-domain>/.well-known/openid-configuration`
 - **PKCE**: `false` as this is not supported yet.
+- **Scopes**: At least `openid email`. Optionally you can add `profile` and `groups`.
 
 ### Proxy Services with Pocket ID
 

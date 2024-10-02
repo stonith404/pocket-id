@@ -70,7 +70,7 @@
 		<div class="w-full">
 			<FormInput
 				label="Name"
-				description={`Name that will be in the "userGroup" claim`}
+				description={`Name that will be in the "groups" claim`}
 				bind:input={$inputs.name}
 				onInput={onNameInput}
 			/>
