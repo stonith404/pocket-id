@@ -56,6 +56,30 @@ func (s *TestService) SeedDatabase() error {
 			}
 		}
 
+		userGroups := []model.UserGroup{
+			{
+				Base: model.Base{
+					ID: "4110f814-56f1-4b28-8998-752b69bc97c0e",
+				},
+				Name:         "developers",
+				FriendlyName: "Developers",
+				Users:        []model.User{users[0], users[1]},
+			},
+			{
+				Base: model.Base{
+					ID: "adab18bf-f89d-4087-9ee1-70ff15b48211",
+				},
+				Name:         "designers",
+				FriendlyName: "Designers",
+				Users:        []model.User{users[0]},
+			},
+		}
+		for _, group := range userGroups {
+			if err := tx.Create(&group).Error; err != nil {
+				return err
+			}
+		}
+
 		oidcClients := []model.OidcClient{
 			{
 				Base: model.Base{

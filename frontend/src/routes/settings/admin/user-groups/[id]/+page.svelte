@@ -23,7 +23,7 @@
 		let success = true;
 		await userGroupService
 			.update(userGroup.id, updatedUserGroup)
-			.then(() => toast.success('User Group updated successfully'))
+			.then(() => toast.success('User group updated successfully'))
 			.catch((e) => {
 				axiosErrorToast(e);
 				success = false;

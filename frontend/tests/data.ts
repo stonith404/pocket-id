@@ -38,3 +38,20 @@ export const oidcClients = {
 		secondCallbackUrl: 'http://pingvin.share/auth/callback2'
 	}
 };
+
+export const userGroups = {
+	developers: {
+		id: '4110f814-56f1-4b28-8998-752b69bc97c0e',
+		friendlyName: 'Developers',
+		name: 'developers'
+	},
+	designers: {
+		id: 'adab18bf-f89d-4087-9ee1-70ff15b48211',
+		friendlyName: 'Designers',
+		name: 'designers'
+	},
+	humanResources: {
+		friendlyName: 'Human Resources',
+		name: 'human_resources'
+	}
+};
