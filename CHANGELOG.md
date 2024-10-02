@@ -1,3 +1,17 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.5.3...v) (2024-10-02)
+
+
+### Features
+
+* add copy to clipboard option for OIDC client information ([f82020c](https://github.com/stonith404/pocket-id/commit/f82020ccfb0d4fbaa1dd98182188149d8085252a))
+* add gravatar profile picture integration ([365734e](https://github.com/stonith404/pocket-id/commit/365734ec5d8966c2ab877c60cfb176b9cdc36880))
+* add user groups ([24c948e](https://github.com/stonith404/pocket-id/commit/24c948e6a66f283866f6c8369c16fa6cbcfa626c))
+
+
+### Bug Fixes
+
+* only return user groups if it is explicitly requested ([a4a90a1](https://github.com/stonith404/pocket-id/commit/a4a90a16a9726569a22e42560184319b25fd7ca6))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.5.2...v) (2024-09-26)
 
 
