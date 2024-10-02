@@ -2,6 +2,7 @@
 	import { beforeNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog';
+	import CopyToClipboard from '$lib/components/copy-to-clipboard.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import Label from '$lib/components/ui/label/label.svelte';
@@ -89,7 +90,9 @@
 		<div class="flex flex-col">
 			<div class="mb-2 flex">
 				<Label class="mb-0 w-44">Client ID</Label>
-				<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
+				<CopyToClipboard value={client.id}>
+					<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
+				</CopyToClipboard>
 			</div>
 			<div class="mb-2 mt-1 flex items-center">
 				<Label class="w-44">Client secret</Label>
@@ -111,7 +114,9 @@
 					{#each Object.entries(setupDetails) as [key, value]}
 						<div class="mb-5 flex">
 							<Label class="mb-0 w-44">{key}</Label>
-							<span class="text-muted-foreground text-sm">{value}</span>
+							<CopyToClipboard {value}>
+								<span class="text-muted-foreground text-sm">{value}</span>
+							</CopyToClipboard>
 						</div>
 					{/each}
 				</div>
