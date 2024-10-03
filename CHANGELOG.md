@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.7.0...v) (2024-10-03)
+
+
+### Bug Fixes
+
+* initials don't get displayed if Gravatar avatar doesn't exist ([e095628](https://github.com/stonith404/pocket-id/commit/e09562824a794bc7d240e9d229709d4b389db7d5))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.6.0...v) (2024-10-03)
 
 
