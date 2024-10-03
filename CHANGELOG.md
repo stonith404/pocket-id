@@ -1,3 +1,14 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.6.0...v) (2024-10-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* add ability to set light and dark mode logo
+
+### Features
+
+* add ability to set light and dark mode logo ([be45eed](https://github.com/stonith404/pocket-id/commit/be45eed125e33e9930572660a034d5f12dc310ce))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.5.3...v) (2024-10-02)
 
 
