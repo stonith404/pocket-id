@@ -15,7 +15,7 @@
 	let gravatarURL: string | undefined = $state();
 	if ($userStore) {
 		createSHA256hash($userStore.email).then((email) => {
-			gravatarURL = `https://www.gravatar.com/avatar/${email}`;
+			gravatarURL = `https://www.gravatar.com/avatar/${email}?d=404`;
 		});
 	}
 
