@@ -91,8 +91,20 @@ func (acc *AppConfigController) updateAppConfigHandler(c *gin.Context) {
 }
 
 func (acc *AppConfigController) getLogoHandler(c *gin.Context) {
-	imageType := acc.appConfigService.DbConfig.LogoImageType.Value
-	acc.getImage(c, "logo", imageType)
+	lightLogo := c.DefaultQuery("light", "true") == "true"
+
+	var imageName string
+	var imageType string
+
+	if lightLogo {
+		imageName = "logoLight"
+		imageType = acc.appConfigService.DbConfig.LogoLightImageType.Value
+	} else {
+		imageName = "logoDark"
+		imageType = acc.appConfigService.DbConfig.LogoDarkImageType.Value
+	}
+
+	acc.getImage(c, imageName, imageType)
 }
 
 func (acc *AppConfigController) getFaviconHandler(c *gin.Context) {
@@ -105,8 +117,20 @@ func (acc *AppConfigController) getBackgroundImageHandler(c *gin.Context) {
 }
 
 func (acc *AppConfigController) updateLogoHandler(c *gin.Context) {
-	imageType := acc.appConfigService.DbConfig.LogoImageType.Value
-	acc.updateImage(c, "logo", imageType)
+	lightLogo := c.DefaultQuery("light", "true") == "true"
+
+	var imageName string
+	var imageType string
+
+	if lightLogo {
+		imageName = "logoLight"
+		imageType = acc.appConfigService.DbConfig.LogoLightImageType.Value
+	} else {
+		imageName = "logoDark"
+		imageType = acc.appConfigService.DbConfig.LogoDarkImageType.Value
+	}
+
+	acc.updateImage(c, imageName, imageType)
 }
 
 func (acc *AppConfigController) updateFaviconHandler(c *gin.Context) {

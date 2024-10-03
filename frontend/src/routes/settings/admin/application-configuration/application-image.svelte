@@ -11,6 +11,7 @@
 		image = $bindable(),
 		imageURL,
 		accept = 'image/png, image/jpeg, image/svg+xml',
+		forceColorScheme,
 		...restProps
 	}: HTMLAttributes<HTMLDivElement> & {
 		id: string;
@@ -18,6 +19,7 @@
 		label: string;
 		image: File | null;
 		imageURL: string;
+		forceColorScheme?: 'light' | 'dark';
 		accept?: string;
 	} = $props();
 
@@ -37,10 +39,16 @@
 	}
 </script>
 
-<div {...restProps}>
-	<Label for={id}>{label}</Label>
+<div class="flex flex-col items-start md:flex-row md:items-center" {...restProps}>
+	<Label class="w-52" for={id}>{label}</Label>
 	<FileInput {id} variant="secondary" {accept} onchange={onImageChange}>
-		<div class="bg-muted group relative flex items-center rounded">
+		<div
+			class="{forceColorScheme === 'light'
+				? 'bg-[#F1F1F5]'
+				: forceColorScheme === 'dark'
+					? 'bg-[#27272A]'
+					: 'bg-muted'} group relative flex items-center rounded"
+		>
 			<img
 				class={cn(
 					'h-full w-full rounded object-cover p-3 transition-opacity duration-200 group-hover:opacity-10',

@@ -1,7 +1,4 @@
-import type {
-	AllAppConfig,
-	AppConfigRawResponse
-} from '$lib/types/application-configuration';
+import type { AllAppConfig, AppConfigRawResponse } from '$lib/types/application-configuration';
 import APIService from './api-service';
 
 export default class AppConfigService extends APIService {
@@ -33,11 +30,13 @@ export default class AppConfigService extends APIService {
 		await this.api.put(`/application-configuration/favicon`, formData);
 	}
 
-	async updateLogo(logo: File) {
+	async updateLogo(logo: File, light = true) {
 		const formData = new FormData();
 		formData.append('file', logo!);
 
-		await this.api.put(`/application-configuration/logo`, formData);
+		await this.api.put(`/application-configuration/logo`, formData, {
+			params: { light }
+		});
 	}
 
 	async updateBackgroundImage(backgroundImage: File) {

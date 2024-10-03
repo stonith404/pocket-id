@@ -47,8 +47,14 @@ var defaultDbConfig = model.AppConfig{
 		IsInternal: true,
 		Value:      "jpg",
 	},
-	LogoImageType: model.AppConfigVariable{
-		Key:        "logoImageType",
+	LogoLightImageType: model.AppConfigVariable{
+		Key:        "logoLightImageType",
+		Type:       "string",
+		IsInternal: true,
+		Value:      "svg",
+	},
+	LogoDarkImageType: model.AppConfigVariable{
+		Key:        "logoDarkImageType",
 		Type:       "string",
 		IsInternal: true,
 		Value:      "svg",

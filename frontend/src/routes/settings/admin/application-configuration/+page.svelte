@@ -28,17 +28,19 @@
 	}
 
 	async function updateImages(
-		logo: File | null,
+		logoLight: File | null,
+		logoDark: File | null,
 		backgroundImage: File | null,
 		favicon: File | null
 	) {
 		const faviconPromise = favicon ? appConfigService.updateFavicon(favicon) : Promise.resolve();
-		const logoPromise = logo ? appConfigService.updateLogo(logo) : Promise.resolve();
+		const lightLogoPromise = logoLight ? appConfigService.updateLogo(logoLight, true) : Promise.resolve();
+		const darkLogoPromise = logoDark ? appConfigService.updateLogo(logoDark, false) : Promise.resolve();
 		const backgroundImagePromise = backgroundImage
 			? appConfigService.updateBackgroundImage(backgroundImage)
 			: Promise.resolve();
 
-		await Promise.all([logoPromise, backgroundImagePromise, faviconPromise])
+		await Promise.all([lightLogoPromise, darkLogoPromise, backgroundImagePromise, faviconPromise])
 			.then(() => toast.success('Images updated successfully'))
 			.catch(axiosErrorToast);
 	}

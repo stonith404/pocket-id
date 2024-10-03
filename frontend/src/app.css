@@ -98,15 +98,3 @@
 		src: url('/fonts/PlayfairDisplay-Bold.woff') format('woff');
 	}
 }
-@layer components {
-	.application-images-grid {
-		@apply flex flex-wrap justify-between gap-x-5 gap-y-8;
-	}
-
-	@media (max-width: 1127px) {
-		.application-images-grid {
-			justify-content: flex-start;
-			@apply gap-x-20;
-		}
-	}
-}

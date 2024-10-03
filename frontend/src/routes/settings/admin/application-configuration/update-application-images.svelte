@@ -5,15 +5,21 @@
 	let {
 		callback
 	}: {
-		callback: (logo: File | null, backgroundImage: File | null, favicon: File | null) => void;
+		callback: (
+			logoLight: File | null,
+			logoDark: File | null,
+			backgroundImage: File | null,
+			favicon: File | null
+		) => void;
 	} = $props();
 
-	let logo = $state<File | null>(null);
+	let logoLight = $state<File | null>(null);
+	let logoDark = $state<File | null>(null);
 	let backgroundImage = $state<File | null>(null);
 	let favicon = $state<File | null>(null);
 </script>
 
-<div class="application-images-grid">
+<div class="flex flex-col gap-8">
 	<ApplicationImage
 		id="favicon"
 		imageClass="h-14 w-14 p-2"
@@ -23,15 +29,23 @@
 		accept="image/x-icon"
 	/>
 	<ApplicationImage
-		id="logo"
+		id="logo-light"
 		imageClass="h-32 w-32"
-		label="Logo"
-		bind:image={logo}
-		imageURL="/api/application-configuration/logo"
+		label="Light Mode Logo"
+		bind:image={logoLight}
+		imageURL="/api/application-configuration/logo?light=true"
+		forceColorScheme="light"
+	/>
+	<ApplicationImage
+		id="logo-dark"
+		imageClass="h-32 w-32"
+		label="Dark Mode Logo"
+		bind:image={logoDark}
+		imageURL="/api/application-configuration/logo?light=false"
+		forceColorScheme="dark"
 	/>
 	<ApplicationImage
 		id="background-image"
-		class="basis-full lg:basis-auto"
 		imageClass="h-[350px] max-w-[500px]"
 		label="Background Image"
 		bind:image={backgroundImage}
@@ -39,5 +53,7 @@
 	/>
 </div>
 <div class="flex justify-end">
-	<Button class="mt-5" onclick={() => callback(logo, backgroundImage, favicon)}>Save</Button>
+	<Button class="mt-5" onclick={() => callback(logoLight, logoDark, backgroundImage, favicon)}
+		>Save</Button
+	>
 </div>

@@ -11,7 +11,8 @@ type AppConfigVariable struct {
 type AppConfig struct {
 	AppName             AppConfigVariable
 	BackgroundImageType AppConfigVariable
-	LogoImageType       AppConfigVariable
+	LogoLightImageType  AppConfigVariable
+	LogoDarkImageType   AppConfigVariable
 	SessionDuration     AppConfigVariable
 
 	EmailEnabled AppConfigVariable

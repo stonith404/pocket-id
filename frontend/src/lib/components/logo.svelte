@@ -1,1 +1,10 @@
-<img class={$$restProps.class} src="/api/application-configuration/logo" alt="Logo" />
+<script lang="ts">
+	import { mode } from 'mode-watcher';
+	import type { HTMLAttributes } from 'svelte/elements';
+
+	let { ...props }: HTMLAttributes<HTMLImageElement> = $props();
+
+	const isDarkMode = $derived($mode === 'dark');
+</script>
+
+<img {...props} src="/api/application-configuration/logo?light={!isDarkMode}" alt="Logo" />

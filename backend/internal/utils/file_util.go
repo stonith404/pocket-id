@@ -38,7 +38,7 @@ func CopyDirectory(srcDir, destDir string) error {
 		srcFilePath := filepath.Join(srcDir, file.Name())
 		destFilePath := filepath.Join(destDir, file.Name())
 
-		err := copyFile(srcFilePath, destFilePath)
+		err := CopyFile(srcFilePath, destFilePath)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ func CopyDirectory(srcDir, destDir string) error {
 	return nil
 }
 
-func copyFile(srcFilePath, destFilePath string) error {
+func CopyFile(srcFilePath, destFilePath string) error {
 	srcFile, err := os.Open(srcFilePath)
 	if err != nil {
 		return err
