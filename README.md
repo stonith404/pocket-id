@@ -68,6 +68,10 @@ Required tools:
    cd ..
    pm2 start pocket-id-backend --name pocket-id-backend
 
+   # Optional: Download the GeoLite2 city database. 
+   # If not downloaded the ip location in the audit log will be empty.
+   MAXMIND_LICENSE_KEY=<your-key> sh scripts/download-ip-database.sh
+
    # Start the frontend
    cd ../frontend
    npm install
@@ -94,7 +98,6 @@ You may need the following information:
 - **Userinfo URL**: `https://<your-domain>/api/oidc/userinfo`
 - **Certificate URL**: `https://<your-domain>/.well-known/jwks.json`
 - **OIDC Discovery URL**: `https://<your-domain>/.well-known/openid-configuration`
-- **PKCE**: `false` as this is not supported yet.
 - **Scopes**: At least `openid email`. Optionally you can add `profile` and `groups`.
 
 ### Proxy Services with Pocket ID
@@ -131,6 +134,9 @@ docker compose up -d
    go build -o ../pocket-id-backend
    cd ..
    pm2 start pocket-id-backend --name pocket-id-backend
+
+   # Optional: Update the GeoLite2 city database
+   MAXMIND_LICENSE_KEY=<your-key> sh scripts/download-ip-database.sh
 
    # Start the frontend
    cd ../frontend

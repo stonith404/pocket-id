@@ -11,6 +11,8 @@ type AuditLog struct {
 
 	Event     AuditLogEvent
 	IpAddress string
+	Country   string
+	City      string
 	UserAgent string
 	UserID    string
 	Data      AuditLogData

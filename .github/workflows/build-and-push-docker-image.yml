@@ -23,6 +23,9 @@ jobs:
           username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
+      - name: Download GeoLite2 City database
+        run: MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} sh scripts/download-ip-database.sh
+    
       - name: Build and push
         uses: docker/build-push-action@v4
         with:

@@ -35,3 +35,4 @@ vite.config.ts.timestamp-*
 data
 /frontend/tests/.auth
 pocket-id-backend
+/backend/GeoLite2-City.mmdb

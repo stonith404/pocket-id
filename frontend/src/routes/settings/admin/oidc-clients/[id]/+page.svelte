@@ -27,7 +27,6 @@
 		'Token URL': `https://${$page.url.hostname}/api/oidc/token`,
 		'Userinfo URL': `https://${$page.url.hostname}/api/oidc/userinfo`,
 		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`,
-		PKCE: 'Disabled'
 	};
 
 	async function updateClient(updatedClient: OidcClientCreateWithLogo) {

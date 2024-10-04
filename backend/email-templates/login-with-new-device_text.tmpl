@@ -2,6 +2,9 @@
 New Sign-In Detected
 ====================
 
+{{ if and .Data.City .Data.Country }}
+Approximate Location: {{ .Data.City }}, {{ .Data.Country }}
+{{ end }}
 IP Address: {{ .Data.IPAddress }}
 Device:     {{ .Data.Device }}
 Time:       {{ .Data.DateTime.Format "2006-01-02 15:04:05 UTC"}}

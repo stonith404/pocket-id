@@ -2,11 +2,13 @@ package service
 
 import (
 	userAgentParser "github.com/mileusna/useragent"
+	"github.com/oschwald/maxminddb-golang/v2"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	"gorm.io/gorm"
 	"log"
+	"net/netip"
 )
 
 type AuditLogService struct {
@@ -21,9 +23,16 @@ func NewAuditLogService(db *gorm.DB, appConfigService *AppConfigService, emailSe
 
 // Create creates a new audit log entry in the database
 func (s *AuditLogService) Create(event model.AuditLogEvent, ipAddress, userAgent, userID string, data model.AuditLogData) model.AuditLog {
+	country, city, err := s.GetIpLocation(ipAddress)
+	if err != nil {
+		log.Printf("Failed to get IP location: %v\n", err)
+	}
+
 	auditLog := model.AuditLog{
 		Event:     event,
 		IpAddress: ipAddress,
+		Country:   country,
+		City:      city,
 		UserAgent: userAgent,
 		UserID:    userID,
 		Data:      data,
@@ -61,6 +70,8 @@ func (s *AuditLogService) CreateNewSignInWithEmail(ipAddress, userAgent, userID 
 				Email: user.Email,
 			}, NewLoginTemplate, &NewLoginTemplateData{
 				IPAddress: ipAddress,
+				Country:   createdAuditLog.Country,
+				City:      createdAuditLog.City,
 				Device:    s.DeviceStringFromUserAgent(userAgent),
 				DateTime:  createdAuditLog.CreatedAt.UTC(),
 			})
@@ -85,4 +96,30 @@ func (s *AuditLogService) ListAuditLogsForUser(userID string, page int, pageSize
 func (s *AuditLogService) DeviceStringFromUserAgent(userAgent string) string {
 	ua := userAgentParser.Parse(userAgent)
 	return ua.Name + " on " + ua.OS + " " + ua.OSVersion
+}
+
+func (s *AuditLogService) GetIpLocation(ipAddress string) (country, city string, err error) {
+	db, err := maxminddb.Open("GeoLite2-City.mmdb")
+	if err != nil {
+		return "", "", err
+	}
+	defer db.Close()
+
+	addr := netip.MustParseAddr(ipAddress)
+
+	var record struct {
+		City struct {
+			Names map[string]string `maxminddb:"names"`
+		} `maxminddb:"city"`
+		Country struct {
+			Names map[string]string `maxminddb:"names"`
+		} `maxminddb:"country"`
+	}
+
+	err = db.Lookup(addr).Decode(&record)
+	if err != nil {
+		return "", "", err
+	}
+
+	return record.Country.Names["en"], record.City.Names["en"], nil
 }

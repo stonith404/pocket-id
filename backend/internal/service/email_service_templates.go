@@ -29,6 +29,8 @@ var NewLoginTemplate = email.Template[NewLoginTemplateData]{
 
 type NewLoginTemplateData struct {
 	IPAddress string
+	Country   string
+	City      string
 	Device    string
 	DateTime  time.Time
 }

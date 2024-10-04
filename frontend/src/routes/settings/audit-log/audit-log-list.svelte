@@ -30,6 +30,7 @@
 		<Table.Row>
 			<Table.Head>Time</Table.Head>
 			<Table.Head>Event</Table.Head>
+			<Table.Head>Approximate Location</Table.Head>
 			<Table.Head>IP Address</Table.Head>
 			<Table.Head>Device</Table.Head>
 			<Table.Head>Client</Table.Head>
@@ -47,6 +48,7 @@
 					<Table.Cell>
 						<Badge variant="outline">{toFriendlyEventString(auditLog.event)}</Badge>
 					</Table.Cell>
+					<Table.Cell>{auditLog.city && auditLog.country ? `${auditLog.city}, ${auditLog.country}` : 'Unknown'}</Table.Cell>
 					<Table.Cell>{auditLog.ipAddress}</Table.Cell>
 					<Table.Cell>{auditLog.device}</Table.Cell>
 					<Table.Cell>{auditLog.data.clientName}</Table.Cell>

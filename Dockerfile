@@ -31,6 +31,7 @@ COPY --from=frontend-builder /app/frontend/package.json ./frontend/package.json
 
 COPY --from=backend-builder /app/backend/pocket-id-backend ./backend/pocket-id-backend
 COPY --from=backend-builder /app/backend/migrations ./backend/migrations
+COPY --from=backend-builder /app/backend/GeoLite2-City.mmdb ./backend/GeoLite2-City.mmdb
 COPY --from=backend-builder /app/backend/email-templates ./backend/email-templates
 COPY --from=backend-builder /app/backend/images ./backend/images
 

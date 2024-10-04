@@ -9,9 +9,15 @@
     <div class="content">
         <h2>New Sign-In Detected</h2>
         <div class="grid">
+            {{ if and .Data.City .Data.Country }}
+            <div>
+                <p class="label">Approximate Location</p>
+                <p>{{ .Data.City }}, {{ .Data.Country }}</p>
+            </div>
+            {{ end }}
             <div>
                 <p class="label">IP Address</p>
-                <p>{{ .Data.IPAddress}}</p>
+                <p>{{ .Data.IPAddress }}</p>
             </div>
             <div>
                 <p class="label">Device</p>
@@ -19,7 +25,7 @@
             </div>
             <div>
                 <p class="label">Sign-In Time</p>
-                <p>{{ .Data.DateTime.Format "2006-01-02 15:04:05 UTC"}}</p>
+                <p>{{ .Data.DateTime.Format "2006-01-02 15:04:05 UTC" }}</p>
             </div>
         </div>
         <p class="message">
