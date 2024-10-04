@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.7.1...v) (2024-10-04)
+
+
+### Features
+
+* add location based on ip to the audit log ([025378d](https://github.com/stonith404/pocket-id/commit/025378d14edd2d72da76e90799a0ccdd42cf672c))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.7.0...v) (2024-10-03)
 
 
