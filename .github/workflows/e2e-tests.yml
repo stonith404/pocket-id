@@ -16,6 +16,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
       
+      - name: Create dummy GeoLite2 City database
+        run: touch ./backend/GeoLite2-City.mmdb
+      
       - name: Build Docker Image
         run: docker build -t stonith404/pocket-id .
       - name: Run Docker Container
