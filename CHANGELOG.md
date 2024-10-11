@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.8.0...v) (2024-10-11)
+
+
+### Bug Fixes
+
+* add key id to JWK ([282ff82](https://github.com/stonith404/pocket-id/commit/282ff82b0c7e2414b3528c8ca325758245b8ae61))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.7.1...v) (2024-10-04)
 
 
