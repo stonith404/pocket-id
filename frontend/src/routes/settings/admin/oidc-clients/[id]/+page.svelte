@@ -26,7 +26,7 @@
 		'OIDC Discovery URL': `https://${$page.url.hostname}/.well-known/openid-configuration`,
 		'Token URL': `https://${$page.url.hostname}/api/oidc/token`,
 		'Userinfo URL': `https://${$page.url.hostname}/api/oidc/userinfo`,
-		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`,
+		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`
 	};
 
 	async function updateClient(updatedClient: OidcClientCreateWithLogo) {
@@ -95,10 +95,16 @@
 			</div>
 			<div class="mb-2 mt-1 flex items-center">
 				<Label class="w-44">Client secret</Label>
-				<span class="text-muted-foreground text-sm" data-testid="client-secret"
-					>{$clientSecretStore ?? '••••••••••••••••••••••••••••••••'}</span
-				>
-				{#if !$clientSecretStore}
+				{#if $clientSecretStore}
+					<CopyToClipboard value={$clientSecretStore}>
+						<span class="text-muted-foreground text-sm" data-testid="client-secret">
+							{$clientSecretStore}
+						</span>
+					</CopyToClipboard>
+				{:else}
+					<span class="text-muted-foreground text-sm" data-testid="client-secret"
+						>••••••••••••••••••••••••••••••••</span
+					>
 					<Button
 						class="ml-2"
 						onclick={createClientSecret}
