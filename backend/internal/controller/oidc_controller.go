@@ -18,7 +18,7 @@ func NewOidcController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 
 	group.POST("/oidc/authorize", jwtAuthMiddleware.Add(false), oc.authorizeHandler)
 	group.POST("/oidc/authorize/new-client", jwtAuthMiddleware.Add(false), oc.authorizeNewClientHandler)
-	group.POST("/oidc/token", oc.createIDTokenHandler)
+	group.POST("/oidc/token", oc.createTokensHandler)
 	group.GET("/oidc/userinfo", oc.userInfoHandler)
 
 	group.GET("/oidc/clients", jwtAuthMiddleware.Add(true), oc.listClientsHandler)
@@ -91,7 +91,7 @@ func (oc *OidcController) authorizeNewClientHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func (oc *OidcController) createIDTokenHandler(c *gin.Context) {
+func (oc *OidcController) createTokensHandler(c *gin.Context) {
 	var input dto.OidcIdTokenDto
 
 	if err := c.ShouldBind(&input); err != nil {

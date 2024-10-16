@@ -11,12 +11,14 @@
 	let {
 		items,
 		selectedIds = $bindable(),
+		withoutSearch = false,
 		fetchItems,
 		columns,
 		rows
 	}: {
 		items: Paginated<T>;
 		selectedIds?: string[];
+		withoutSearch?: boolean;
 		fetchItems: (search: string, page: number, limit: number) => Promise<Paginated<T>>;
 		columns: (string | { label: string; hidden?: boolean })[];
 		rows: Snippet<[{ item: T }]>;
@@ -65,12 +67,14 @@
 </script>
 
 <div class="w-full">
+	{#if !withoutSearch}
 	<Input
 		class="mb-4 max-w-sm"
 		placeholder={'Search...'}
 		type="text"
 		oninput={(e) => onSearch((e.target as HTMLInputElement).value)}
 	/>
+	{/if}
 	<Table.Root>
 		<Table.Header>
 			<Table.Row>
