@@ -16,7 +16,7 @@
 		children?: Snippet;
 	} = $props();
 
-	const limit = 5;
+	const limit = 20;
 </script>
 
 <div {...restProps}>
@@ -25,15 +25,15 @@
 			{#each callbackURLs as _, i}
 				<div class="flex gap-x-2">
 					<Input data-testid={`callback-url-${i + 1}`} bind:value={callbackURLs[i]} />
-					{#if  callbackURLs.length > 1}
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            on:click={() => callbackURLs = callbackURLs.filter((_, index) => index !== i)}
-                        >
-                            <LucideMinus class="h-4 w-4" />
-                        </Button>
-                    {/if}
+					{#if callbackURLs.length > 1}
+						<Button
+							variant="outline"
+							size="sm"
+							on:click={() => (callbackURLs = callbackURLs.filter((_, index) => index !== i))}
+						>
+							<LucideMinus class="h-4 w-4" />
+						</Button>
+					{/if}
 				</div>
 			{/each}
 		</div>
@@ -46,7 +46,7 @@
 			class="mt-2"
 			variant="secondary"
 			size="sm"
-			on:click={() => callbackURLs = [...callbackURLs, '']}
+			on:click={() => (callbackURLs = [...callbackURLs, ''])}
 		>
 			<LucidePlus class="mr-1 h-4 w-4" />
 			Add another
