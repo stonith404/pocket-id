@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import userStore from '$lib/stores/user-store';
+	import { LucideExternalLink } from 'lucide-svelte';
 	import type { Snippet } from 'svelte';
+	import type { LayoutData } from './$types';
 
 	let {
-		children
+		children,
+		data
 	}: {
 		children: Snippet;
+		data: LayoutData;
 	} = $props();
+
+	const { versionInformation } = data;
 
 	let links = $state([
 		{ href: '/settings/account', label: 'My Account' },
@@ -26,8 +32,10 @@
 </script>
 
 <section>
-	<div class="bg-muted/40 min-h-screen w-full">
-		<main class="mx-auto flex max-w-[1640px] flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row">
+	<div class="bg-muted/40 flex min-h-[calc(100vh-64px)] w-full flex-col justify-between">
+		<main
+			class="mx-auto flex w-full max-w-[1640px] flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row"
+		>
 			<div>
 				<div class="mx-auto grid w-full gap-2">
 					<h1 class="mb-5 text-3xl font-semibold">Settings</h1>
@@ -41,6 +49,15 @@
 								{label}
 							</a>
 						{/each}
+						{#if $userStore?.isAdmin && !versionInformation.isUpToDate}
+							<a
+								href="https://github.com/stonith404/pocket-id/releases/latest"
+								target="_blank"
+								class="flex items-center gap-2"
+							>
+								Update Pocket ID <LucideExternalLink class="my-auto inline-block h-3 w-3" />
+							</a>
+						{/if}
 					</nav>
 				</div>
 			</div>
@@ -48,5 +65,15 @@
 				{@render children()}
 			</div>
 		</main>
+		<div class="flex flex-col items-center">
+			<p class="text-muted-foreground py-3 text-xs">
+				Powered by <a
+					class="text-white"
+					href="https://github.com/stonith404/pocket-id"
+					target="_blank">Pocket ID</a
+				>
+				({versionInformation.currentVersion})
+			</p>
+		</div>
 	</div>
 </section>

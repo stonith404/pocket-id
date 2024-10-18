@@ -6,7 +6,7 @@ increment_version() {
     local version=$1
     local part=$2
 
-    IFS='.' read -r -a parts <<< "$version"
+    IFS='.' read -r -a parts <<<"$version"
     if [ "$part" == "minor" ]; then
         parts[1]=$((parts[1] + 1))
         parts[2]=0
@@ -30,12 +30,15 @@ else
 fi
 
 # Update the .version file with the new version
-echo $NEW_VERSION > .version
+echo $NEW_VERSION >.version
 git add .version
 
+# Update version in frontend/package.json
+jq --arg new_version "$NEW_VERSION" '.version = $new_version' frontend/package.json >frontend/package.json && mv frontend/package_tmp.json frontend/package.json
+git add frontend/package.json
+
 # Check if conventional-changelog is installed, if not install it
-if ! command -v conventional-changelog &> /dev/null
-then
+if ! command -v conventional-changelog &>/dev/null; then
     echo "conventional-changelog not found, installing..."
     npm install -g conventional-changelog-cli
 fi

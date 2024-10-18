@@ -1,4 +1,6 @@
+import { version as currentVersion } from '$app/environment';
 import type { AllAppConfig, AppConfigRawResponse } from '$lib/types/application-configuration';
+import axios from 'axios';
 import APIService from './api-service';
 
 export default class AppConfigService extends APIService {
@@ -44,5 +46,20 @@ export default class AppConfigService extends APIService {
 		formData.append('file', backgroundImage!);
 
 		await this.api.put(`/application-configuration/background-image`, formData);
+	}
+
+	async getVersionInformation() {
+		const response = (
+			await axios.get('https://api.github.com/repos/stonith404/pocket-id/releases/latest')
+		).data;
+
+		const newestVersion = response.tag_name.replace('v', '');
+		const isUpToDate = newestVersion === currentVersion;
+
+		return {
+			isUpToDate,
+			newestVersion,
+			currentVersion
+		};
 	}
 }
