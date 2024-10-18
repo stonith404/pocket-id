@@ -68,7 +68,7 @@ Required tools:
    cd ..
    pm2 start pocket-id-backend --name pocket-id-backend
 
-   # Optional: Download the GeoLite2 city database. 
+   # Optional: Download the GeoLite2 city database.
    # If not downloaded the ip location in the audit log will be empty.
    MAXMIND_LICENSE_KEY=<your-key> sh scripts/download-ip-database.sh
 
@@ -151,15 +151,16 @@ docker compose up -d
 
 ### Environment variables
 
-| Variable               | Default Value           | Recommended to change | Description                                   |
-| ---------------------- | ----------------------- | --------------------- | --------------------------------------------- |
-| `PUBLIC_APP_URL`       | `http://localhost`      | yes                   | The URL where you will access the app.        |
-| `TRUST_PROXY`          | `false`                 | yes                   | Whether the app is behind a reverse proxy.    |
-| `DB_PATH`              | `data/pocket-id.db`     | no                    | The path to the SQLite database.              |
-| `UPLOAD_PATH`          | `data/uploads`          | no                    | The path where the uploaded files are stored. |
-| `INTERNAL_BACKEND_URL` | `http://localhost:8080` | no                    | The URL where the backend is accessible.      |
-| `PORT`                 | `3000`                  | no                    | The port on which the frontend should listen. |
-| `BACKEND_PORT`         | `8080`                  | no                    | The port on which the backend should listen.  |
+| Variable               | Default Value           | Recommended to change | Description                                                                                                                                                                           |
+| ---------------------- | ----------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_APP_URL`       | `http://localhost`      | yes                   | The URL where you will access the app.                                                                                                                                                |
+| `TRUST_PROXY`          | `false`                 | yes                   | Whether the app is behind a reverse proxy.                                                                                                                                            |
+| `DB_PATH`              | `data/pocket-id.db`     | no                    | The path to the SQLite database.                                                                                                                                                      |
+| `UPLOAD_PATH`          | `data/uploads`          | no                    | The path where the uploaded files are stored.                                                                                                                                         |
+| `INTERNAL_BACKEND_URL` | `http://localhost:8080` | no                    | The URL where the backend is accessible.                                                                                                                                              |
+| `CADDY_PORT`           | `80`                    | no                    | The port on which Caddy should listen. Caddy is only active inside the Docker container. If you want to change the exposed port of the container then you sould change this variable. |
+| `PORT`                 | `3000`                  | no                    | The port on which the frontend should listen.                                                                                                                                         |
+| `BACKEND_PORT`         | `8080`                  | no                    | The port on which the backend should listen.                                                                                                                                          |
 
 ## Contribute
 
