@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.8.1...v) (2024-10-18)
+
+
+### Features
+
+* add environment variable to change the caddy port in Docker ([ff06bf0](https://github.com/stonith404/pocket-id/commit/ff06bf0b34496ce472ba6d3ebd4ea249f21c0ec3))
+* use improve table for users and audit logs ([11ed661](https://github.com/stonith404/pocket-id/commit/11ed661f86a512f78f66d604a10c1d47d39f2c39))
+
+
+### Bug Fixes
+
+* allow copy to clipboard for client secret ([29748cc](https://github.com/stonith404/pocket-id/commit/29748cc6c7b7e5a6b54bfe837e0b1a98fa1ad594))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.8.0...v) (2024-10-11)
 
 
