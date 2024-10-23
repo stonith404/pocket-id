@@ -5,6 +5,7 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
+	"github.com/stonith404/pocket-id/backend/internal/model/types"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
 	"time"
@@ -95,7 +96,7 @@ func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Tim
 
 	oneTimeAccessToken := model.OneTimeAccessToken{
 		UserID:    userID,
-		ExpiresAt: expiresAt,
+		ExpiresAt: datatype.DateTime(expiresAt),
 		Token:     randomString,
 	}
 
@@ -108,7 +109,7 @@ func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Tim
 
 func (s *UserService) ExchangeOneTimeAccessToken(token string) (model.User, string, error) {
 	var oneTimeAccessToken model.OneTimeAccessToken
-	if err := s.db.Where("token = ? AND expires_at > ?", token, utils.FormatDateForDb(time.Now())).Preload("User").First(&oneTimeAccessToken).Error; err != nil {
+	if err := s.db.Where("token = ? AND expires_at > ?", token, time.Now().Unix()).Preload("User").First(&oneTimeAccessToken).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return model.User{}, "", common.ErrTokenInvalidOrExpired
 		}

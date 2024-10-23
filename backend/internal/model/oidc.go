@@ -4,8 +4,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
 	"gorm.io/gorm"
-	"time"
 )
 
 type UserAuthorizedOidcClient struct {
@@ -23,7 +23,7 @@ type OidcAuthorizationCode struct {
 	Code      string
 	Scope     string
 	Nonce     string
-	ExpiresAt time.Time
+	ExpiresAt datatype.DateTime
 
 	UserID string
 	User   User

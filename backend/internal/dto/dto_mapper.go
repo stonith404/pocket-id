@@ -2,7 +2,9 @@ package dto
 
 import (
 	"errors"
+	"github.com/stonith404/pocket-id/backend/internal/model/types"
 	"reflect"
+	"time"
 )
 
 // MapStructList maps a list of source structs to a list of destination structs
@@ -95,7 +97,18 @@ func mapStructInternal(sourceVal reflect.Value, destVal reflect.Value) error {
 				if err := mapStructInternal(sourceField, destField); err != nil {
 					return err
 				}
+			} else {
+				// Type switch for specific type conversions
+				switch sourceField.Interface().(type) {
+				case datatype.DateTime:
+					// Convert datatype.DateTime to time.Time
+					if sourceField.Type() == reflect.TypeOf(datatype.DateTime{}) && destField.Type() == reflect.TypeOf(time.Time{}) {
+						dateValue := sourceField.Interface().(datatype.DateTime)
+						destField.Set(reflect.ValueOf(dateValue.ToTime()))
+					}
+				}
 			}
+
 		}
 	}
 

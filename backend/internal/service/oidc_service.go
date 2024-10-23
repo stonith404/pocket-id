@@ -6,6 +6,7 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
+	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -115,7 +116,7 @@ func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret strin
 		return "", "", common.ErrOidcInvalidAuthorizationCode
 	}
 
-	if authorizationCodeMetaData.ClientID != clientID && authorizationCodeMetaData.ExpiresAt.Before(time.Now()) {
+	if authorizationCodeMetaData.ClientID != clientID && authorizationCodeMetaData.ExpiresAt.ToTime().Before(time.Now()) {
 		return "", "", common.ErrOidcInvalidAuthorizationCode
 	}
 
@@ -350,7 +351,7 @@ func (s *OidcService) createAuthorizationCode(clientID string, userID string, sc
 	}
 
 	oidcAuthorizationCode := model.OidcAuthorizationCode{
-		ExpiresAt: time.Now().Add(15 * time.Minute),
+		ExpiresAt: datatype.DateTime(time.Now().Add(15 * time.Minute)),
 		Code:      randomString,
 		ClientID:  clientID,
 		UserID:    userID,

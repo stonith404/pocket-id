@@ -4,7 +4,6 @@ import (
 	"github.com/go-co-op/gocron/v2"
 	"github.com/google/uuid"
 	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
 	"log"
 	"time"
@@ -30,22 +29,22 @@ type Jobs struct {
 
 // ClearWebauthnSessions deletes WebAuthn sessions that have expired
 func (j *Jobs) clearWebauthnSessions() error {
-	return j.db.Delete(&model.WebauthnSession{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+	return j.db.Delete(&model.WebauthnSession{}, "expires_at < ?", time.Now().Unix()).Error
 }
 
 // ClearOneTimeAccessTokens deletes one-time access tokens that have expired
 func (j *Jobs) clearOneTimeAccessTokens() error {
-	return j.db.Debug().Delete(&model.OneTimeAccessToken{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+	return j.db.Debug().Delete(&model.OneTimeAccessToken{}, "expires_at < ?", time.Now().Unix()).Error
 }
 
 // ClearOidcAuthorizationCodes deletes OIDC authorization codes that have expired
 func (j *Jobs) clearOidcAuthorizationCodes() error {
-	return j.db.Delete(&model.OidcAuthorizationCode{}, "expires_at < ?", utils.FormatDateForDb(time.Now())).Error
+	return j.db.Delete(&model.OidcAuthorizationCode{}, "expires_at < ?", time.Now().Unix()).Error
 }
 
 // ClearAuditLogs deletes audit logs older than 90 days
 func (j *Jobs) clearAuditLogs() error {
-	return j.db.Delete(&model.AuditLog{}, "created_at < ?", utils.FormatDateForDb(time.Now().AddDate(0, 0, -90))).Error
+	return j.db.Delete(&model.AuditLog{}, "created_at < ?", time.Now().AddDate(0, 0, -90).Unix()).Error
 }
 
 func registerJob(scheduler gocron.Scheduler, name string, interval string, job func() error) {

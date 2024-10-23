@@ -3,7 +3,7 @@ package model
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
-	"time"
+	"github.com/stonith404/pocket-id/backend/internal/model/types"
 )
 
 type User struct {
@@ -61,7 +61,7 @@ func (u User) WebAuthnCredentialDescriptors() (descriptors []protocol.Credential
 type OneTimeAccessToken struct {
 	Base
 	Token     string
-	ExpiresAt time.Time
+	ExpiresAt datatype.DateTime
 
 	UserID string
 	User   User

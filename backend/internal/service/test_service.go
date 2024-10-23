@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"github.com/fxamacker/cbor/v2"
+	"github.com/stonith404/pocket-id/backend/internal/model/types"
 	"log"
 	"os"
 	"time"
@@ -111,7 +112,7 @@ func (s *TestService) SeedDatabase() error {
 			Code:      "auth-code",
 			Scope:     "openid profile",
 			Nonce:     "nonce",
-			ExpiresAt: time.Now().Add(1 * time.Hour),
+			ExpiresAt: datatype.DateTime(time.Now().Add(1 * time.Hour)),
 			UserID:    users[0].ID,
 			ClientID:  oidcClients[0].ID,
 		}
@@ -121,7 +122,7 @@ func (s *TestService) SeedDatabase() error {
 
 		accessToken := model.OneTimeAccessToken{
 			Token:     "one-time-token",
-			ExpiresAt: time.Now().Add(1 * time.Hour),
+			ExpiresAt: datatype.DateTime(time.Now().Add(1 * time.Hour)),
 			UserID:    users[0].ID,
 		}
 		if err := tx.Create(&accessToken).Error; err != nil {
