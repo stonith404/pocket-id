@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Default database path
 DB_PATH="./backend/data/pocket-id.db"
 
@@ -27,16 +25,24 @@ fi
 
 USER_IDENTIFIER="$1"
 
-# Check if sqlite3 is installed, if not install it via apk
-if ! command -v sqlite3 &>/dev/null; then
-    if command -v apk &>/dev/null; then
-        echo "sqlite3 not found. Installing..."
-        apk add sqlite3 --no-cache
-    else
-        echo "sqlite3 is not installed, please install it manually."
-        exit 1
+# Check and try to install the required commands
+check_and_install() {
+    local cmd=$1
+    local pkg=$2
+
+    if ! command -v "$cmd" &>/dev/null; then
+        if command -v apk &>/dev/null; then
+            echo "$cmd not found. Installing..."
+            apk add "$pkg" --no-cache
+        else
+            echo "$cmd is not installed, please install it manually."
+            exit 1
+        fi
     fi
-fi
+}
+
+check_and_install sqlite3 sqlite
+check_and_install uuidgen uuidgen
 
 # Generate a 16-character alphanumeric secret token
 SECRET_TOKEN=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 16)
@@ -62,7 +68,7 @@ EOF
 
 if [ $? -eq 0 ]; then
     echo "A one-time access token valid for 1 hour has been created for \"$USER_IDENTIFIER\"."
-    echo "Use the following URL to sign in once: https://<your-pocket-id-domain>/login/$SECRET_TOKEN"
+    echo "Use the following URL to sign in once: ${PUBLIC_APP_URL:=https://<your-pocket-id-domain>}/login/$SECRET_TOKEN"
 else
     echo "Error creating access token."
     exit 1
