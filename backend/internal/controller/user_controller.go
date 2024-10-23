@@ -161,8 +161,14 @@ func (uc *UserController) exchangeOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
+	var userDto dto.UserDto
+	if err := dto.MapStruct(user, &userDto); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
 	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", false, true)
-	c.JSON(http.StatusOK, user)
+	c.JSON(http.StatusOK, userDto)
 }
 
 func (uc *UserController) getSetupAccessTokenHandler(c *gin.Context) {
