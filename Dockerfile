@@ -36,6 +36,7 @@ COPY --from=backend-builder /app/backend/email-templates ./backend/email-templat
 COPY --from=backend-builder /app/backend/images ./backend/images
 
 COPY ./scripts ./scripts
+RUN chmod +x ./scripts/*.sh
 
 EXPOSE 3000
 ENV APP_ENV=production
