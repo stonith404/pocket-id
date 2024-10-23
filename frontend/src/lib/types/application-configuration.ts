@@ -16,3 +16,9 @@ export type AppConfigRawResponse = {
 	type: string;
 	value: string;
 }[];
+
+export type AppVersionInformation = {
+	isUpToDate: boolean;
+	newestVersion: string;
+	currentVersion: string;
+};
