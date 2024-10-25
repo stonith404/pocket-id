@@ -1,11 +1,12 @@
 package model
 
 type AppConfigVariable struct {
-	Key        string `gorm:"primaryKey;not null"`
-	Type       string
-	IsPublic   bool
-	IsInternal bool
-	Value      string
+	Key          string `gorm:"primaryKey;not null"`
+	Type         string
+	IsPublic     bool
+	IsInternal   bool
+	Value        string
+	DefaultValue string
 }
 
 type AppConfig struct {

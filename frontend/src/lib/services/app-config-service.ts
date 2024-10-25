@@ -73,8 +73,8 @@ export default class AppConfigService extends APIService {
 			return true;
 		} else if (value === 'false') {
 			return false;
-		} else if (!isNaN(Number(value))) {
-			return Number(value);
+		} else if (!isNaN(parseFloat(value))) {
+			return parseFloat(value);
 		} else {
 			return value;
 		}
