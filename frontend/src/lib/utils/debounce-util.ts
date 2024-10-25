@@ -1,5 +1,5 @@
 export function debounced<T extends (...args: any[]) => void>(func: T, delay: number) {
-	let debounceTimeout: number | undefined;
+	let debounceTimeout: ReturnType<typeof setTimeout>;
 
 	return (...args: Parameters<T>) => {
 		if (debounceTimeout !== undefined) {

@@ -41,6 +41,11 @@ var defaultDbConfig = model.AppConfig{
 		Type:  "number",
 		Value: "60",
 	},
+	EmailsVerified: model.AppConfigVariable{
+		Key:   "emailsVerified",
+		Type:  "bool",
+		Value: "false",
+	},
 	BackgroundImageType: model.AppConfigVariable{
 		Key:        "backgroundImageType",
 		Type:       "string",

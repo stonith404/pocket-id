@@ -14,6 +14,7 @@ type AppConfig struct {
 	LogoLightImageType  AppConfigVariable
 	LogoDarkImageType   AppConfigVariable
 	SessionDuration     AppConfigVariable
+	EmailsVerified      AppConfigVariable
 
 	EmailEnabled AppConfigVariable
 	SmtpHost     AppConfigVariable

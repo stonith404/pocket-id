@@ -1,15 +1,17 @@
-export type AllAppConfig = {
+export type AppConfig = {
 	appName: string;
-	sessionDuration: string;
-	emailEnabled: string;
+};
+
+export type AllAppConfig = AppConfig & {
+	sessionDuration: number;
+	emailsVerified: boolean;
+	emailEnabled: boolean;
 	smtpHost: string;
-	smtpPort: string;
+	smtpPort: number;
 	smtpFrom: string;
 	smtpUser: string;
 	smtpPassword: string;
 };
-
-export type AppConfig = AllAppConfig;
 
 export type AppConfigRawResponse = {
 	key: string;

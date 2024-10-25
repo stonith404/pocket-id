@@ -14,14 +14,19 @@ export default class AppConfigService extends APIService {
 
 		const appConfig: Partial<AllAppConfig> = {};
 		data.forEach(({ key, value }) => {
-			(appConfig as any)[key] = value;
+			(appConfig as any)[key] = this.parseValue(value);
 		});
 
 		return appConfig as AllAppConfig;
 	}
 
 	async update(appConfig: AllAppConfig) {
-		const res = await this.api.put('/application-configuration', appConfig);
+		// Convert all values to string
+		const appConfigConvertedToString = {};
+		for (const key in appConfig) {
+			(appConfigConvertedToString as any)[key] = (appConfig as any)[key].toString();
+		}
+		const res = await this.api.put('/application-configuration', appConfigConvertedToString);
 		return res.data as AllAppConfig;
 	}
 
@@ -61,5 +66,17 @@ export default class AppConfigService extends APIService {
 			newestVersion,
 			currentVersion
 		};
+	}
+
+	private parseValue(value: string) {
+		if (value === 'true') {
+			return true;
+		} else if (value === 'false') {
+			return false;
+		} else if (!isNaN(Number(value))) {
+			return Number(value);
+		} else {
+			return value;
+		}
 	}
 }
