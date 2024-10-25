@@ -12,7 +12,7 @@ export default defineConfig({
 	retries: process.env.CI ? 1 : 0,
 	workers: 1,
 	reporter: process.env.CI
-		? [['html'], ['github']]
+		? [['html', { outputFolder: 'tests/.report' }], ['github']]
 		: [['line'], ['html', { open: 'never', outputFolder: 'tests/.report' }]],
 	use: {
 		baseURL: 'http://localhost',

@@ -15,12 +15,13 @@ jobs:
           node-version: lts/*
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
-      
+
       - name: Create dummy GeoLite2 City database
         run: touch ./backend/GeoLite2-City.mmdb
-      
+
       - name: Build Docker Image
         run: docker build -t stonith404/pocket-id .
+
       - name: Run Docker Container
         run: docker run -d --name pocket-id -p 80:80 --env-file .env.test stonith404/pocket-id
 
@@ -41,4 +42,5 @@ jobs:
         with:
           name: playwright-report
           path: frontend/tests/.report
+          include-hidden-files: true
           retention-days: 15
