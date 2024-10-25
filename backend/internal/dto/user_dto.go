@@ -3,12 +3,13 @@ package dto
 import "time"
 
 type UserDto struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email" `
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	IsAdmin   bool   `json:"isAdmin"`
+	ID           string           `json:"id"`
+	Username     string           `json:"username"`
+	Email        string           `json:"email" `
+	FirstName    string           `json:"firstName"`
+	LastName     string           `json:"lastName"`
+	IsAdmin      bool             `json:"isAdmin"`
+	CustomClaims []CustomClaimDto `json:"customClaims"`
 }
 
 type UserCreateDto struct {
@@ -16,7 +17,7 @@ type UserCreateDto struct {
 	Email     string `json:"email" binding:"required,email"`
 	FirstName string `json:"firstName" binding:"required,min=3,max=30"`
 	LastName  string `json:"lastName" binding:"required,min=3,max=30"`
-	IsAdmin   bool   `json:"isAdmin"`
+	IsAdmin   bool   `json:"isAdmin" binding:"required"`
 }
 
 type OneTimeAccessTokenCreateDto struct {

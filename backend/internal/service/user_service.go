@@ -35,7 +35,7 @@ func (s *UserService) ListUsers(searchTerm string, page int, pageSize int) ([]mo
 
 func (s *UserService) GetUser(userID string) (model.User, error) {
 	var user model.User
-	err := s.db.Where("id = ?", userID).First(&user).Error
+	err := s.db.Preload("CustomClaims").Where("id = ?", userID).First(&user).Error
 	return user, err
 }
 
@@ -111,7 +111,7 @@ func (s *UserService) ExchangeOneTimeAccessToken(token string) (model.User, stri
 	var oneTimeAccessToken model.OneTimeAccessToken
 	if err := s.db.Where("token = ? AND expires_at > ?", token, time.Now().Unix()).Preload("User").First(&oneTimeAccessToken).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return model.User{}, "", common.ErrTokenInvalidOrExpired
+			return model.User{}, "", &common.TokenInvalidOrExpiredError{}
 		}
 		return model.User{}, "", err
 	}
@@ -133,7 +133,7 @@ func (s *UserService) SetupInitialAdmin() (model.User, string, error) {
 		return model.User{}, "", err
 	}
 	if userCount > 1 {
-		return model.User{}, "", common.ErrSetupAlreadyCompleted
+		return model.User{}, "", &common.SetupAlreadyCompletedError{}
 	}
 
 	user := model.User{
@@ -149,7 +149,7 @@ func (s *UserService) SetupInitialAdmin() (model.User, string, error) {
 	}
 
 	if len(user.Credentials) > 0 {
-		return model.User{}, "", common.ErrSetupAlreadyCompleted
+		return model.User{}, "", &common.SetupAlreadyCompletedError{}
 	}
 
 	token, err := s.jwtService.GenerateAccessToken(user)
@@ -163,11 +163,11 @@ func (s *UserService) SetupInitialAdmin() (model.User, string, error) {
 func (s *UserService) checkDuplicatedFields(user model.User) error {
 	var existingUser model.User
 	if s.db.Where("id != ? AND email = ?", user.ID, user.Email).First(&existingUser).Error == nil {
-		return common.ErrEmailTaken
+		return &common.AlreadyInUseError{Property: "email"}
 	}
 
 	if s.db.Where("id != ? AND username = ?", user.ID, user.Username).First(&existingUser).Error == nil {
-		return common.ErrUsernameTaken
+		return &common.AlreadyInUseError{Property: "username"}
 	}
 
 	return nil

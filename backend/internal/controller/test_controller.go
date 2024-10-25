@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/service"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
 )
 
@@ -19,17 +18,17 @@ type TestController struct {
 
 func (tc *TestController) resetAndSeedHandler(c *gin.Context) {
 	if err := tc.TestService.ResetDatabase(); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	if err := tc.TestService.ResetApplicationImages(); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	if err := tc.TestService.SeedDatabase(); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 

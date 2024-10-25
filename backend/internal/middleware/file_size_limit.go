@@ -3,7 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/common"
 	"net/http"
 )
 
@@ -17,8 +17,8 @@ func (m *FileSizeLimitMiddleware) Add(maxSize int64) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxSize)
 		if err := c.Request.ParseMultipartForm(maxSize); err != nil {
-			utils.CustomControllerError(c, http.StatusRequestEntityTooLarge, fmt.Sprintf("The file can't be larger than %s bytes", formatFileSize(maxSize)))
-			c.Abort()
+			err = &common.FileTooLargeError{MaxSize: formatFileSize(maxSize)}
+			c.Error(err)
 			return
 		}
 		c.Next()

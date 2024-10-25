@@ -16,7 +16,7 @@
 		...restProps
 	}: HTMLAttributes<HTMLDivElement> & {
 		input?: FormInput<string | boolean | number>;
-		label: string;
+		label?: string;
 		description?: string;
 		disabled?: boolean;
 		type?: 'text' | 'password' | 'email' | 'number' | 'checkbox';
@@ -24,15 +24,17 @@
 		children?: Snippet;
 	} = $props();
 
-	const id = label.toLowerCase().replace(/ /g, '-');
+	const id = label?.toLowerCase().replace(/ /g, '-');
 </script>
 
 <div {...restProps}>
-	<Label class="mb-0" for={id}>{label}</Label>
+	{#if label}
+		<Label class="mb-0" for={id}>{label}</Label>
+	{/if}
 	{#if description}
 		<p class="text-muted-foreground mt-1 text-xs">{description}</p>
 	{/if}
-	<div class="mt-2">
+	<div class={label || description ? 'mt-2' : ''}>
 		{#if children}
 			{@render children()}
 		{:else if input}

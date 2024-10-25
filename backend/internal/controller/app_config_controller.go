@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
@@ -39,13 +38,13 @@ type AppConfigController struct {
 func (acc *AppConfigController) listAppConfigHandler(c *gin.Context) {
 	configuration, err := acc.appConfigService.ListAppConfig(false)
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	var configVariablesDto []dto.PublicAppConfigVariableDto
 	if err := dto.MapStructList(configuration, &configVariablesDto); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
@@ -55,13 +54,13 @@ func (acc *AppConfigController) listAppConfigHandler(c *gin.Context) {
 func (acc *AppConfigController) listAllAppConfigHandler(c *gin.Context) {
 	configuration, err := acc.appConfigService.ListAppConfig(true)
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	var configVariablesDto []dto.AppConfigVariableDto
 	if err := dto.MapStructList(configuration, &configVariablesDto); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
@@ -71,19 +70,19 @@ func (acc *AppConfigController) listAllAppConfigHandler(c *gin.Context) {
 func (acc *AppConfigController) updateAppConfigHandler(c *gin.Context) {
 	var input dto.AppConfigUpdateDto
 	if err := c.ShouldBindJSON(&input); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	savedConfigVariables, err := acc.appConfigService.UpdateAppConfig(input)
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	var configVariablesDto []dto.AppConfigVariableDto
 	if err := dto.MapStructList(savedConfigVariables, &configVariablesDto); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
@@ -136,13 +135,13 @@ func (acc *AppConfigController) updateLogoHandler(c *gin.Context) {
 func (acc *AppConfigController) updateFaviconHandler(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	fileType := utils.GetFileExtension(file.Filename)
 	if fileType != "ico" {
-		utils.CustomControllerError(c, http.StatusBadRequest, "File must be of type .ico")
+		c.Error(&common.WrongFileTypeError{ExpectedFileType: ".ico"})
 		return
 	}
 	acc.updateImage(c, "favicon", "ico")
@@ -164,17 +163,13 @@ func (acc *AppConfigController) getImage(c *gin.Context, name string, imageType 
 func (acc *AppConfigController) updateImage(c *gin.Context, imageName string, oldImageType string) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
 	err = acc.appConfigService.UpdateImage(file, imageName, oldImageType)
 	if err != nil {
-		if errors.Is(err, common.ErrFileTypeNotSupported) {
-			utils.CustomControllerError(c, http.StatusBadRequest, err.Error())
-		} else {
-			utils.ControllerError(c, err)
-		}
+		c.Error(err)
 		return
 	}
 

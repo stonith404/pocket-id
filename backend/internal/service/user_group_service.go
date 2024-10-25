@@ -50,7 +50,7 @@ func (s *UserGroupService) Create(input dto.UserGroupCreateDto) (group model.Use
 
 	if err := s.db.Preload("Users").Create(&group).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			return model.UserGroup{}, common.ErrNameAlreadyInUse
+			return model.UserGroup{}, &common.AlreadyInUseError{Property: "name"}
 		}
 		return model.UserGroup{}, err
 	}
@@ -68,7 +68,7 @@ func (s *UserGroupService) Update(id string, input dto.UserGroupCreateDto) (grou
 
 	if err := s.db.Preload("Users").Save(&group).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			return model.UserGroup{}, common.ErrNameAlreadyInUse
+			return model.UserGroup{}, &common.AlreadyInUseError{Property: "name"}
 		}
 		return model.UserGroup{}, err
 	}

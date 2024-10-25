@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/service"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
 )
 
 func NewAuditLogController(group *gin.RouterGroup, auditLogService *service.AuditLogService, jwtAuthMiddleware *middleware.JwtAuthMiddleware) {
@@ -31,7 +30,7 @@ func (alc *AuditLogController) listAuditLogsForUserHandler(c *gin.Context) {
 	// Fetch audit logs for the user
 	logs, pagination, err := alc.auditLogService.ListAuditLogsForUser(userID, page, pageSize)
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
@@ -39,7 +38,7 @@ func (alc *AuditLogController) listAuditLogsForUserHandler(c *gin.Context) {
 	var logsDtos []dto.AuditLogDto
 	err = dto.MapStructList(logs, &logsDtos)
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 
