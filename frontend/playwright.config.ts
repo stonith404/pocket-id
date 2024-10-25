@@ -13,7 +13,7 @@ export default defineConfig({
 	workers: 1,
 	reporter: process.env.CI
 		? [['html'], ['github']]
-		: [['line'], ['html', { open: 'never', outputFolder: 'tests/.output' }]],
+		: [['line'], ['html', { open: 'never', outputFolder: 'tests/.report' }]],
 	use: {
 		baseURL: 'http://localhost',
 		video: 'retain-on-failure',
