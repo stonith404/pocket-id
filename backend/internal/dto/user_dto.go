@@ -17,7 +17,7 @@ type UserCreateDto struct {
 	Email     string `json:"email" binding:"required,email"`
 	FirstName string `json:"firstName" binding:"required,min=3,max=30"`
 	LastName  string `json:"lastName" binding:"required,min=3,max=30"`
-	IsAdmin   bool   `json:"isAdmin" binding:"required"`
+	IsAdmin   bool   `json:"isAdmin"`
 }
 
 type OneTimeAccessTokenCreateDto struct {
