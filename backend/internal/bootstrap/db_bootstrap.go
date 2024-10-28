@@ -19,6 +19,7 @@ func newDatabase() (db *gorm.DB) {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	sqlDb, err := db.DB()
+	sqlDb.SetMaxOpenConns(1)
 	if err != nil {
 		log.Fatalf("failed to get sql.DB: %v", err)
 	}

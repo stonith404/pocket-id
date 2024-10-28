@@ -1,3 +1,15 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.10.0...v) (2024-10-25)
+
+
+### Features
+
+* add `email_verified` claim ([5565f60](https://github.com/stonith404/pocket-id/commit/5565f60d6d62ca24bedea337e21effc13e5853a5))
+
+
+### Bug Fixes
+
+* powered by link text color in light mode ([18c5103](https://github.com/stonith404/pocket-id/commit/18c5103c20ce79abdc0f724cdedd642c09269e78))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.9.0...v) (2024-10-23)
 
 

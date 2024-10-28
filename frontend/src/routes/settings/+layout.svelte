@@ -68,7 +68,7 @@
 		<div class="flex flex-col items-center">
 			<p class="text-muted-foreground py-3 text-xs">
 				Powered by <a
-					class="text-white"
+					class="text-foreground"
 					href="https://github.com/stonith404/pocket-id"
 					target="_blank">Pocket ID</a
 				>

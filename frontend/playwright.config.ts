@@ -12,8 +12,8 @@ export default defineConfig({
 	retries: process.env.CI ? 1 : 0,
 	workers: 1,
 	reporter: process.env.CI
-		? [['html'], ['github']]
-		: [['line'], ['html', { open: 'never', outputFolder: 'tests/.output' }]],
+		? [['html', { outputFolder: 'tests/.report' }], ['github']]
+		: [['line'], ['html', { open: 'never', outputFolder: 'tests/.report' }]],
 	use: {
 		baseURL: 'http://localhost',
 		video: 'retain-on-failure',

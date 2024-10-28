@@ -32,5 +32,10 @@ func (tc *TestController) resetAndSeedHandler(c *gin.Context) {
 		return
 	}
 
+	if err := tc.TestService.ResetAppConfig(); err != nil {
+		utils.ControllerError(c, err)
+		return
+	}
+
 	c.Status(http.StatusNoContent)
 }

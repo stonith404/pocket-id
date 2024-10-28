@@ -317,6 +317,7 @@ func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (ma
 
 	if strings.Contains(scope, "email") {
 		claims["email"] = user.Email
+		claims["email_verified"] = s.appConfigService.DbConfig.EmailsVerified.Value == "true"
 	}
 
 	if strings.Contains(scope, "groups") {

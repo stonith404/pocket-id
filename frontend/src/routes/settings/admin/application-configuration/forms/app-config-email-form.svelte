@@ -15,10 +15,10 @@
 	} = $props();
 
 	let isLoading = $state(false);
-	let emailEnabled = $state(appConfig.emailEnabled == 'true');
+	let emailEnabled = $state(appConfig.emailEnabled);
 
 	const updatedAppConfig = {
-		emailEnabled: emailEnabled.toString(),
+		emailEnabled: appConfig.emailEnabled,
 		smtpHost: appConfig.smtpHost,
 		smtpPort: appConfig.smtpPort,
 		smtpUser: appConfig.smtpUser,
@@ -28,13 +28,13 @@
 
 	const formSchema = z.object({
 		smtpHost: z.string().min(1),
-		smtpPort: z.string().min(1),
+		smtpPort: z.number().min(1),
 		smtpUser: z.string().min(1),
 		smtpPassword: z.string().min(1),
 		smtpFrom: z.string().email()
 	});
 
-	const { inputs, ...form } = createForm< typeof formSchema>(formSchema, updatedAppConfig);
+	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
 
 	async function onSubmit() {
 		const data = form.validate();
@@ -42,15 +42,15 @@
 		isLoading = true;
 		await callback({
 			...data,
-			emailEnabled: 'true'
+			emailEnabled: true
 		}).finally(() => (isLoading = false));
 		toast.success('Email configuration updated successfully');
 		return true;
 	}
 
 	async function onDisable() {
-		await callback({ emailEnabled: 'false' });
 		emailEnabled = false;
+		await callback({ emailEnabled });
 		toast.success('Email disabled successfully');
 	}
 
@@ -64,7 +64,7 @@
 <form onsubmit={onSubmit}>
 	<div class="mt-5 grid grid-cols-2 gap-5">
 		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
-		<FormInput label="SMTP Port" bind:input={$inputs.smtpPort} />
+		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
 		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
 		<FormInput label="SMTP Password" type="password" bind:input={$inputs.smtpPassword} />
 		<FormInput label="SMTP From" bind:input={$inputs.smtpFrom} />

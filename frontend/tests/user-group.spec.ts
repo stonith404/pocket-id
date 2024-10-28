@@ -4,7 +4,7 @@ import { cleanupBackend } from './utils/cleanup.util';
 
 test.beforeEach(cleanupBackend);
 
-test('Create user group', async ({ page, baseURL }) => {
+test('Create user group', async ({ page }) => {
 	await page.goto('/settings/admin/user-groups');
 	const group = userGroups.humanResources;
 
@@ -15,8 +15,7 @@ test('Create user group', async ({ page, baseURL }) => {
 
 	await expect(page.getByRole('status')).toHaveText('User group created successfully');
 
-	const expectedRoute = new RegExp(`${baseURL}/settings/admin/user-groups/[a-f0-9-]+`);
-	expect(page.url()).toMatch(expectedRoute);
+	await page.waitForURL('/settings/admin/user-groups/*');
 
 	await expect(page.getByLabel('Friendly Name')).toHaveValue(group.friendlyName);
 	await expect(page.getByLabel('Name', { exact: true })).toHaveValue(group.name);
