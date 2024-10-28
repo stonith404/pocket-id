@@ -104,7 +104,6 @@ type ClientIdOrSecretNotProvidedError struct{}
 func (e *ClientIdOrSecretNotProvidedError) Error() string {
 	return "Client id and secret not provided"
 }
-
 func (e *ClientIdOrSecretNotProvidedError) HttpStatusCode() int { return http.StatusBadRequest }
 
 type WrongFileTypeError struct {
@@ -114,7 +113,6 @@ type WrongFileTypeError struct {
 func (e *WrongFileTypeError) Error() string {
 	return fmt.Sprintf("File must be of type %s", e.ExpectedFileType)
 }
-
 func (e *WrongFileTypeError) HttpStatusCode() int { return http.StatusBadRequest }
 
 type MissingSessionIdError struct{}
@@ -122,7 +120,6 @@ type MissingSessionIdError struct{}
 func (e *MissingSessionIdError) Error() string {
 	return "Missing session id"
 }
-
 func (e *MissingSessionIdError) HttpStatusCode() int { return http.StatusBadRequest }
 
 type ReservedClaimError struct {
@@ -132,7 +129,6 @@ type ReservedClaimError struct {
 func (e *ReservedClaimError) Error() string {
 	return fmt.Sprintf("Claim %s is reserved and can't be used", e.Key)
 }
-
 func (e *ReservedClaimError) HttpStatusCode() int { return http.StatusBadRequest }
 
 type DuplicateClaimError struct {
@@ -142,5 +138,11 @@ type DuplicateClaimError struct {
 func (e *DuplicateClaimError) Error() string {
 	return fmt.Sprintf("Claim %s is already defined", e.Key)
 }
-
 func (e *DuplicateClaimError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type AccountEditNotAllowedError struct{}
+
+func (e *AccountEditNotAllowedError) Error() string {
+	return "You are not allowed to edit your account"
+}
+func (e *AccountEditNotAllowedError) HttpStatusCode() int { return http.StatusForbidden }

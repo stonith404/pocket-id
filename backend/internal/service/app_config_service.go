@@ -46,6 +46,12 @@ var defaultDbConfig = model.AppConfig{
 		Type:         "bool",
 		DefaultValue: "false",
 	},
+	AllowOwnAccountEdit: model.AppConfigVariable{
+		Key:          "allowOwnAccountEdit",
+		Type:         "bool",
+		IsPublic:     true,
+		DefaultValue: "true",
+	},
 	BackgroundImageType: model.AppConfigVariable{
 		Key:          "backgroundImageType",
 		Type:         "string",

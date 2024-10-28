@@ -1,5 +1,6 @@
 export type AppConfig = {
 	appName: string;
+	allowOwnAccountEdit: boolean;
 };
 
 export type AllAppConfig = AppConfig & {

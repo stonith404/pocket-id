@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
@@ -11,9 +12,10 @@ import (
 	"time"
 )
 
-func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, rateLimitMiddleware *middleware.RateLimitMiddleware, userService *service.UserService) {
+func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, rateLimitMiddleware *middleware.RateLimitMiddleware, userService *service.UserService, appConfigService *service.AppConfigService) {
 	uc := UserController{
-		UserService: userService,
+		UserService:      userService,
+		AppConfigService: appConfigService,
 	}
 
 	group.GET("/users", jwtAuthMiddleware.Add(true), uc.listUsersHandler)
@@ -30,7 +32,8 @@ func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 }
 
 type UserController struct {
-	UserService *service.UserService
+	UserService      *service.UserService
+	AppConfigService *service.AppConfigService
 }
 
 func (uc *UserController) listUsersHandler(c *gin.Context) {
@@ -124,6 +127,10 @@ func (uc *UserController) updateUserHandler(c *gin.Context) {
 }
 
 func (uc *UserController) updateCurrentUserHandler(c *gin.Context) {
+	if uc.AppConfigService.DbConfig.AllowOwnAccountEdit.Value != "true" {
+		c.Error(&common.AccountEditNotAllowedError{})
+		return
+	}
 	uc.updateUser(c, true)
 }
 

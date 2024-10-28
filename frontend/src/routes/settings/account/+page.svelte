@@ -3,6 +3,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import UserService from '$lib/services/user-service';
 	import WebAuthnService from '$lib/services/webauthn-service';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { Passkey } from '$lib/types/passkey.type';
 	import type { UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast, getWebauthnErrorMessage } from '$lib/utils/error-util';
@@ -51,14 +52,16 @@
 	<title>Account Settings</title>
 </svelte:head>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title>Account Details</Card.Title>
-	</Card.Header>
-	<Card.Content>
-		<AccountForm {account} callback={updateAccount} />
-	</Card.Content>
-</Card.Root>
+{#if $appConfigStore.allowOwnAccountEdit}
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Account Details</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			<AccountForm {account} callback={updateAccount} />
+		</Card.Content>
+	</Card.Root>
+{/if}
 
 <Card.Root>
 	<Card.Header>

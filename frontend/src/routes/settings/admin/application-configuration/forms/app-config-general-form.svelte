@@ -21,13 +21,15 @@
 	const updatedAppConfig = {
 		appName: appConfig.appName,
 		sessionDuration: appConfig.sessionDuration,
-		emailsVerified: appConfig.emailsVerified
+		emailsVerified: appConfig.emailsVerified,
+		allowOwnAccountEdit: appConfig.allowOwnAccountEdit
 	};
 
 	const formSchema = z.object({
 		appName: z.string().min(2).max(30),
 		sessionDuration: z.number().min(1).max(43200),
-		emailsVerified: z.boolean()
+		emailsVerified: z.boolean(),
+		allowOwnAccountEdit: z.boolean()
 	});
 
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
@@ -49,6 +51,17 @@
 			description="The duration of a session in minutes before the user has to sign in again."
 			bind:input={$inputs.sessionDuration}
 		/>
+		<div class="items-top mt-5 flex space-x-2">
+			<Checkbox id="admin-privileges" bind:checked={$inputs.allowOwnAccountEdit.value} />
+			<div class="grid gap-1.5 leading-none">
+				<Label for="admin-privileges" class="mb-0 text-sm font-medium leading-none">
+					Enable Self-Account Editing
+				</Label>
+				<p class="text-muted-foreground text-[0.8rem]">
+					Whether the user should be able to edit their own account details.
+				</p>
+			</div>
+		</div>
 		<div class="items-top mt-5 flex space-x-2">
 			<Checkbox id="admin-privileges" bind:checked={$inputs.emailsVerified.value} />
 			<div class="grid gap-1.5 leading-none">
