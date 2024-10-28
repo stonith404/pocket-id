@@ -8,7 +8,6 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -54,7 +53,6 @@ func (m *ErrorHandlerMiddleware) Add() gin.HandlerFunc {
 				return
 			}
 
-			log.Println(err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
 		}
 	}

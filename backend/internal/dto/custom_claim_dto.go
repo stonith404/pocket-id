@@ -1,8 +1,11 @@
 package dto
 
 type CustomClaimDto struct {
-	Key   string `json:"key" binding:"required,max=20"`
-	Value string `json:"value" binding:"required,max=10000"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
-type CustomClaimCreateDto = CustomClaimDto
+type CustomClaimCreateDto struct {
+	Key   string `json:"key" binding:"required,claimKey"`
+	Value string `json:"value" binding:"required"`
+}

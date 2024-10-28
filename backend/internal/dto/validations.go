@@ -29,8 +29,15 @@ var validateUsername validator.Func = func(fl validator.FieldLevel) bool {
 }
 
 var validateUserGroupName validator.Func = func(fl validator.FieldLevel) bool {
-	// [a-z0-9_] : The group name can only contain lowercase letters, numbers, and underscores
-	regex := "^[a-z0-9_]+$"
+	// The string can only contain lowercase letters, numbers, and underscores
+	regex := "^[a-z0-9_]*$"
+	matched, _ := regexp.MatchString(regex, fl.Field().String())
+	return matched
+}
+
+var validateClaimKey validator.Func = func(fl validator.FieldLevel) bool {
+	// The string can only contain letters and numbers
+	regex := "^[A-Za-z0-9]*$"
 	matched, _ := regexp.MatchString(regex, fl.Field().String())
 	return matched
 }
@@ -49,6 +56,12 @@ func init() {
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		if err := v.RegisterValidation("userGroupName", validateUserGroupName); err != nil {
+			log.Fatalf("Failed to register custom validation: %v", err)
+		}
+	}
+
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		if err := v.RegisterValidation("claimKey", validateClaimKey); err != nil {
 			log.Fatalf("Failed to register custom validation: %v", err)
 		}
 	}
