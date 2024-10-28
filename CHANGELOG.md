@@ -1,3 +1,12 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.11.0...v) (2024-10-28)
+
+
+### Features
+
+* add option to disable self-account editing ([8304065](https://github.com/stonith404/pocket-id/commit/83040656525cf7b6c8f2acf416c5f8f3288f3d48))
+* add validation to custom claim input ([7bfc3f4](https://github.com/stonith404/pocket-id/commit/7bfc3f43a591287c038187ed5e782de6b9dd738b))
+* custom claims ([#53](https://github.com/stonith404/pocket-id/issues/53)) ([c056089](https://github.com/stonith404/pocket-id/commit/c056089c6043a825aaaaecf0c57454892a108f1d))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.10.0...v) (2024-10-25)
 
 
