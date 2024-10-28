@@ -342,7 +342,7 @@ func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (ma
 		}
 
 		// Add custom claims
-		customClaims, err := s.customClaimService.GetCustomClaimsForUser(userID)
+		customClaims, err := s.customClaimService.GetCustomClaimsForUserWithUserGroups(userID)
 		if err != nil {
 			return nil, err
 		}

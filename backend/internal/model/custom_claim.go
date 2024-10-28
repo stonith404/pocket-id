@@ -6,5 +6,6 @@ type CustomClaim struct {
 	Key   string
 	Value string
 
-	UserID string
+	UserID      *string
+	UserGroupID *string
 }

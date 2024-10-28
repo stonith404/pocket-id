@@ -18,7 +18,7 @@ func NewUserGroupService(db *gorm.DB) *UserGroupService {
 }
 
 func (s *UserGroupService) List(name string, page int, pageSize int) (groups []model.UserGroup, response utils.PaginationResponse, err error) {
-	query := s.db.Model(&model.UserGroup{})
+	query := s.db.Preload("CustomClaims").Model(&model.UserGroup{})
 
 	if name != "" {
 		query = query.Where("name LIKE ?", "%"+name+"%")
@@ -29,7 +29,7 @@ func (s *UserGroupService) List(name string, page int, pageSize int) (groups []m
 }
 
 func (s *UserGroupService) Get(id string) (group model.UserGroup, err error) {
-	err = s.db.Where("id = ?", id).Preload("Users").First(&group).Error
+	err = s.db.Where("id = ?", id).Preload("CustomClaims").Preload("Users").First(&group).Error
 	return group, err
 }
 

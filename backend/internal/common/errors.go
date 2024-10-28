@@ -134,3 +134,13 @@ func (e *ReservedClaimError) Error() string {
 }
 
 func (e *ReservedClaimError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type DuplicateClaimError struct {
+	Key string
+}
+
+func (e *DuplicateClaimError) Error() string {
+	return fmt.Sprintf("Claim %s is already defined", e.Key)
+}
+
+func (e *DuplicateClaimError) HttpStatusCode() int { return http.StatusBadRequest }

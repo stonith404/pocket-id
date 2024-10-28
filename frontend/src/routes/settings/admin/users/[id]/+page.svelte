@@ -7,8 +7,8 @@
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucideChevronLeft } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
+	import CustomClaimsInput from '../../../../../lib/components/custom-claims-input.svelte';
 	import UserForm from '../user-form.svelte';
-	import CustomClaimsInput from './custom-claim-input.svelte';
 
 	let { data } = $props();
 	let user = $state(data);
@@ -50,7 +50,7 @@
 </div>
 <Card.Root>
 	<Card.Header>
-		<Card.Title>General Details</Card.Title>
+		<Card.Title>General</Card.Title>
 	</Card.Header>
 	<Card.Content>
 		<UserForm existingUser={user} callback={updateUser} />

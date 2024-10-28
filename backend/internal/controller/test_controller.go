@@ -33,7 +33,7 @@ func (tc *TestController) resetAndSeedHandler(c *gin.Context) {
 	}
 
 	if err := tc.TestService.ResetAppConfig(); err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 

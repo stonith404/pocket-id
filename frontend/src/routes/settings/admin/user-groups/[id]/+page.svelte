@@ -1,6 +1,8 @@
 <script lang="ts">
+	import CustomClaimsInput from '$lib/components/custom-claims-input.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import CustomClaimService from '$lib/services/custom-claim-service';
 	import UserGroupService from '$lib/services/user-group-service';
 	import UserService from '$lib/services/user-service';
 	import type { UserGroupCreate } from '$lib/types/user-group.type';
@@ -18,6 +20,7 @@
 
 	const userGroupService = new UserGroupService();
 	const userService = new UserService();
+	const customClaimService = new CustomClaimService();
 
 	async function updateUserGroup(updatedUserGroup: UserGroupCreate) {
 		let success = true;
@@ -40,6 +43,15 @@
 				axiosErrorToast(e);
 			});
 	}
+
+	async function updateCustomClaims() {
+		await customClaimService
+			.updateUserGroupCustomClaims(userGroup.id, userGroup.customClaims)
+			.then(() => toast.success('Custom claims updated successfully'))
+			.catch((e) => {
+				axiosErrorToast(e);
+			});
+	}
 </script>
 
 <svelte:head>
@@ -53,7 +65,7 @@
 </div>
 <Card.Root>
 	<Card.Header>
-		<Card.Title>Meta data</Card.Title>
+		<Card.Title>General</Card.Title>
 	</Card.Header>
 
 	<Card.Content>
@@ -73,6 +85,23 @@
 		{/await}
 		<div class="mt-5 flex justify-end">
 			<Button on:click={() => updateUserGroupUsers(userGroup.userIds)}>Save</Button>
+		</div>
+	</Card.Content>
+</Card.Root>
+
+<Card.Root>
+	<Card.Header>
+		<Card.Title>Custom Claims</Card.Title>
+		<Card.Description>
+			Custom claims are key-value pairs that can be used to store additional information about a
+			user. These claims will be included in the ID token if the scope "profile" is requested.
+			Custom claims defined on the user will be prioritized if there are conflicts.
+		</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		<CustomClaimsInput bind:customClaims={userGroup.customClaims} />
+		<div class="mt-5 flex justify-end">
+			<Button onclick={updateCustomClaims} type="submit">Save</Button>
 		</div>
 	</Card.Content>
 </Card.Root>
