@@ -3,12 +3,13 @@ package dto
 import "time"
 
 type UserDto struct {
-	ID        string `json:"id"`
-	Username  string `json:"username"`
-	Email     string `json:"email" `
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	IsAdmin   bool   `json:"isAdmin"`
+	ID           string           `json:"id"`
+	Username     string           `json:"username"`
+	Email        string           `json:"email" `
+	FirstName    string           `json:"firstName"`
+	LastName     string           `json:"lastName"`
+	IsAdmin      bool             `json:"isAdmin"`
+	CustomClaims []CustomClaimDto `json:"customClaims"`
 }
 
 type UserCreateDto struct {

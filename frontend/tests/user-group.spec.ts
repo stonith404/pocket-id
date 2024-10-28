@@ -73,3 +73,39 @@ test('Delete user group', async ({ page }) => {
 	await expect(page.getByRole('status')).toHaveText('User group deleted successfully');
 	await expect(page.getByRole('row', { name: group.name })).not.toBeVisible();
 });
+
+test('Update user group custom claims', async ({ page }) => {
+	await page.goto(`/settings/admin/user-groups/${userGroups.designers.id}`);
+
+	// Add two custom claims
+	await page.getByRole('button', { name: 'Add custom claim' }).click();
+
+	await page.getByPlaceholder('Key').fill('custom_claim_1');
+	await page.getByPlaceholder('Value').fill('custom_claim_1_value');
+
+	await page.getByRole('button', { name: 'Add another' }).click();
+	await page.getByPlaceholder('Key').nth(1).fill('custom_claim_2');
+	await page.getByPlaceholder('Value').nth(1).fill('custom_claim_2_value');
+
+	await page.getByRole('button', { name: 'Save' }).nth(2).click();
+
+	await expect(page.getByRole('status')).toHaveText('Custom claims updated successfully');
+
+	await page.reload();
+
+	// Check if custom claims are saved
+	await expect(page.getByPlaceholder('Key').first()).toHaveValue('custom_claim_1');
+	await expect(page.getByPlaceholder('Value').first()).toHaveValue('custom_claim_1_value');
+	await expect(page.getByPlaceholder('Key').nth(1)).toHaveValue('custom_claim_2');
+	await expect(page.getByPlaceholder('Value').nth(1)).toHaveValue('custom_claim_2_value');
+
+	// Remove one custom claim
+	await page.getByLabel('Remove custom claim').first().click();
+	await page.getByRole('button', { name: 'Save' }).nth(2).click();
+
+	await page.reload();
+
+	// Check if custom claim is removed
+	await expect(page.getByPlaceholder('Key').first()).toHaveValue('custom_claim_2');
+	await expect(page.getByPlaceholder('Value').first()).toHaveValue('custom_claim_2_value');
+});

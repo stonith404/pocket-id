@@ -1,3 +1,5 @@
+import type { CustomClaim } from './custom-claim.type';
+
 export type User = {
 	id: string;
 	username: string;
@@ -5,6 +7,7 @@ export type User = {
 	firstName: string;
 	lastName: string;
 	isAdmin: boolean;
+	customClaims: CustomClaim[];
 };
 
-export type UserCreate = Omit<User, 'id'>;
+export type UserCreate = Omit<User, 'id' | 'customClaims'>;

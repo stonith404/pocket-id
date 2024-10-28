@@ -1,3 +1,4 @@
+import type { CustomClaim } from './custom-claim.type';
 import type { User } from './user.type';
 
 export type UserGroup = {
@@ -5,6 +6,7 @@ export type UserGroup = {
 	friendlyName: string;
 	name: string;
 	createdAt: string;
+	customClaims: CustomClaim[];
 };
 
 export type UserGroupWithUsers = UserGroup & {

@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/service"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
 )
 
@@ -21,7 +20,7 @@ type WellKnownController struct {
 func (wkc *WellKnownController) jwksHandler(c *gin.Context) {
 	jwk, err := wkc.jwtService.GetJWK()
 	if err != nil {
-		utils.ControllerError(c, err)
+		c.Error(err)
 		return
 	}
 

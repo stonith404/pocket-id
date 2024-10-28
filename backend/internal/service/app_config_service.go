@@ -165,7 +165,7 @@ func (s *AppConfigService) UpdateImage(uploadedFile *multipart.FileHeader, image
 	fileType := utils.GetFileExtension(uploadedFile.Filename)
 	mimeType := utils.GetImageMimeType(fileType)
 	if mimeType == "" {
-		return common.ErrFileTypeNotSupported
+		return &common.FileTypeNotSupportedError{}
 	}
 
 	// Delete the old image if it has a different file type

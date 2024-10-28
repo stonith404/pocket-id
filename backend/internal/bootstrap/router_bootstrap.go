@@ -39,11 +39,13 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	jwtService := service.NewJwtService(appConfigService)
 	webauthnService := service.NewWebAuthnService(db, jwtService, auditLogService, appConfigService)
 	userService := service.NewUserService(db, jwtService)
-	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService)
+	customClaimService := service.NewCustomClaimService(db)
+	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)
 	userGroupService := service.NewUserGroupService(db)
 
 	r.Use(middleware.NewCorsMiddleware().Add())
+	r.Use(middleware.NewErrorHandlerMiddleware().Add())
 	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
 
@@ -59,6 +61,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
 	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
+	controller.NewCustomClaimController(apiGroup, jwtAuthMiddleware, customClaimService)
 
 	// Add test controller in non-production environments
 	if common.EnvConfig.AppEnv != "production" {

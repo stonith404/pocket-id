@@ -2,9 +2,8 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/service"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"net/http"
 	"strings"
 )
 
@@ -29,8 +28,7 @@ func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
 				c.Next()
 				return
 			} else {
-				utils.CustomControllerError(c, http.StatusUnauthorized, "You're not signed in")
-				c.Abort()
+				c.Error(&common.NotSignedInError{})
 				return
 			}
 		}
@@ -40,14 +38,14 @@ func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
 			c.Next()
 			return
 		} else if err != nil {
-			utils.CustomControllerError(c, http.StatusUnauthorized, "You're not signed in")
+			c.Error(&common.NotSignedInError{})
 			c.Abort()
 			return
 		}
 
 		// Check if the user is an admin
 		if adminOnly && !claims.IsAdmin {
-			utils.CustomControllerError(c, http.StatusForbidden, "You don't have permission to access this resource")
+			c.Error(&common.MissingPermissionError{})
 			c.Abort()
 			return
 		}

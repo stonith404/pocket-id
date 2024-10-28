@@ -24,7 +24,7 @@ test('Update account details fails with already taken email', async ({ page }) =
 
 	await page.getByRole('button', { name: 'Save' }).click();
 
-	await expect(page.getByRole('status')).toHaveText('Email is already taken');
+	await expect(page.getByRole('status')).toHaveText('Email is already in use');
 });
 
 test('Update account details fails with already taken username', async ({ page }) => {
@@ -34,7 +34,7 @@ test('Update account details fails with already taken username', async ({ page }
 
 	await page.getByRole('button', { name: 'Save' }).click();
 
-	await expect(page.getByRole('status')).toHaveText('Username is already taken');
+	await expect(page.getByRole('status')).toHaveText('Username is already in use');
 });
 
 test('Add passkey to an account', async ({ page }) => {

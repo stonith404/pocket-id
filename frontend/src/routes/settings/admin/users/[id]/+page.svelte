@@ -1,16 +1,20 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import CustomClaimService from '$lib/services/custom-claim-service';
 	import UserService from '$lib/services/user-service';
 	import type { UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucideChevronLeft } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
+	import CustomClaimsInput from '../../../../../lib/components/custom-claims-input.svelte';
 	import UserForm from '../user-form.svelte';
 
 	let { data } = $props();
 	let user = $state(data);
 
 	const userService = new UserService();
+	const customClaimService = new CustomClaimService();
 
 	async function updateUser(updatedUser: UserCreate) {
 		let success = true;
@@ -23,6 +27,15 @@
 			});
 
 		return success;
+	}
+
+	async function updateCustomClaims() {
+		await customClaimService
+			.updateUserCustomClaims(user.id, user.customClaims)
+			.then(() => toast.success('Custom claims updated successfully'))
+			.catch((e) => {
+				axiosErrorToast(e);
+			});
 	}
 </script>
 
@@ -37,10 +50,25 @@
 </div>
 <Card.Root>
 	<Card.Header>
-		<Card.Title>{user.firstName} {user.lastName}</Card.Title>
+		<Card.Title>General</Card.Title>
 	</Card.Header>
-
 	<Card.Content>
 		<UserForm existingUser={user} callback={updateUser} />
+	</Card.Content>
+</Card.Root>
+
+<Card.Root>
+	<Card.Header>
+		<Card.Title>Custom Claims</Card.Title>
+		<Card.Description>
+			Custom claims are key-value pairs that can be used to store additional information about a
+			user. These claims will be included in the ID token if the scope "profile" is requested.
+		</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		<CustomClaimsInput bind:customClaims={user.customClaims} />
+		<div class="mt-5 flex justify-end">
+			<Button onclick={updateCustomClaims} type="submit">Save</Button>
+		</div>
 	</Card.Content>
 </Card.Root>
