@@ -45,14 +45,11 @@
 						suggestions={filteredSuggestions}
 						bind:value={customClaims[i].key}
 					/>
-					<Input
-						placeholder="Value"
-						data-testid={`custom-claim-${i + 1}-value`}
-						bind:value={customClaims[i].value}
-					/>
+					<Input placeholder="Value" bind:value={customClaims[i].value} />
 					<Button
 						variant="outline"
 						size="sm"
+						aria-label="Remove custom claim"
 						on:click={() => (customClaims = customClaims.filter((_, index) => index !== i))}
 					>
 						<LucideMinus class="h-4 w-4" />
