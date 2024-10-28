@@ -140,12 +140,12 @@ test('Update user custom claims', async ({ page }) => {
 	// Add two custom claims
 	await page.getByRole('button', { name: 'Add custom claim' }).click();
 
-	await page.getByPlaceholder('Key').fill('custom_claim_1');
-	await page.getByPlaceholder('Value').fill('custom_claim_1_value');
+	await page.getByPlaceholder('Key').fill('customClaim1');
+	await page.getByPlaceholder('Value').fill('customClaim1_value');
 
 	await page.getByRole('button', { name: 'Add another' }).click();
-	await page.getByPlaceholder('Key').nth(1).fill('custom_claim_2');
-	await page.getByPlaceholder('Value').nth(1).fill('custom_claim_2_value');
+	await page.getByPlaceholder('Key').nth(1).fill('customClaim2');
+	await page.getByPlaceholder('Value').nth(1).fill('customClaim2_value');
 
 	await page.getByRole('button', { name: 'Save' }).nth(1).click();
 
@@ -154,10 +154,10 @@ test('Update user custom claims', async ({ page }) => {
 	await page.reload();
 
 	// Check if custom claims are saved
-	await expect(page.getByPlaceholder('Key').first()).toHaveValue('custom_claim_1');
-	await expect(page.getByPlaceholder('Value').first()).toHaveValue('custom_claim_1_value');
-	await expect(page.getByPlaceholder('Key').nth(1)).toHaveValue('custom_claim_2');
-	await expect(page.getByPlaceholder('Value').nth(1)).toHaveValue('custom_claim_2_value');
+	await expect(page.getByPlaceholder('Key').first()).toHaveValue('customClaim1');
+	await expect(page.getByPlaceholder('Value').first()).toHaveValue('customClaim1_value');
+	await expect(page.getByPlaceholder('Key').nth(1)).toHaveValue('customClaim2');
+	await expect(page.getByPlaceholder('Value').nth(1)).toHaveValue('customClaim2_value');
 
 	// Remove one custom claim
 	await page.getByLabel('Remove custom claim').first().click();
@@ -166,6 +166,6 @@ test('Update user custom claims', async ({ page }) => {
 	await page.reload();
 
 	// Check if custom claim is removed
-	await expect(page.getByPlaceholder('Key').first()).toHaveValue('custom_claim_2');
-	await expect(page.getByPlaceholder('Value').first()).toHaveValue('custom_claim_2_value');
+	await expect(page.getByPlaceholder('Key').first()).toHaveValue('customClaim2');
+	await expect(page.getByPlaceholder('Value').first()).toHaveValue('customClaim2_value');
 });
