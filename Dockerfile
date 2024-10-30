@@ -38,7 +38,7 @@ COPY --from=backend-builder /app/backend/images ./backend/images
 COPY ./scripts ./scripts
 RUN chmod +x ./scripts/*.sh
 
-EXPOSE 3000
+EXPOSE 80
 ENV APP_ENV=production
 
 # Use a shell form to run both the frontend and backend
