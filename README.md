@@ -85,28 +85,23 @@ Required tools:
 
 You can now sign in with the admin account on `http://localhost/login/setup`.
 
-### Add Pocket ID as an OIDC provider
+### Nginx Reverse Proxy
 
-You can add a new OIDC client on `https://<your-domain>/settings/admin/oidc-clients`
+To use Nginx in front of Pocket ID, add the following configuration to increase the header buffer size because, as SvelteKit generates larger headers.
 
-After you have added the client, you can obtain the client ID and client secret.
+```nginx
+proxy_busy_buffers_size   512k;
+proxy_buffers   4 512k;
+proxy_buffer_size   256k;
+```
 
-You may need the following information:
-
-- **Authorization URL**: `https://<your-domain>/authorize`
-- **Token URL**: `https://<your-domain>/api/oidc/token`
-- **Userinfo URL**: `https://<your-domain>/api/oidc/userinfo`
-- **Certificate URL**: `https://<your-domain>/.well-known/jwks.json`
-- **OIDC Discovery URL**: `https://<your-domain>/.well-known/openid-configuration`
-- **Scopes**: At least `openid email`. Optionally you can add `profile` and `groups`.
-
-### Proxy Services with Pocket ID
+## Proxy Services with Pocket ID
 
 As the goal of Pocket ID is to stay simple, we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/) to add authentication to your services that don't support OIDC.
 
 See the [guide](docs/proxy-services.md) for more information.
 
-### Update
+## Update
 
 #### Docker
 
@@ -149,7 +144,7 @@ docker compose up -d
    pm2 start caddy --name pocket-id-caddy -- run --config Caddyfile
    ```
 
-### Environment variables
+## Environment variables
 
 | Variable               | Default Value           | Recommended to change | Description                                                                                                                                                                           |
 | ---------------------- | ----------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
