@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.12.0...v) (2024-10-31)
+
+
+### Features
+
+* add ability to define expiration of one time link ([2ccabf8](https://github.com/stonith404/pocket-id/commit/2ccabf835c2c923d6986d9cafb4e878f5110b91a))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.11.0...v) (2024-10-28)
 
 
