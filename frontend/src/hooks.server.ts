@@ -46,11 +46,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	const response = await resolve(event);
-
-	// The link header causes nginx reverse proxies to fail because it exceeds the maximum size limits
-	// https://github.com/sveltejs/kit/issues/11084
-	response.headers.delete('link');
-	
 	return response;
 };
 
