@@ -57,7 +57,12 @@ test('Create one time access token', async ({ page }) => {
 		.getByRole('row', { name: `${users.craig.firstname} ${users.craig.lastname}` })
 		.getByRole('button')
 		.click();
+
 	await page.getByRole('menuitem', { name: 'One-time link' }).click();
+
+	await page.getByLabel('One Time Link').getByRole('combobox').click();
+	await page.getByRole('option', { name: '12 hours' }).click();
+	await page.getByRole('button', { name: 'Generate Link' }).click();
 
 	await expect(page.getByRole('textbox', { name: 'One Time Link' })).toHaveValue(
 		/http:\/\/localhost\/login\/.*/

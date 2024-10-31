@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import AdvancedTable from '$lib/components/advanced-table.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog/';
 	import { Badge } from '$lib/components/ui/badge/index';
-	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserService from '$lib/services/user-service';
@@ -21,7 +21,7 @@
 		users = initialUsers;
 	});
 
-	let oneTimeLink = $state<string | null>(null);
+	let userIdToCreateOneTimeLink: string | null =  $state(null);;
 
 	const userService = new UserService();
 
@@ -48,15 +48,6 @@
 			}
 		});
 	}
-
-	async function createOneTimeAccessToken(userId: string) {
-		try {
-			const token = await userService.createOneTimeAccessToken(userId);
-			oneTimeLink = `${$page.url.origin}/login/${token}`;
-		} catch (e) {
-			axiosErrorToast(e);
-		}
-	}
 </script>
 
 <AdvancedTable
@@ -82,22 +73,20 @@
 		</Table.Cell>
 		<Table.Cell>
 			<DropdownMenu.Root>
-				<DropdownMenu.Trigger asChild let:builder>
-					<Button aria-haspopup="true" size="icon" variant="ghost" builders={[builder]}>
-						<Ellipsis class="h-4 w-4" />
-						<span class="sr-only">Toggle menu</span>
-					</Button>
+				<DropdownMenu.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
+					<Ellipsis class="h-4 w-4" />
+					<span class="sr-only">Toggle menu</span>
 				</DropdownMenu.Trigger>
 				<DropdownMenu.Content align="end">
-					<DropdownMenu.Item on:click={() => createOneTimeAccessToken(item.id)}
+					<DropdownMenu.Item onclick={() => (userIdToCreateOneTimeLink = item.id)}
 						><LucideLink class="mr-2 h-4 w-4" />One-time link</DropdownMenu.Item
 					>
-					<DropdownMenu.Item href="/settings/admin/users/{item.id}"
+					<DropdownMenu.Item onclick={() => goto(`/settings/admin/users/${item.id}`)}
 						><LucidePencil class="mr-2 h-4 w-4" /> Edit</DropdownMenu.Item
 					>
 					<DropdownMenu.Item
 						class="text-red-500 focus:!text-red-700"
-						on:click={() => deleteUser(item)}
+						onclick={() => deleteUser(item)}
 						><LucideTrash class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
 					>
 				</DropdownMenu.Content>
@@ -106,4 +95,4 @@
 	{/snippet}
 </AdvancedTable>
 
-<OneTimeLinkModal {oneTimeLink} />
+<OneTimeLinkModal userId={userIdToCreateOneTimeLink} />
