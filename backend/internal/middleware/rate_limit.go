@@ -32,6 +32,7 @@ func (m *RateLimitMiddleware) Add(limit rate.Limit, burst int) gin.HandlerFunc {
 		limiter := getLimiter(ip, limit, burst)
 		if !limiter.Allow() {
 			c.Error(&common.TooManyRequestsError{})
+			c.Abort()
 			return
 		}
 

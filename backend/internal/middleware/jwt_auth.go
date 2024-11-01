@@ -29,6 +29,7 @@ func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
 				return
 			} else {
 				c.Error(&common.NotSignedInError{})
+				c.Abort()
 				return
 			}
 		}

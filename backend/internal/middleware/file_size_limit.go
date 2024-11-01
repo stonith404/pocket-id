@@ -19,6 +19,7 @@ func (m *FileSizeLimitMiddleware) Add(maxSize int64) gin.HandlerFunc {
 		if err := c.Request.ParseMultipartForm(maxSize); err != nil {
 			err = &common.FileTooLargeError{MaxSize: formatFileSize(maxSize)}
 			c.Error(err)
+			c.Abort()
 			return
 		}
 		c.Next()
