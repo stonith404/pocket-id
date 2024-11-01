@@ -22,6 +22,7 @@
 
 	if ($userStore?.isAdmin) {
 		links = [
+			// svelte-ignore state_referenced_locally
 			...links,
 			{ href: '/settings/admin/users', label: 'Users' },
 			{ href: '/settings/admin/user-groups', label: 'User Groups' },
