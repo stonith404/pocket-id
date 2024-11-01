@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.13.0...v) (2024-11-01)
+
+
+### Features
+
+* add list empty indicator ([becfc00](https://github.com/stonith404/pocket-id/commit/becfc0004a87c01e18eb92ac85bf4e33f105b6a3))
+
+
+### Bug Fixes
+
+* errors in middleware do not abort the request ([376d747](https://github.com/stonith404/pocket-id/commit/376d747616b1e835f252d20832c5ae42b8b0b737))
+* typo in Self-Account Editing description ([5b9f4d7](https://github.com/stonith404/pocket-id/commit/5b9f4d732615f428c13d3317da96a86c5daebd89))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.12.0...v) (2024-10-31)
 
 
