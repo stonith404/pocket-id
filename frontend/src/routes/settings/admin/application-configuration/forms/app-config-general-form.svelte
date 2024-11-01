@@ -58,7 +58,7 @@
 					Enable Self-Account Editing
 				</Label>
 				<p class="text-muted-foreground text-[0.8rem]">
-					Whether the user should be able to edit their own account details.
+					Whether the users should be able to edit their own account details.
 				</p>
 			</div>
 		</div>
