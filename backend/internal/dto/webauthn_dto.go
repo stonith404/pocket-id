@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/go-webauthn/webauthn/protocol"
-	"time"
+	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
 )
 
 type WebauthnCredentialDto struct {
@@ -15,7 +15,7 @@ type WebauthnCredentialDto struct {
 	BackupEligible bool `json:"backupEligible"`
 	BackupState    bool `json:"backupState"`
 
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt datatype.DateTime `json:"createdAt"`
 }
 
 type WebauthnCredentialUpdateDto struct {
