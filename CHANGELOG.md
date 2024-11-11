@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.13.1...v) (2024-11-11)
+
+
+### Features
+
+* add audit log event for one time access token sign in ([aca2240](https://github.com/stonith404/pocket-id/commit/aca2240a50a12e849cfb6e1aa56390b000aebae0))
+
+
+### Bug Fixes
+
+* overflow of pagination control on mobile ([de45398](https://github.com/stonith404/pocket-id/commit/de4539890349153c467013c24c4d6b30feb8fed8))
+* time displayed incorrectly in audit log ([3d3fb4d](https://github.com/stonith404/pocket-id/commit/3d3fb4d855ef510f2292e98fcaaaf83debb5d3e0))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.13.0...v) (2024-11-01)
 
 
