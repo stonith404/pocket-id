@@ -165,7 +165,7 @@ func (s *WebAuthnService) VerifyLogin(sessionID, userID string, credentialAssert
 		return model.User{}, "", err
 	}
 
-	s.auditLogService.CreateNewSignInWithEmail(ipAddress, userAgent, user.ID, model.AuditLogData{})
+	s.auditLogService.CreateNewSignInWithEmail(ipAddress, userAgent, user.ID)
 
 	return *user, token, nil
 }

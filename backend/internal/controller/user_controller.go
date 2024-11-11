@@ -141,7 +141,7 @@ func (uc *UserController) createOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	token, err := uc.UserService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt)
+	token, err := uc.UserService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt, c.ClientIP(), c.Request.UserAgent())
 	if err != nil {
 		c.Error(err)
 		return

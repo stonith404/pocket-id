@@ -48,8 +48,8 @@ func (s *AuditLogService) Create(event model.AuditLogEvent, ipAddress, userAgent
 }
 
 // CreateNewSignInWithEmail creates a new audit log entry in the database and sends an email if the device hasn't been used before
-func (s *AuditLogService) CreateNewSignInWithEmail(ipAddress, userAgent, userID string, data model.AuditLogData) model.AuditLog {
-	createdAuditLog := s.Create(model.AuditLogEventSignIn, ipAddress, userAgent, userID, data)
+func (s *AuditLogService) CreateNewSignInWithEmail(ipAddress, userAgent, userID string) model.AuditLog {
+	createdAuditLog := s.Create(model.AuditLogEventSignIn, ipAddress, userAgent, userID, model.AuditLogData{})
 
 	// Count the number of times the user has logged in from the same device
 	var count int64

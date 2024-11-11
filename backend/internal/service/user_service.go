@@ -12,12 +12,13 @@ import (
 )
 
 type UserService struct {
-	db         *gorm.DB
-	jwtService *JwtService
+	db              *gorm.DB
+	jwtService      *JwtService
+	auditLogService *AuditLogService
 }
 
-func NewUserService(db *gorm.DB, jwtService *JwtService) *UserService {
-	return &UserService{db: db, jwtService: jwtService}
+func NewUserService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService) *UserService {
+	return &UserService{db: db, jwtService: jwtService, auditLogService: auditLogService}
 }
 
 func (s *UserService) ListUsers(searchTerm string, page int, pageSize int) ([]model.User, utils.PaginationResponse, error) {
@@ -88,7 +89,7 @@ func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, u
 	return user, nil
 }
 
-func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Time) (string, error) {
+func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Time, ipAddress, userAgent string) (string, error) {
 	randomString, err := utils.GenerateRandomAlphanumericString(16)
 	if err != nil {
 		return "", err
@@ -103,6 +104,8 @@ func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Tim
 	if err := s.db.Create(&oneTimeAccessToken).Error; err != nil {
 		return "", err
 	}
+
+	s.auditLogService.Create(model.AuditLogEventOneTimeAccessTokenSignIn, ipAddress, userAgent, userID, model.AuditLogData{})
 
 	return oneTimeAccessToken.Token, nil
 }
