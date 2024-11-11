@@ -117,7 +117,9 @@
 			</Table.Body>
 		</Table.Root>
 
-		<div class="mt-5 flex items-center justify-between space-x-2">
+		<div
+			class="mt-5 flex flex-col-reverse items-center justify-between gap-3 space-x-2 sm:flex-row"
+		>
 			<div class="flex items-center space-x-2">
 				<p class="text-sm font-medium">Items per page</p>
 				<Select.Root
