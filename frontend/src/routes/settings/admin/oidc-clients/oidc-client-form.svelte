@@ -2,6 +2,7 @@
 	import FileInput from '$lib/components/file-input.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { Checkbox } from '$lib/components/ui/checkbox';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import type {
 		OidcClient,
@@ -28,12 +29,14 @@
 
 	const client: OidcClientCreate = {
 		name: existingClient?.name || '',
-		callbackURLs: existingClient?.callbackURLs || [""]
+		callbackURLs: existingClient?.callbackURLs || [''],
+		isPublic: existingClient?.isPublic || false
 	};
 
 	const formSchema = z.object({
 		name: z.string().min(2).max(50),
-		callbackURLs: z.array(z.string().url()).nonempty()
+		callbackURLs: z.array(z.string().url()).nonempty(),
+		isPublic: z.boolean()
 	});
 
 	type FormSchema = typeof formSchema;
@@ -71,15 +74,27 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="flex flex-col gap-3 sm:flex-row">
+	<div class="grid grid-cols-2 gap-3 sm:flex-row">
 		<FormInput label="Name" class="w-full" bind:input={$inputs.name} />
 		<OidcCallbackUrlInput
 			class="w-full"
 			bind:callbackURLs={$inputs.callbackURLs.value}
 			bind:error={$inputs.callbackURLs.error}
 		/>
+		<div class="items-top flex space-x-2">
+			<Checkbox id="admin-privileges" bind:checked={$inputs.isPublic.value} />
+			<div class="grid gap-1.5 leading-none">
+				<Label for="admin-privileges" class="mb-0 text-sm font-medium leading-none">
+					Public Client
+				</Label>
+				<p class="text-muted-foreground text-[0.8rem]">
+					Public clients do not have a client secret and use PKCE instead. Enable this if your
+					client is a SPA or mobile app.
+				</p>
+			</div>
+		</div>
 	</div>
-	<div class="mt-3">
+	<div class="mt-8">
 		<Label for="logo">Logo</Label>
 		<div class="mt-2 flex items-end gap-3">
 			{#if logoDataURL}

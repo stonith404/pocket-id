@@ -20,10 +20,12 @@ type UserAuthorizedOidcClient struct {
 type OidcAuthorizationCode struct {
 	Base
 
-	Code      string
-	Scope     string
-	Nonce     string
-	ExpiresAt datatype.DateTime
+	Code                      string
+	Scope                     string
+	Nonce                     string
+	CodeChallenge             *string
+	CodeChallengeMethodSha256 *bool
+	ExpiresAt                 datatype.DateTime
 
 	UserID string
 	User   User
@@ -39,6 +41,7 @@ type OidcClient struct {
 	CallbackURLs CallbackURLs
 	ImageType    *string
 	HasLogo      bool `gorm:"-"`
+	IsPublic     bool
 
 	CreatedByID string
 	CreatedBy   User

@@ -102,7 +102,7 @@ func (e *TooManyRequestsError) HttpStatusCode() int { return http.StatusTooManyR
 type ClientIdOrSecretNotProvidedError struct{}
 
 func (e *ClientIdOrSecretNotProvidedError) Error() string {
-	return "Client id and secret not provided"
+	return "Client id or secret not provided"
 }
 func (e *ClientIdOrSecretNotProvidedError) HttpStatusCode() int { return http.StatusBadRequest }
 
@@ -146,3 +146,17 @@ func (e *AccountEditNotAllowedError) Error() string {
 	return "You are not allowed to edit your account"
 }
 func (e *AccountEditNotAllowedError) HttpStatusCode() int { return http.StatusForbidden }
+
+type OidcInvalidCodeVerifierError struct{}
+
+func (e *OidcInvalidCodeVerifierError) Error() string {
+	return "Invalid code verifier"
+}
+func (e *OidcInvalidCodeVerifierError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type OidcMissingCodeChallengeError struct{}
+
+func (e *OidcMissingCodeChallengeError) Error() string {
+	return "Missing code challenge"
+}
+func (e *OidcMissingCodeChallengeError) HttpStatusCode() int { return http.StatusBadRequest }

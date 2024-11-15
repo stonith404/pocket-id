@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
@@ -80,7 +79,10 @@ func (oc *OidcController) authorizeNewClientHandler(c *gin.Context) {
 }
 
 func (oc *OidcController) createTokensHandler(c *gin.Context) {
-	var input dto.OidcIdTokenDto
+	// Disable cors for this endpoint
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var input dto.OidcCreateTokensDto
 
 	if err := c.ShouldBind(&input); err != nil {
 		c.Error(err)
@@ -91,16 +93,11 @@ func (oc *OidcController) createTokensHandler(c *gin.Context) {
 	clientSecret := input.ClientSecret
 
 	// Client id and secret can also be passed over the Authorization header
-	if clientID == "" || clientSecret == "" {
-		var ok bool
-		clientID, clientSecret, ok = c.Request.BasicAuth()
-		if !ok {
-			c.Error(&common.ClientIdOrSecretNotProvidedError{})
-			return
-		}
+	if clientID == "" && clientSecret == "" {
+		clientID, clientSecret, _ = c.Request.BasicAuth()
 	}
 
-	idToken, accessToken, err := oc.oidcService.CreateTokens(input.Code, input.GrantType, clientID, clientSecret)
+	idToken, accessToken, err := oc.oidcService.CreateTokens(input.Code, input.GrantType, clientID, clientSecret, input.CodeVerifier)
 	if err != nil {
 		c.Error(err)
 		return

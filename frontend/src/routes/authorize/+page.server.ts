@@ -12,6 +12,8 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 		nonce: url.searchParams.get('nonce') || undefined,
 		state: url.searchParams.get('state')!,
 		callbackURL: url.searchParams.get('redirect_uri')!,
-		client
+		client,
+		codeChallenge: url.searchParams.get('code_challenge')!,
+		codeChallengeMethod: url.searchParams.get('code_challenge_method')!
 	};
 };

@@ -24,7 +24,7 @@
 	let authorizationRequired = false;
 
 	export let data: PageData;
-	let { scope, nonce, client, state, callbackURL } = data;
+	let { scope, nonce, client, state, callbackURL, codeChallenge, codeChallengeMethod  } = data;
 
 	async function authorize() {
 		isLoading = true;
@@ -37,7 +37,7 @@
 			}
 
 			await oidService
-				.authorize(client!.id, scope, callbackURL, nonce)
+				.authorize(client!.id, scope, callbackURL, nonce, codeChallenge, codeChallengeMethod)
 				.then(async ({ code, callbackURL }) => {
 					onSuccess(code, callbackURL);
 				});
@@ -55,7 +55,7 @@
 		isLoading = true;
 		try {
 			await oidService
-				.authorizeNewClient(client!.id, scope, callbackURL, nonce)
+				.authorizeNewClient(client!.id, scope, callbackURL, nonce, codeChallenge, codeChallengeMethod)
 				.then(async ({ code, callbackURL }) => {
 					onSuccess(code, callbackURL);
 				});

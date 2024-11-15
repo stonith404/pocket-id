@@ -4,6 +4,7 @@ export type OidcClient = {
 	logoURL: string;
 	callbackURLs: [string, ...string[]];
 	hasLogo: boolean;
+	isPublic: boolean;
 };
 
 export type OidcClientCreate = Omit<OidcClient, 'id' | 'logoURL' | 'hasLogo'>;

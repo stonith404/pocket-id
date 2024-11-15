@@ -11,7 +11,7 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
 ## Setup
 
 > [!WARNING]  
-> Pocket ID is in its early stages and may contain bugs. There might be OIDC features that are not yet implemented. If you encounter any issues, please open an issue. For example PKCE is not yet implemented.
+> Pocket ID is in its early stages and may contain bugs. There might be OIDC features that are not yet implemented. If you encounter any issues, please open an issue.
 
 ### Before you start
 
