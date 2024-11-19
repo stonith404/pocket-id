@@ -21,7 +21,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /app/backend/pocket-id-backend .
 
 # Stage 3: Production Image
 FROM node:20-alpine
-RUN apk add --no-cache caddy
+RUN apk add --no-cache caddy su-exec
 COPY ./reverse-proxy /etc/caddy/
 
 WORKDIR /app
@@ -42,4 +42,5 @@ EXPOSE 80
 ENV APP_ENV=production
 
 # Use a shell form to run both the frontend and backend
-CMD ["sh", "./scripts/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "./scripts/docker/create-user.sh"]
+CMD ["sh", "./scripts/docker/entrypoint.sh"]

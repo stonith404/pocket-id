@@ -1,3 +1,4 @@
+
 echo "Starting frontend..."
 node frontend/build &
 
