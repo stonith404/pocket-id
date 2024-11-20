@@ -21,7 +21,8 @@ if ! id -u pocket-id > /dev/null 2>&1; then
 fi
 
 # Change ownership of the /app directory
-find /app/backend/data ! -type l \( ! -group "${PGID}" -o ! -user "${PUID}" \)
+mkdir -p /app/backend/data
+find /app/backend/data \( ! -group "${PGID}" -o ! -user "${PUID}" \) -exec chown "${PUID}:${PGID}" {} +
 
 # Switch to the non-root user
 exec su-exec "$PUID:$PGID" "$@"
