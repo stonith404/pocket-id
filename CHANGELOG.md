@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.14.0...v) (2024-11-21)
+
+
+### Features
+
+* add option to skip TLS certificate check and ability to send test email ([653d948](https://github.com/stonith404/pocket-id/commit/653d948f73b61e6d1fd3484398fef1a2a37e6d92))
+* add PKCE support ([3613ac2](https://github.com/stonith404/pocket-id/commit/3613ac261cf65a2db0620ff16dc6df239f6e5ecd))
+
+
+### Bug Fixes
+
+* mobile layout overflow on application configuration page ([e784093](https://github.com/stonith404/pocket-id/commit/e784093342f9977ea08cac65ff0c3de4d2644872))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.13.1...v) (2024-11-11)
 
 
