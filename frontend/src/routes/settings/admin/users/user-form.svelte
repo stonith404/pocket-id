@@ -1,8 +1,7 @@
 <script lang="ts">
+	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Label } from '$lib/components/ui/label';
 	import type { UserCreate } from '$lib/types/user.type';
 	import { createForm } from '$lib/utils/form-util';
 	import { z } from 'zod';
@@ -70,15 +69,12 @@
 			<FormInput label="Username" bind:input={$inputs.username} />
 		</div>
 	</div>
-	<div class="items-top mt-5 flex space-x-2">
-		<Checkbox id="admin-privileges" bind:checked={$inputs.isAdmin.value} />
-		<div class="grid gap-1.5 leading-none">
-			<Label for="admin-privileges" class="mb-0 text-sm font-medium leading-none">
-				Admin Privileges
-			</Label>
-			<p class="text-muted-foreground text-[0.8rem]">Admins have full access to the admin panel.</p>
-		</div>
-	</div>
+	<CheckboxWithLabel
+		id="admin-privileges"
+		label="Admin Privileges"
+		description="Admins have full access to the admin panel."
+		bind:checked={$inputs.isAdmin.value}
+	/>
 	<div class="mt-5 flex justify-end">
 		<Button {isLoading} type="submit">Save</Button>
 	</div>

@@ -95,6 +95,11 @@ var defaultDbConfig = model.AppConfig{
 		Key:  "smtpPassword",
 		Type: "string",
 	},
+	SmtpSkipCertVerify: model.AppConfigVariable{
+		Key:          "smtpSkipCertVerify",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
 }
 
 func (s *AppConfigService) UpdateAppConfig(input dto.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {

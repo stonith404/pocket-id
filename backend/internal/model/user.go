@@ -59,6 +59,8 @@ func (u User) WebAuthnCredentialDescriptors() (descriptors []protocol.Credential
 	return descriptors
 }
 
+func (u User) FullName() string { return u.FirstName + " " + u.LastName }
+
 type OneTimeAccessToken struct {
 	Base
 	Token     string

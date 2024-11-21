@@ -30,7 +30,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 
 	// Initialize services
 	templateDir := os.DirFS(common.EnvConfig.EmailTemplatesPath)
-	emailService, err := service.NewEmailService(appConfigService, templateDir)
+	emailService, err := service.NewEmailService(appConfigService, db, templateDir)
 	if err != nil {
 		log.Fatalf("Unable to create email service: %s", err)
 	}
@@ -58,7 +58,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService)
 	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
 	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService, appConfigService)
-	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService)
+	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
 	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
 	controller.NewCustomClaimController(apiGroup, jwtAuthMiddleware, customClaimService)
