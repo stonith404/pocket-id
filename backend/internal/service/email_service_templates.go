@@ -27,6 +27,13 @@ var NewLoginTemplate = email.Template[NewLoginTemplateData]{
 	},
 }
 
+var TestTemplate = email.Template[struct{}]{
+	Path: "test",
+	Title: func(data *email.TemplateData[struct{}]) string {
+		return "Test email"
+	},
+}
+
 type NewLoginTemplateData struct {
 	IPAddress string
 	Country   string
@@ -36,4 +43,4 @@ type NewLoginTemplateData struct {
 }
 
 // this is list of all template paths used for preloading templates
-var emailTemplatesPaths = []string{NewLoginTemplate.Path}
+var emailTemplatesPaths = []string{NewLoginTemplate.Path, TestTemplate.Path}

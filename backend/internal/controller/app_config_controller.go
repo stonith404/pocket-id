@@ -14,10 +14,13 @@ import (
 func NewAppConfigController(
 	group *gin.RouterGroup,
 	jwtAuthMiddleware *middleware.JwtAuthMiddleware,
-	appConfigService *service.AppConfigService) {
+	appConfigService *service.AppConfigService,
+	emailService *service.EmailService,
+) {
 
 	acc := &AppConfigController{
 		appConfigService: appConfigService,
+		emailService:     emailService,
 	}
 	group.GET("/application-configuration", acc.listAppConfigHandler)
 	group.GET("/application-configuration/all", jwtAuthMiddleware.Add(true), acc.listAllAppConfigHandler)
@@ -29,10 +32,13 @@ func NewAppConfigController(
 	group.PUT("/application-configuration/logo", jwtAuthMiddleware.Add(true), acc.updateLogoHandler)
 	group.PUT("/application-configuration/favicon", jwtAuthMiddleware.Add(true), acc.updateFaviconHandler)
 	group.PUT("/application-configuration/background-image", jwtAuthMiddleware.Add(true), acc.updateBackgroundImageHandler)
+
+	group.POST("/application-configuration/test-email", jwtAuthMiddleware.Add(true), acc.testEmailHandler)
 }
 
 type AppConfigController struct {
 	appConfigService *service.AppConfigService
+	emailService     *service.EmailService
 }
 
 func (acc *AppConfigController) listAppConfigHandler(c *gin.Context) {
@@ -168,6 +174,16 @@ func (acc *AppConfigController) updateImage(c *gin.Context, imageName string, ol
 	}
 
 	err = acc.appConfigService.UpdateImage(file, imageName, oldImageType)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func (acc *AppConfigController) testEmailHandler(c *gin.Context) {
+	err := acc.emailService.SendTestEmail()
 	if err != nil {
 		c.Error(err)
 		return

@@ -19,10 +19,11 @@ type AppConfig struct {
 	LogoLightImageType  AppConfigVariable
 	LogoDarkImageType   AppConfigVariable
 
-	EmailEnabled AppConfigVariable
-	SmtpHost     AppConfigVariable
-	SmtpPort     AppConfigVariable
-	SmtpFrom     AppConfigVariable
-	SmtpUser     AppConfigVariable
-	SmtpPassword AppConfigVariable
+	EmailEnabled       AppConfigVariable
+	SmtpHost           AppConfigVariable
+	SmtpPort           AppConfigVariable
+	SmtpFrom           AppConfigVariable
+	SmtpUser           AppConfigVariable
+	SmtpPassword       AppConfigVariable
+	SmtpSkipCertVerify AppConfigVariable
 }
