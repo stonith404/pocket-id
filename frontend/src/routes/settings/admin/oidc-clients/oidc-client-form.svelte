@@ -1,8 +1,8 @@
 <script lang="ts">
+	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import FileInput from '$lib/components/file-input.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import type {
 		OidcClient,
@@ -81,18 +81,12 @@
 			bind:callbackURLs={$inputs.callbackURLs.value}
 			bind:error={$inputs.callbackURLs.error}
 		/>
-		<div class="items-top flex space-x-2">
-			<Checkbox id="admin-privileges" bind:checked={$inputs.isPublic.value} />
-			<div class="grid gap-1.5 leading-none">
-				<Label for="admin-privileges" class="mb-0 text-sm font-medium leading-none">
-					Public Client
-				</Label>
-				<p class="text-muted-foreground text-[0.8rem]">
-					Public clients do not have a client secret and use PKCE instead. Enable this if your
-					client is a SPA or mobile app.
-				</p>
-			</div>
-		</div>
+		<CheckboxWithLabel
+			id="public-client"
+			label="Public Client"
+			description="Public clients do not have a client secret and use PKCE instead. Enable this if your client is a SPA or mobile app."
+			bind:checked={$inputs.isPublic.value}
+		/>
 	</div>
 	<div class="mt-8">
 		<Label for="logo">Logo</Label>
