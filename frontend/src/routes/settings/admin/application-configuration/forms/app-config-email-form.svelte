@@ -43,6 +43,7 @@
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
 
 	async function onSubmit() {
+		console.log('submit');
 		const data = form.validate();
 		if (!data) return false;
 		await callback({
@@ -78,7 +79,7 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="mt-5 grid grid-cols-2 gap-5">
+	<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
 		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
 		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
 		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
@@ -91,7 +92,7 @@
 			bind:checked={$inputs.smtpSkipCertVerify.value}
 		/>
 	</div>
-	<div class="mt-8 flex justify-end gap-3">
+	<div class="mt-8 flex flex-wrap justify-end gap-3">
 		{#if emailEnabled}
 			<Button variant="secondary" onclick={onDisable}>Disable</Button>
 			<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
@@ -100,7 +101,7 @@
 
 			<Button onclick={onSubmit} type="submit">Save</Button>
 		{:else}
-			<Button onclick={onEnable} type="submit">Enable</Button>
+			<Button onclick={onEnable}>Enable</Button>
 		{/if}
 	</div>
 </form>
