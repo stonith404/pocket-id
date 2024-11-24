@@ -58,7 +58,7 @@ func (e *OidcInvalidAuthorizationCodeError) HttpStatusCode() int { return 400 }
 
 type OidcInvalidCallbackURLError struct{}
 
-func (e *OidcInvalidCallbackURLError) Error() string       { return "invalid callback URL" }
+func (e *OidcInvalidCallbackURLError) Error() string       { return "invalid callback URL, it might be necessary for an admin to fix this" }
 func (e *OidcInvalidCallbackURLError) HttpStatusCode() int { return 400 }
 
 type FileTypeNotSupportedError struct{}
