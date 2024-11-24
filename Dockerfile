@@ -24,7 +24,7 @@ FROM node:20-alpine
 # Delete default node user
 RUN deluser --remove-home node
 
-RUN apk add --no-cache caddy su-exec
+RUN apk add --no-cache caddy curl su-exec
 COPY ./reverse-proxy /etc/caddy/
 
 WORKDIR /app
