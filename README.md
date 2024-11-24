@@ -97,7 +97,7 @@ proxy_buffer_size   256k;
 
 ## Proxy Services with Pocket ID
 
-As the goal of Pocket ID is to stay simple, we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/) to add authentication to your services that don't support OIDC.
+As the goal of Pocket ID is to stay simple, we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy) to add authentication to your services that don't support OIDC.
 
 See the [guide](docs/proxy-services.md) for more information.
 
