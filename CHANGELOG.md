@@ -1,3 +1,11 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.15.0...v) (2024-11-24)
+
+
+### Features
+
+* add health check ([058084e](https://github.com/stonith404/pocket-id/commit/058084ed64816b12108e25bf04af988fc97772ed))
+* improve error message for invalid callback url ([f637a89](https://github.com/stonith404/pocket-id/commit/f637a89f579aefb8dc3c3c16a27ef0bc453dfe40))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.14.0...v) (2024-11-21)
 
 
