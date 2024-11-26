@@ -1,3 +1,19 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.16.0...v) (2024-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* add option to specify the Max Mind license key for the Geolite2 db
+
+### Features
+
+* add option to specify the Max Mind license key for the Geolite2 db ([fcf08a4](https://github.com/stonith404/pocket-id/commit/fcf08a4d898160426442bd80830f4431988f4313))
+
+
+### Bug Fixes
+
+* don't try to create a new user if the Docker user is not root ([#71](https://github.com/stonith404/pocket-id/issues/71)) ([0e95e9c](https://github.com/stonith404/pocket-id/commit/0e95e9c56f4c3f84982f508fdb6894ba747952b4))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.15.0...v) (2024-11-24)
 
 
