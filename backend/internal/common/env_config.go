@@ -14,6 +14,8 @@ type EnvConfigSchema struct {
 	Port               string `env:"BACKEND_PORT"`
 	Host               string `env:"HOST"`
 	EmailTemplatesPath string `env:"EMAIL_TEMPLATES_PATH"`
+	MaxMindLicenseKey  string `env:"MAXMIND_LICENSE_KEY"`
+	GeoLiteDBPath      string `env:"GEOLITE_DB_PATH"`
 }
 
 var EnvConfig = &EnvConfigSchema{
@@ -24,6 +26,8 @@ var EnvConfig = &EnvConfigSchema{
 	Port:               "8080",
 	Host:               "localhost",
 	EmailTemplatesPath: "./email-templates",
+	MaxMindLicenseKey:  "",
+	GeoLiteDBPath:      "data/GeoLite2-City.mmdb",
 }
 
 func init() {
