@@ -21,7 +21,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /app/backend/pocket-id-backend .
 
 # Stage 3: Production Image
 FROM node:20-alpine
-RUN apk add --no-cache caddy
+RUN apk add --no-cache caddy sqlite uuidgen
 
 USER node
 COPY --chown=node ./reverse-proxy /etc/caddy/
