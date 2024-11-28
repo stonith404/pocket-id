@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.17.0...v) (2024-11-28)
+
+
+### Features
+
+* add option to disable TLS for email sending ([f9fa2c6](https://github.com/stonith404/pocket-id/commit/f9fa2c6706a8bf949fe5efd6664dec8c80e18659))
+* allow empty user and password in SMTP configuration ([a9f4dad](https://github.com/stonith404/pocket-id/commit/a9f4dada321841d3611b15775307228b34e7793f))
+
+
+### Bug Fixes
+
+* email save toast shows two times ([f2bfc73](https://github.com/stonith404/pocket-id/commit/f2bfc731585ad7424eb8c4c41c18368fc0f75ffc))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.16.0...v) (2024-11-26)
 
 
