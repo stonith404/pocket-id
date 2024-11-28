@@ -12,6 +12,7 @@ export type AllAppConfig = AppConfig & {
 	smtpFrom: string;
 	smtpUser: string;
 	smtpPassword: string;
+	smtpTls: boolean;
 	smtpSkipCertVerify: boolean;
 };
 

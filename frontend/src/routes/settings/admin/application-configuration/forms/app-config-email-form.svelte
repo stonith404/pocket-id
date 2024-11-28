@@ -28,6 +28,7 @@
 		smtpUser: appConfig.smtpUser,
 		smtpPassword: appConfig.smtpPassword,
 		smtpFrom: appConfig.smtpFrom,
+		smtpTls: appConfig.smtpTls,
 		smtpSkipCertVerify: appConfig.smtpSkipCertVerify
 	};
 
@@ -37,6 +38,7 @@
 		smtpUser: z.string().min(1),
 		smtpPassword: z.string().min(1),
 		smtpFrom: z.string().email(),
+		smtpTls: z.boolean(),
 		smtpSkipCertVerify: z.boolean()
 	});
 
@@ -79,12 +81,18 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+	<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 items-start">
 		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
 		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
 		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
 		<FormInput label="SMTP Password" type="password" bind:input={$inputs.smtpPassword} />
 		<FormInput label="SMTP From" bind:input={$inputs.smtpFrom} />
+		<CheckboxWithLabel
+			id="tls"
+			label="TLS"
+			description="Enable TLS for the SMTP connection."
+			bind:checked={$inputs.smtpTls.value}
+		/>
 		<CheckboxWithLabel
 			id="skip-cert-verify"
 			label="Skip Certificate Verification"

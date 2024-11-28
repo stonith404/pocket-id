@@ -22,5 +22,6 @@ type AppConfigUpdateDto struct {
 	SmtpFrom            string `json:"smtpFrom" binding:"omitempty,email"`
 	SmtpUser            string `json:"smtpUser"`
 	SmtpPassword        string `json:"smtpPassword"`
+	SmtpTls             string `json:"smtpTls"`
 	SmtpSkipCertVerify  string `json:"smtpSkipCertVerify"`
 }

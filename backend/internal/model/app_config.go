@@ -25,5 +25,6 @@ type AppConfig struct {
 	SmtpFrom           AppConfigVariable
 	SmtpUser           AppConfigVariable
 	SmtpPassword       AppConfigVariable
+	SmtpTls            AppConfigVariable
 	SmtpSkipCertVerify AppConfigVariable
 }

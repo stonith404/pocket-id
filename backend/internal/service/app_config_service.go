@@ -95,6 +95,11 @@ var defaultDbConfig = model.AppConfig{
 		Key:  "smtpPassword",
 		Type: "string",
 	},
+	SmtpTls: model.AppConfigVariable{
+		Key:          "smtpTls",
+		Type:         "bool",
+		DefaultValue: "true",
+	},
 	SmtpSkipCertVerify: model.AppConfigVariable{
 		Key:          "smtpSkipCertVerify",
 		Type:         "bool",

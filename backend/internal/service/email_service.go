@@ -98,15 +98,18 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 
 	// Connect to the SMTP server
 	port := srv.appConfigService.DbConfig.SmtpPort.Value
+	smtpAddress := srv.appConfigService.DbConfig.SmtpHost.Value + ":" + port
 	var client *smtp.Client
-	if port == "465" {
+	if srv.appConfigService.DbConfig.SmtpTls.Value == "false" {
+		client, err = smtp.Dial(smtpAddress)
+	} else if port == "465" {
 		client, err = srv.connectToSmtpServerUsingImplicitTLS(
-			srv.appConfigService.DbConfig.SmtpHost.Value+":"+port,
+			smtpAddress,
 			tlsConfig,
 		)
 	} else {
 		client, err = srv.connectToSmtpServerUsingStartTLS(
-			srv.appConfigService.DbConfig.SmtpHost.Value+":"+port,
+			smtpAddress,
 			tlsConfig,
 		)
 	}
