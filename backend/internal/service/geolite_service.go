@@ -39,7 +39,7 @@ func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string
 	// Check if IP is in Tailscale's CGNAT range (100.64.0.0/10)
 	if ip := net.ParseIP(ipAddress); ip != nil {
 		if ip.To4() != nil && ip.To4()[0] == 100 && ip.To4()[1] >= 64 && ip.To4()[1] <= 127 {
-			return "Tailscale Network", "Tailscale", nil
+			return "Internal Network", "Tailscale", nil
 		}
 	}
 
