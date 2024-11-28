@@ -118,14 +118,19 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 		return fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
 
-	// Set up the authentication
-	auth := smtp.PlainAuth("",
-		srv.appConfigService.DbConfig.SmtpUser.Value,
-		srv.appConfigService.DbConfig.SmtpPassword.Value,
-		srv.appConfigService.DbConfig.SmtpHost.Value,
-	)
-	if err := client.Auth(auth); err != nil {
-		return fmt.Errorf("failed to authenticate SMTP client: %w", err)
+	smtpUser := srv.appConfigService.DbConfig.SmtpUser.Value
+	smtpPassword := srv.appConfigService.DbConfig.SmtpPassword.Value
+
+	// Set up the authentication if user or password are set
+	if smtpUser != "" || smtpPassword != "" {
+		auth := smtp.PlainAuth("",
+			srv.appConfigService.DbConfig.SmtpUser.Value,
+			srv.appConfigService.DbConfig.SmtpPassword.Value,
+			srv.appConfigService.DbConfig.SmtpHost.Value,
+		)
+		if err := client.Auth(auth); err != nil {
+			return fmt.Errorf("failed to authenticate SMTP client: %w", err)
+		}
 	}
 
 	// Send the email

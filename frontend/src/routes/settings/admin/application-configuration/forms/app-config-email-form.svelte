@@ -35,8 +35,8 @@
 	const formSchema = z.object({
 		smtpHost: z.string().min(1),
 		smtpPort: z.number().min(1),
-		smtpUser: z.string().min(1),
-		smtpPassword: z.string().min(1),
+		smtpUser: z.string(),
+		smtpPassword: z.string(),
 		smtpFrom: z.string().email(),
 		smtpTls: z.boolean(),
 		smtpSkipCertVerify: z.boolean()
