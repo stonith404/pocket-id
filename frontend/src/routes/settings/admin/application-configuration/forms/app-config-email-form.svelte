@@ -81,7 +81,7 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 items-start">
+	<div class="mt-5 grid grid-cols-1 items-start gap-5 md:grid-cols-2">
 		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
 		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
 		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
@@ -106,8 +106,7 @@
 			<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
 				>Send Test Email</Button
 			>
-
-			<Button onclick={onSubmit} type="submit">Save</Button>
+			<Button type="submit">Save</Button>
 		{:else}
 			<Button onclick={onEnable}>Enable</Button>
 		{/if}
