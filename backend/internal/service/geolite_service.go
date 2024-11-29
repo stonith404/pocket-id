@@ -5,15 +5,18 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/oschwald/maxminddb-golang/v2"
-	"github.com/stonith404/pocket-id/backend/internal/common"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/netip"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/oschwald/maxminddb-golang/v2"
+
+	"github.com/stonith404/pocket-id/backend/internal/common"
 )
 
 type GeoLiteService struct{}
@@ -33,6 +36,13 @@ func NewGeoLiteService() *GeoLiteService {
 
 // GetLocationByIP returns the country and city of the given IP address.
 func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string, err error) {
+	// Check if IP is in Tailscale's CGNAT range (100.64.0.0/10)
+	if ip := net.ParseIP(ipAddress); ip != nil {
+		if ip.To4() != nil && ip.To4()[0] == 100 && ip.To4()[1] >= 64 && ip.To4()[1] <= 127 {
+			return "Internal Network", "Tailscale", nil
+		}
+	}
+
 	db, err := maxminddb.Open(common.EnvConfig.GeoLiteDBPath)
 	if err != nil {
 		return "", "", err
