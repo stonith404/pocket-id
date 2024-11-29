@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.18.0...v) (2024-11-29)
+
+
+### Features
+
+* **geolite:** add Tailscale IP detection with CGNAT range check  ([#77](https://github.com/stonith404/pocket-id/issues/77)) ([edce3d3](https://github.com/stonith404/pocket-id/commit/edce3d337129c9c6e8a60df2122745984ba0f3e0))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.17.0...v) (2024-11-28)
 
 
