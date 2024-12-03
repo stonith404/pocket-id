@@ -1,12 +1,12 @@
 # Proxy Services through Pocket ID
 
-The goal of Pocket ID is to stay simple. Because of that we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/) to add authentication to your services that don't support OIDC. This guide will show you how to set up OAuth2 Proxy with Pocket ID.
+The goal of Pocket ID is to stay simple. Because of that we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) to add authentication to your services that don't support OIDC. This guide will show you how to set up OAuth2 Proxy with Pocket ID.
 
 ## Docker Setup
 
 #### 1. Add OAuth2 proxy to the service that should be proxied.
 
-To configure OAuth2 Proxy with Pocket ID, you have to add the following service to the service that should be proxied. E.g., [Uptime Kuma](https://github.com/louislam/uptime-kuma) should be proxied, you can add the following service to the `docker-compose.yml` of Uptime Kuma:
+To configure OAuth2 Proxy with Pocket ID, you have to add the following service to the service that should be proxied. E.g., if [Uptime Kuma](https://github.com/louislam/uptime-kuma) should be proxied, you can add the following service to the `docker-compose.yml` of Uptime Kuma:
 
 ```yaml
 # Example with Uptime Kuma
@@ -23,7 +23,7 @@ oauth2-proxy:
 
 #### 2. Create a new OIDC client in Pocket ID.
 
-Create a new OIDC client in Pocket ID by navigating to `https://<your-domain>/settings/admin/oidc-clients`. After adding the client, you will obtain the client ID and client secret.
+Create a new OIDC client in Pocket ID by navigating to `https://<your-domain>/settings/admin/oidc-clients`. Now enter `https://<domain-of-proxied-service>/oauth2/callback` as the callback URL. After adding the client, you will obtain the client ID and client secret, which you will need in the next step.
 
 #### 3. Create a configuration file for OAuth2 Proxy.
 
