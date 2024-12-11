@@ -168,6 +168,8 @@ test('Update user custom claims', async ({ page }) => {
 	await page.getByLabel('Remove custom claim').first().click();
 	await page.getByRole('button', { name: 'Save' }).nth(1).click();
 
+	await expect(page.getByRole('status')).toHaveText('Custom claims updated successfully');
+
 	await page.reload();
 
 	// Check if custom claim is removed

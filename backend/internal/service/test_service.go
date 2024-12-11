@@ -60,7 +60,7 @@ func (s *TestService) SeedDatabase() error {
 		userGroups := []model.UserGroup{
 			{
 				Base: model.Base{
-					ID: "4110f814-56f1-4b28-8998-752b69bc97c0e",
+					ID: "c7ae7c01-28a3-4f3c-9572-1ee734ea8368",
 				},
 				Name:         "developers",
 				FriendlyName: "Developers",
@@ -146,7 +146,7 @@ func (s *TestService) SeedDatabase() error {
 		webauthnCredentials := []model.WebauthnCredential{
 			{
 				Name:            "Passkey 1",
-				CredentialID:    "test-credential-1",
+				CredentialID:    []byte("test-credential-1"),
 				PublicKey:       publicKey1,
 				AttestationType: "none",
 				Transport:       model.AuthenticatorTransportList{protocol.Internal},
@@ -154,7 +154,7 @@ func (s *TestService) SeedDatabase() error {
 			},
 			{
 				Name:            "Passkey 2",
-				CredentialID:    "test-credential-2",
+				CredentialID:    []byte("test-credential-2"),
 				PublicKey:       publicKey2,
 				AttestationType: "none",
 				Transport:       model.AuthenticatorTransportList{protocol.Internal},
@@ -169,7 +169,7 @@ func (s *TestService) SeedDatabase() error {
 
 		webauthnSession := model.WebauthnSession{
 			Challenge:        "challenge",
-			ExpiresAt:        time.Now().Add(1 * time.Hour),
+			ExpiresAt:        datatype.DateTime(time.Now().Add(1 * time.Hour)),
 			UserVerification: "preferred",
 		}
 		if err := tx.Create(&webauthnSession).Error; err != nil {
@@ -183,13 +183,29 @@ func (s *TestService) SeedDatabase() error {
 func (s *TestService) ResetDatabase() error {
 	err := s.db.Transaction(func(tx *gorm.DB) error {
 		var tables []string
-		if err := tx.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name != 'schema_migrations';").Scan(&tables).Error; err != nil {
-			return err
+
+		switch common.EnvConfig.DbProvider {
+		case common.DbProviderSqlite:
+			// Query to get all tables for SQLite
+			if err := tx.Raw("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name != 'schema_migrations';").Scan(&tables).Error; err != nil {
+				return err
+			}
+		case common.DbProviderPostgres:
+			// Query to get all tables for PostgreSQL
+			if err := tx.Raw(`
+                SELECT tablename 
+                FROM pg_tables 
+                WHERE schemaname = 'public' AND tablename != 'schema_migrations';
+            `).Scan(&tables).Error; err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("unsupported database provider: %s", common.EnvConfig.DbProvider)
 		}
 
 		// Delete all rows from all tables
 		for _, table := range tables {
-			if err := tx.Exec("DELETE FROM " + table).Error; err != nil {
+			if err := tx.Exec(fmt.Sprintf("DELETE FROM %s;", table)).Error; err != nil {
 				return err
 			}
 		}

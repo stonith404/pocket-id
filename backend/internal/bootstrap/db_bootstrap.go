@@ -2,9 +2,13 @@ package bootstrap
 
 import (
 	"errors"
+	"fmt"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"github.com/golang-migrate/migrate/v4/database"
+	postgresMigrate "github.com/golang-migrate/migrate/v4/database/postgres"
+	sqliteMigrate "github.com/golang-migrate/migrate/v4/database/sqlite3"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,15 +23,29 @@ func newDatabase() (db *gorm.DB) {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	sqlDb, err := db.DB()
-	sqlDb.SetMaxOpenConns(1)
 	if err != nil {
 		log.Fatalf("failed to get sql.DB: %v", err)
 	}
 
-	driver, err := sqlite3.WithInstance(sqlDb, &sqlite3.Config{})
+	// Choose the correct driver for the database provider
+	var driver database.Driver
+	switch common.EnvConfig.DbProvider {
+	case common.DbProviderSqlite:
+		driver, err = sqliteMigrate.WithInstance(sqlDb, &sqliteMigrate.Config{})
+	case common.DbProviderPostgres:
+		driver, err = postgresMigrate.WithInstance(sqlDb, &postgresMigrate.Config{})
+	default:
+		log.Fatalf("unsupported database provider: %s", common.EnvConfig.DbProvider)
+	}
+	if err != nil {
+		log.Fatalf("failed to create migration driver: %v", err)
+	}
+
+	// Run migrations
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
-		"postgres", driver)
+		"file://migrations/"+string(common.EnvConfig.DbProvider),
+		"pocket-id", driver,
+	)
 	if err != nil {
 		log.Fatalf("failed to create migration instance: %v", err)
 	}
@@ -41,15 +59,20 @@ func newDatabase() (db *gorm.DB) {
 }
 
 func connectDatabase() (db *gorm.DB, err error) {
-	dbPath := common.EnvConfig.DBPath
+	var dialector gorm.Dialector
 
-	// Use in-memory database for testing
-	if common.EnvConfig.AppEnv == "test" {
-		dbPath = "file::memory:?cache=shared"
+	// Choose the correct database provider
+	switch common.EnvConfig.DbProvider {
+	case common.DbProviderSqlite:
+		dialector = sqlite.Open(common.EnvConfig.SqliteDBPath)
+	case common.DbProviderPostgres:
+		dialector = postgres.Open(common.EnvConfig.PostgresConnectionString)
+	default:
+		return nil, fmt.Errorf("unsupported database provider: %s", common.EnvConfig.DbProvider)
 	}
 
 	for i := 1; i <= 3; i++ {
-		db, err = gorm.Open(sqlite.Open(dbPath), &gorm.Config{
+		db, err = gorm.Open(dialector, &gorm.Config{
 			TranslateError: true,
 			Logger:         getLogger(),
 		})
