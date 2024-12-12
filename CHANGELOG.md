@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.19.0...v) (2024-12-12)
+
+
+### Features
+
+* add support for Postgres database provider ([#79](https://github.com/stonith404/pocket-id/issues/79)) ([9d20a98](https://github.com/stonith404/pocket-id/commit/9d20a98dbbc322fa6f0644e8b31e6b97769887ce))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.18.0...v) (2024-11-29)
 
 
