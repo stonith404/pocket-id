@@ -110,6 +110,17 @@ jobs:
           -p 5432:5432 \
           postgres:17
 
+      - name: Wait for Postgres to start
+        run: |
+          for i in {1..10}; do
+            if docker exec pocket-id-db pg_isready -U postgres; then
+              echo "Postgres is ready"
+              break
+            fi
+            echo "Waiting for Postgres..."
+            sleep 2
+          done
+
       - name: Run Docker Container with Postgres DB
         run: |
           docker run -d --name pocket-id-postgres \
