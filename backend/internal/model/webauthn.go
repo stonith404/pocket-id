@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-webauthn/webauthn/protocol"
+	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
 	"time"
 )
 
@@ -12,7 +13,7 @@ type WebauthnSession struct {
 	Base
 
 	Challenge        string
-	ExpiresAt        time.Time
+	ExpiresAt        datatype.DateTime
 	UserVerification string
 }
 
@@ -20,7 +21,7 @@ type WebauthnCredential struct {
 	Base
 
 	Name            string
-	CredentialID    string
+	CredentialID    []byte
 	PublicKey       []byte
 	AttestationType string
 	Transport       AuthenticatorTransportList

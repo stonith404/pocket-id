@@ -33,7 +33,7 @@ func (u User) WebAuthnCredentials() []webauthn.Credential {
 
 	for i, credential := range u.Credentials {
 		credentials[i] = webauthn.Credential{
-			ID:              []byte(credential.CredentialID),
+			ID:              credential.CredentialID,
 			AttestationType: credential.AttestationType,
 			PublicKey:       credential.PublicKey,
 			Transport:       credential.Transport,

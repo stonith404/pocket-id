@@ -2,6 +2,7 @@ package datatype
 
 import (
 	"database/sql/driver"
+	"github.com/stonith404/pocket-id/backend/internal/common"
 	"time"
 )
 
@@ -14,7 +15,11 @@ func (date *DateTime) Scan(value interface{}) (err error) {
 }
 
 func (date DateTime) Value() (driver.Value, error) {
-	return time.Time(date).Unix(), nil
+	if common.EnvConfig.DbProvider == common.DbProviderSqlite {
+		return time.Time(date).Unix(), nil
+	} else {
+		return time.Time(date), nil
+	}
 }
 
 func (date DateTime) UTC() time.Time {

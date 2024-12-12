@@ -8,9 +8,9 @@ echo "Starting Caddy..."
 
 # Check if TRUST_PROXY is set to true and use the appropriate Caddyfile
 if [ "$TRUST_PROXY" = "true" ]; then
-  caddy start --config /etc/caddy/Caddyfile.trust-proxy &
+  caddy start --adapter caddyfile --config /etc/caddy/Caddyfile.trust-proxy &
 else
-  caddy start --config /etc/caddy/Caddyfile &
+  caddy start --adapter caddyfile --config /etc/caddy/Caddyfile &
 fi
 
 wait
