@@ -1,3 +1,11 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.20.0...v) (2024-12-13)
+
+
+### Bug Fixes
+
+* `create-one-time-access-token.sh` script not compatible with postgres ([34e3519](https://github.com/stonith404/pocket-id/commit/34e35193f9f3813f6248e60f15080d753e8da7ae))
+* wrong date time datatype used for read operations with Postgres ([bad901e](https://github.com/stonith404/pocket-id/commit/bad901ea2b661aadd286e5e4bed317e73bd8a70d))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.19.0...v) (2024-12-12)
 
 
