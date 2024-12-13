@@ -112,7 +112,7 @@ func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Tim
 
 func (s *UserService) ExchangeOneTimeAccessToken(token string) (model.User, string, error) {
 	var oneTimeAccessToken model.OneTimeAccessToken
-	if err := s.db.Where("token = ? AND expires_at > ?", token, time.Now().Unix()).Preload("User").First(&oneTimeAccessToken).Error; err != nil {
+	if err := s.db.Where("token = ? AND expires_at > ?", token, datatype.DateTime(time.Now())).Preload("User").First(&oneTimeAccessToken).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return model.User{}, "", &common.TokenInvalidOrExpiredError{}
 		}

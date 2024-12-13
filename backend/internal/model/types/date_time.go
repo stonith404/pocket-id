@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// DateTime custom type for time.Time to store date as unix timestamp in the database
+// DateTime custom type for time.Time to store date as unix timestamp for sqlite and as date for postgres
 type DateTime time.Time
 
 func (date *DateTime) Scan(value interface{}) (err error) {
