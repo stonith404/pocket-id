@@ -57,6 +57,29 @@ func (s *TestService) SeedDatabase() error {
 			}
 		}
 
+		oneTimeAccessTokens := []model.OneTimeAccessToken{{
+			Base: model.Base{
+				ID: "bf877753-4ea4-4c9c-bbbd-e198bb201cb8",
+			},
+			Token:     "HPe6k6uiDRRVuAQV",
+			ExpiresAt: datatype.DateTime(time.Now().Add(1 * time.Hour)),
+			UserID:    users[0].ID,
+		},
+			{
+				Base: model.Base{
+					ID: "d3afae24-fe2d-4a98-abec-cf0b8525096a",
+				},
+				Token:     "YCGDtftvsvYWiXd0",
+				ExpiresAt: datatype.DateTime(time.Now().Add(-1 * time.Second)), // expired
+				UserID:    users[0].ID,
+			},
+		}
+		for _, token := range oneTimeAccessTokens {
+			if err := tx.Create(&token).Error; err != nil {
+				return err
+			}
+		}
+
 		userGroups := []model.UserGroup{
 			{
 				Base: model.Base{

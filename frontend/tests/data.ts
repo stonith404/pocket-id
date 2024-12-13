@@ -55,3 +55,8 @@ export const userGroups = {
 		name: 'human_resources'
 	}
 };
+
+export const oneTimeAccessTokens = [
+	{ token: 'HPe6k6uiDRRVuAQV', expired: false },
+	{ token: 'YCGDtftvsvYWiXd0', expired: true }
+];
