@@ -1,19 +1,21 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import SignInWrapper from '$lib/components/login-wrapper.svelte';
-	import Logo from '$lib/components/logo.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import WebAuthnService from '$lib/services/webauthn-service';
 	import appConfigStore from '$lib/stores/application-configuration-store';
 	import userStore from '$lib/stores/user-store';
 	import { getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startAuthentication } from '@simplewebauthn/browser';
-	import { toast } from 'svelte-sonner';
+	import { fade } from 'svelte/transition';
+	import LoginLogoErrorIndicator from './components/login-logo-error-indicator.svelte';
 	const webauthnService = new WebAuthnService();
 
 	let isLoading = $state(false);
+	let error: string | undefined = $state(undefined);
 
 	async function authenticate() {
+		error = undefined;
 		isLoading = true;
 		try {
 			const loginOptions = await webauthnService.getLoginOptions();
@@ -23,7 +25,7 @@
 			userStore.setUser(user);
 			goto('/settings');
 		} catch (e) {
-			toast.error(getWebauthnErrorMessage(e));
+			error = getWebauthnErrorMessage(e);
 		}
 		isLoading = false;
 	}
@@ -35,15 +37,21 @@
 
 <SignInWrapper>
 	<div class="flex justify-center">
-		<div class="bg-muted rounded-2xl p-3">
-			<Logo class="h-10 w-10" />
-		</div>
+		<LoginLogoErrorIndicator error={!!error} />
 	</div>
 	<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">
 		Sign in to {$appConfigStore.appName}
 	</h1>
-	<p class="text-muted-foreground mt-2">
-		Authenticate yourself with your passkey to access the admin panel
-	</p>
-	<Button class="mt-5" {isLoading} on:click={authenticate}>Authenticate</Button>
+	{#if error}
+		<p class="text-muted-foreground mt-2" in:fade>
+			{error}. Please try to sign in again.
+		</p>
+	{:else}
+		<p class="text-muted-foreground mt-2" in:fade>
+			Authenticate yourself with your passkey to access the admin panel.
+		</p>
+	{/if}
+	<Button class="mt-10" {isLoading} on:click={authenticate}
+		>{error ? 'Try again' : 'Authenticate'}</Button
+	>
 </SignInWrapper>
