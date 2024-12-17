@@ -33,7 +33,10 @@
 	async function updateClient(updatedClient: OidcClientCreateWithLogo) {
 		let success = true;
 		const dataPromise = oidcService.updateClient(client.id, updatedClient);
-		const imagePromise = oidcService.updateClientLogo(client, updatedClient.logo);
+		const imagePromise =
+			updatedClient.logo !== undefined
+				? oidcService.updateClientLogo(client, updatedClient.logo)
+				: Promise.resolve();
 
 		client.isPublic = updatedClient.isPublic;
 

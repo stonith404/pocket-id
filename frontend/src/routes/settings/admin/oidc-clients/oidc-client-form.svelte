@@ -22,7 +22,7 @@
 	} = $props();
 
 	let isLoading = $state(false);
-	let logo = $state<File | null>(null);
+	let logo = $state<File | null | undefined>();
 	let logoDataURL: string | null = $state(
 		existingClient?.hasLogo ? `/api/oidc/clients/${existingClient!.id}/logo` : null
 	);
@@ -108,7 +108,7 @@
 					onchange={onLogoChange}
 				>
 					<Button variant="secondary">
-						{existingClient?.hasLogo ? 'Change Logo' : 'Upload Logo'}
+						{logoDataURL ? 'Change Logo' : 'Upload Logo'}
 					</Button>
 				</FileInput>
 				{#if logoDataURL}

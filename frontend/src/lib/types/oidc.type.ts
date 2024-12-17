@@ -10,7 +10,7 @@ export type OidcClient = {
 export type OidcClientCreate = Omit<OidcClient, 'id' | 'logoURL' | 'hasLogo'>;
 
 export type OidcClientCreateWithLogo = OidcClientCreate & {
-	logo: File | null;
+	logo: File | null | undefined;
 };
 
 export type AuthorizeResponse = {
