@@ -1,3 +1,15 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.20.1...v) (2024-12-17)
+
+
+### Features
+
+* improve error state design for login page ([0716c38](https://github.com/stonith404/pocket-id/commit/0716c38fb8ce7fa719c7fe0df750bdb213786c21))
+
+
+### Bug Fixes
+
+* OIDC client logo gets removed if other properties get updated ([789d939](https://github.com/stonith404/pocket-id/commit/789d9394a533831e7e2fb8dc3f6b338787336ad8))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.20.0...v) (2024-12-13)
 
 
