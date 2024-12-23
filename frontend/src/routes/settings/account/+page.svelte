@@ -1,4 +1,5 @@
 <script lang="ts">
+	import * as Alert from '$lib/components/ui/alert';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import UserService from '$lib/services/user-service';
@@ -8,6 +9,7 @@
 	import type { UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast, getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startRegistration } from '@simplewebauthn/browser';
+	import { LucideAlertTriangle } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import AccountForm from './account-form.svelte';
 	import PasskeyList from './passkey-list.svelte';
@@ -52,6 +54,16 @@
 	<title>Account Settings</title>
 </svelte:head>
 
+{#if passkeys.length == 0}
+	<Alert.Root variant="warning">
+		<LucideAlertTriangle class="size-4" />
+		<Alert.Title>Passkey missing</Alert.Title>
+		<Alert.Description
+			>Please add a passkey to prevent losing access to your account.</Alert.Description
+		>
+	</Alert.Root>
+{/if}
+
 {#if $appConfigStore.allowOwnAccountEdit}
 	<Card.Root>
 		<Card.Header>
@@ -77,7 +89,7 @@
 	</Card.Header>
 	{#if passkeys.length != 0}
 		<Card.Content>
-			<PasskeyList {passkeys} />
+			<PasskeyList bind:passkeys />
 		</Card.Content>
 	{/if}
 </Card.Root>

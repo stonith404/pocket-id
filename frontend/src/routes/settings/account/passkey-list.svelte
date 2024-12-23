@@ -9,14 +9,9 @@
 	import { toast } from 'svelte-sonner';
 	import RenamePasskeyModal from './rename-passkey-modal.svelte';
 
-	let { passkeys: initialsPasskeys }: { passkeys: Passkey[] } = $props();
-	let passkeys = $state<Passkey[]>(initialsPasskeys);
+	let { passkeys = $bindable() }: { passkeys: Passkey[] } = $props();
 
 	const webauthnService = new WebauthnService();
-
-	$effect(() => {
-		passkeys = initialsPasskeys;
-	});
 
 	let passkeyToRename: Passkey | null = $state(null);
 
