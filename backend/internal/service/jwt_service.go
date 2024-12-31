@@ -12,7 +12,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"log"
 	"math/big"
 	"os"
@@ -96,7 +95,7 @@ func (s *JwtService) GenerateAccessToken(user model.User) (string, error) {
 			Subject:   user.ID,
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(sessionDurationInMinutes) * time.Minute)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Audience:  jwt.ClaimStrings{utils.GetHostFromURL(common.EnvConfig.AppURL)},
+			Audience:  jwt.ClaimStrings{common.EnvConfig.AppURL},
 		},
 		IsAdmin: user.IsAdmin,
 	}
@@ -125,7 +124,7 @@ func (s *JwtService) VerifyAccessToken(tokenString string) (*AccessTokenJWTClaim
 		return nil, errors.New("can't parse claims")
 	}
 
-	if !slices.Contains(claims.Audience, utils.GetHostFromURL(common.EnvConfig.AppURL)) {
+	if !slices.Contains(claims.Audience, common.EnvConfig.AppURL) {
 		return nil, errors.New("audience doesn't match")
 	}
 	return claims, nil

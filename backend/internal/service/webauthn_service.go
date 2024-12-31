@@ -23,7 +23,7 @@ type WebAuthnService struct {
 func NewWebAuthnService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService, appConfigService *AppConfigService) *WebAuthnService {
 	webauthnConfig := &webauthn.Config{
 		RPDisplayName: appConfigService.DbConfig.AppName.Value,
-		RPID:          utils.GetHostFromURL(common.EnvConfig.AppURL),
+		RPID:          utils.GetHostnameFromURL(common.EnvConfig.AppURL),
 		RPOrigins:     []string{common.EnvConfig.AppURL},
 		Timeouts: webauthn.TimeoutsConfig{
 			Login: webauthn.TimeoutConfig{

@@ -29,12 +29,12 @@ func GenerateRandomAlphanumericString(length int) (string, error) {
 	return string(result), nil
 }
 
-func GetHostFromURL(rawURL string) string {
+func GetHostnameFromURL(rawURL string) string {
 	parsedURL, err := url.Parse(rawURL)
 	if err != nil {
 		return ""
 	}
-	return parsedURL.Host
+	return parsedURL.Hostname()
 }
 
 // StringPointer creates a string pointer from a string value
