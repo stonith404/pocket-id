@@ -1,3 +1,18 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.21.0...v) (2025-01-01)
+
+
+### Features
+
+* add warning if passkeys missing ([2d0bd8d](https://github.com/stonith404/pocket-id/commit/2d0bd8dcbfb73650b7829cb66f40decb284bd73b))
+
+
+### Bug Fixes
+
+* allow first and last name of user to be between 1 and 50 characters ([1ff20ca](https://github.com/stonith404/pocket-id/commit/1ff20caa3ccd651f9fb30f958ffb807dfbbcbd8a))
+* hash in callback url is incorrectly appended ([f6f2736](https://github.com/stonith404/pocket-id/commit/f6f2736bba65eee017f2d8cdaa70621574092869))
+* make user validation consistent between pages ([333a1a1](https://github.com/stonith404/pocket-id/commit/333a1a18d59f675111f4ed106fa5614ef563c6f4))
+* passkey can't be added if `PUBLIC_APP_URL` includes a port ([0729ce9](https://github.com/stonith404/pocket-id/commit/0729ce9e1a8dab9912900a01dcd0fbd892718a1a))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.20.1...v) (2024-12-17)
 
 
