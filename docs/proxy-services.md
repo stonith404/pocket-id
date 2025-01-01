@@ -45,7 +45,7 @@ upstreams="http://<service-to-be-proxied>:<port>"
 
 # Additional Configuration
 provider="oidc"
-scope = "openid email profile"
+scope = "openid email profile groups"
 
 # If you are using a reverse proxy in front of OAuth2 Proxy
 reverse_proxy = true
