@@ -24,7 +24,7 @@
 	let authorizationRequired = false;
 
 	export let data: PageData;
-	let { scope, nonce, client, state, callbackURL, codeChallenge, codeChallengeMethod  } = data;
+	let { scope, nonce, client, state, callbackURL, codeChallenge, codeChallengeMethod } = data;
 
 	async function authorize() {
 		isLoading = true;
@@ -55,7 +55,14 @@
 		isLoading = true;
 		try {
 			await oidService
-				.authorizeNewClient(client!.id, scope, callbackURL, nonce, codeChallenge, codeChallengeMethod)
+				.authorizeNewClient(
+					client!.id,
+					scope,
+					callbackURL,
+					nonce,
+					codeChallenge,
+					codeChallengeMethod
+				)
 				.then(async ({ code, callbackURL }) => {
 					onSuccess(code, callbackURL);
 				});
@@ -68,7 +75,11 @@
 	function onSuccess(code: string, callbackURL: string) {
 		success = true;
 		setTimeout(() => {
-			window.location.href = `${callbackURL}?code=${code}&state=${state}`;
+			const redirectURL = new URL(callbackURL);
+			redirectURL.searchParams.append('code', code);
+			redirectURL.searchParams.append('state', state);
+
+			window.location.href = redirectURL.toString();
 		}, 1000);
 	}
 </script>
