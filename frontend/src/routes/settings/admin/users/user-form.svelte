@@ -25,8 +25,8 @@
 	};
 
 	const formSchema = z.object({
-		firstName: z.string().min(2).max(30),
-		lastName: z.string().min(2).max(30),
+		firstName: z.string().min(1).max(50),
+		lastName: z.string().min(1).max(50),
 		username: z
 			.string()
 			.min(2)

@@ -15,8 +15,8 @@ type UserDto struct {
 type UserCreateDto struct {
 	Username  string `json:"username" binding:"required,username,min=3,max=20"`
 	Email     string `json:"email" binding:"required,email"`
-	FirstName string `json:"firstName" binding:"required,min=3,max=30"`
-	LastName  string `json:"lastName" binding:"required,min=3,max=30"`
+	FirstName string `json:"firstName" binding:"required,min=1,max=50"`
+	LastName  string `json:"lastName" binding:"required,min=1,max=50"`
 	IsAdmin   bool   `json:"isAdmin"`
 }
 
