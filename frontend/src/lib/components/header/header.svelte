@@ -19,7 +19,7 @@
 	>
 		<div class="flex h-16 items-center">
 			{#if !isAuthPage}
-				<Logo class="mr-3 h-10 w-10" />
+				<Logo class="mr-3 h-8 w-8" />
 				<h1 class="text-lg font-medium" data-testid="application-name">
 					{$appConfigStore.appName}
 				</h1>

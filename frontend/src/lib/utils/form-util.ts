@@ -80,11 +80,19 @@ export function createForm<T extends z.ZodType<any, any>>(schema: T, initialValu
 		});
 	}
 
+	function setValue(key: keyof z.infer<T>, value: z.infer<T>[keyof z.infer<T>]) {
+		inputsStore.update((inputs) => {
+			inputs[key].value = value;
+			return inputs;
+		});
+	}
+
 	return {
 		schema,
 		inputs: inputsStore,
 		data,
 		validate,
+		setValue,
 		reset
 	};
 }

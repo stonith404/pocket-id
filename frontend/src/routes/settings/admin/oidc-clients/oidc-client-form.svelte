@@ -10,7 +10,7 @@
 		OidcClientCreateWithLogo
 	} from '$lib/types/oidc.type';
 	import { createForm } from '$lib/utils/form-util';
-	import { z } from 'zod';
+	import { set, z } from 'zod';
 	import OidcCallbackUrlInput from './oidc-callback-url-input.svelte';
 
 	let {
@@ -30,13 +30,15 @@
 	const client: OidcClientCreate = {
 		name: existingClient?.name || '',
 		callbackURLs: existingClient?.callbackURLs || [''],
-		isPublic: existingClient?.isPublic || false
+		isPublic: existingClient?.isPublic || false,
+		pkceEnabled: existingClient?.isPublic == true || existingClient?.pkceEnabled || false
 	};
 
 	const formSchema = z.object({
 		name: z.string().min(2).max(50),
 		callbackURLs: z.array(z.string().url()).nonempty(),
-		isPublic: z.boolean()
+		isPublic: z.boolean(),
+		pkceEnabled: z.boolean()
 	});
 
 	type FormSchema = typeof formSchema;
@@ -85,7 +87,18 @@
 			id="public-client"
 			label="Public Client"
 			description="Public clients do not have a client secret and use PKCE instead. Enable this if your client is a SPA or mobile app."
+			onCheckedChange={(v) => {
+				console.log(v)
+				if (v == true) form.setValue('pkceEnabled', true);
+			}}
 			bind:checked={$inputs.isPublic.value}
+		/>
+		<CheckboxWithLabel
+			id="pkce"
+			label="PKCE"
+			description="Public Key Code Exchange is a security feature to prevent CSRF and authorization code interception attacks."
+			disabled={$inputs.isPublic.value}		
+			bind:checked={$inputs.pkceEnabled.value}
 		/>
 	</div>
 	<div class="mt-8">

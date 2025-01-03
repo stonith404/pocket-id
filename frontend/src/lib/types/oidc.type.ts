@@ -5,6 +5,7 @@ export type OidcClient = {
 	callbackURLs: [string, ...string[]];
 	hasLogo: boolean;
 	isPublic: boolean;
+	pkceEnabled: boolean;
 };
 
 export type OidcClientCreate = Omit<OidcClient, 'id' | 'logoURL' | 'hasLogo'>;

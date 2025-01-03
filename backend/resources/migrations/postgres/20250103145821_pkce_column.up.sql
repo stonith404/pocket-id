@@ -1,0 +1,1 @@
+ALTER TABLE oidc_clients ADD COLUMN pkce_enabled BOOLEAN DEFAULT FALSE;

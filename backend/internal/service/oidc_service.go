@@ -131,8 +131,8 @@ func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret, code
 		return "", "", &common.OidcInvalidAuthorizationCodeError{}
 	}
 
-	// If the client is public, the code verifier must match the code challenge
-	if client.IsPublic {
+	// If the client is public or PKCE is enabled, the code verifier must match the code challenge
+	if client.IsPublic || client.PkceEnabled {
 		if !s.validateCodeVerifier(codeVerifier, *authorizationCodeMetaData.CodeChallenge, *authorizationCodeMetaData.CodeChallengeMethodSha256) {
 			return "", "", &common.OidcInvalidCodeVerifierError{}
 		}
@@ -189,6 +189,8 @@ func (s *OidcService) CreateClient(input dto.OidcClientCreateDto, userID string)
 		Name:         input.Name,
 		CallbackURLs: input.CallbackURLs,
 		CreatedByID:  userID,
+		IsPublic:     input.IsPublic,
+		PkceEnabled:  input.IsPublic || input.PkceEnabled,
 	}
 
 	if err := s.db.Create(&client).Error; err != nil {
@@ -207,6 +209,7 @@ func (s *OidcService) UpdateClient(clientID string, input dto.OidcClientCreateDt
 	client.Name = input.Name
 	client.CallbackURLs = input.CallbackURLs
 	client.IsPublic = input.IsPublic
+	client.PkceEnabled = input.IsPublic || input.PkceEnabled
 
 	if err := s.db.Save(&client).Error; err != nil {
 		return model.OidcClient{}, err
@@ -406,6 +409,10 @@ func (s *OidcService) createAuthorizationCode(clientID string, userID string, sc
 }
 
 func (s *OidcService) validateCodeVerifier(codeVerifier, codeChallenge string, codeChallengeMethodSha256 bool) bool {
+	if codeVerifier == "" || codeChallenge == "" {
+		return false
+	}
+
 	if !codeChallengeMethodSha256 {
 		return codeVerifier == codeChallenge
 	}

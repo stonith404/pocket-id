@@ -42,6 +42,7 @@ type OidcClient struct {
 	ImageType    *string
 	HasLogo      bool `gorm:"-"`
 	IsPublic     bool
+	PkceEnabled  bool
 
 	CreatedByID string
 	CreatedBy   User
