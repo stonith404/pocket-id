@@ -3,8 +3,10 @@ package bootstrap
 import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/stonith404/pocket-id/backend/resources"
 	"log"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -12,7 +14,7 @@ import (
 func initApplicationImages() {
 	dirPath := common.EnvConfig.UploadPath + "/application-images"
 
-	sourceFiles, err := os.ReadDir("./images")
+	sourceFiles, err := resources.FS.ReadDir("images")
 	if err != nil && !os.IsNotExist(err) {
 		log.Fatalf("Error reading directory: %v", err)
 	}
@@ -27,10 +29,10 @@ func initApplicationImages() {
 		if sourceFile.IsDir() || imageAlreadyExists(sourceFile.Name(), destinationFiles) {
 			continue
 		}
-		srcFilePath := "./images/" + sourceFile.Name()
-		destFilePath := dirPath + "/" + sourceFile.Name()
+		srcFilePath := path.Join("images", sourceFile.Name())
+		destFilePath := path.Join(dirPath, sourceFile.Name())
 
-		err := utils.CopyFile(srcFilePath, destFilePath)
+		err := utils.CopyEmbeddedFileToDisk(srcFilePath, destFilePath)
 		if err != nil {
 			log.Fatalf("Error copying file: %v", err)
 		}

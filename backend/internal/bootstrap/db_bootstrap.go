@@ -7,7 +7,9 @@ import (
 	"github.com/golang-migrate/migrate/v4/database"
 	postgresMigrate "github.com/golang-migrate/migrate/v4/database/postgres"
 	sqliteMigrate "github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/resources"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -42,20 +44,31 @@ func newDatabase() (db *gorm.DB) {
 	}
 
 	// Run migrations
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations/"+string(common.EnvConfig.DbProvider),
-		"pocket-id", driver,
-	)
+	if err := migrateDatabase(driver); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
+
+	return db
+}
+
+func migrateDatabase(driver database.Driver) error {
+	// Use the embedded migrations
+	source, err := iofs.New(resources.FS, "migrations/"+string(common.EnvConfig.DbProvider))
 	if err != nil {
-		log.Fatalf("failed to create migration instance: %v", err)
+		return fmt.Errorf("failed to create embedded migration source: %v", err)
+	}
+
+	m, err := migrate.NewWithInstance("iofs", source, "pocket-id", driver)
+	if err != nil {
+		return fmt.Errorf("failed to create migration instance: %v", err)
 	}
 
 	err = m.Up()
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		log.Fatalf("failed to apply migrations: %v", err)
+		return fmt.Errorf("failed to apply migrations: %v", err)
 	}
 
-	return db
+	return nil
 }
 
 func connectDatabase() (db *gorm.DB, err error) {

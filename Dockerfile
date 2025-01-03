@@ -33,9 +33,6 @@ COPY --from=frontend-builder /app/frontend/node_modules ./frontend/node_modules
 COPY --from=frontend-builder /app/frontend/package.json ./frontend/package.json
 
 COPY --from=backend-builder /app/backend/pocket-id-backend ./backend/pocket-id-backend
-COPY --from=backend-builder /app/backend/migrations ./backend/migrations
-COPY --from=backend-builder /app/backend/email-templates ./backend/email-templates
-COPY --from=backend-builder /app/backend/images ./backend/images
 
 COPY ./scripts ./scripts
 RUN chmod +x ./scripts/*.sh

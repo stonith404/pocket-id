@@ -2,6 +2,7 @@ package email
 
 import (
 	"fmt"
+	"github.com/stonith404/pocket-id/backend/resources"
 	htemplate "html/template"
 	"io/fs"
 	"path"
@@ -35,36 +36,37 @@ type pareseable[V any] interface {
 	ParseFS(fs.FS, ...string) (V, error)
 }
 
-func prepareTemplate[V pareseable[V]](template string, rootTemplate clonable[V], templateDir fs.FS, suffix string) (V, error) {
+func prepareTemplate[V pareseable[V]](templateFS fs.FS, template string, rootTemplate clonable[V], suffix string) (V, error) {
 	tmpl, err := rootTemplate.Clone()
 	if err != nil {
-		return *new(V), fmt.Errorf("clone root html template: %w", err)
+		return *new(V), fmt.Errorf("clone root template: %w", err)
 	}
 
 	filename := fmt.Sprintf("%s%s", template, suffix)
-	_, err = tmpl.ParseFS(templateDir, filename)
+	templatePath := path.Join("email-templates", filename)
+	_, err = tmpl.ParseFS(templateFS, templatePath)
 	if err != nil {
-		return *new(V), fmt.Errorf("parsing html template '%s': %w", template, err)
+		return *new(V), fmt.Errorf("parsing template '%s': %w", template, err)
 	}
 
 	return tmpl, nil
 }
 
-func PrepareTextTemplates(templateDir fs.FS, templates []string) (map[string]*ttemplate.Template, error) {
-	components := path.Join(templateComponentsDir, "*_text.tmpl")
-	rootTmpl, err := ttemplate.ParseFS(templateDir, components)
+func PrepareTextTemplates(templates []string) (map[string]*ttemplate.Template, error) {
+	components := path.Join("email-templates", "components", "*_text.tmpl")
+	rootTmpl, err := ttemplate.ParseFS(resources.FS, components)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse templates '%s': %w", components, err)
 	}
 
-	var textTemplates = make(map[string]*ttemplate.Template, len(templates))
+	textTemplates := make(map[string]*ttemplate.Template, len(templates))
 	for _, tmpl := range templates {
 		rootTmplClone, err := rootTmpl.Clone()
 		if err != nil {
 			return nil, fmt.Errorf("clone root template: %w", err)
 		}
 
-		textTemplates[tmpl], err = prepareTemplate[*ttemplate.Template](tmpl, rootTmplClone, templateDir, "_text.tmpl")
+		textTemplates[tmpl], err = prepareTemplate[*ttemplate.Template](resources.FS, tmpl, rootTmplClone, "_text.tmpl")
 		if err != nil {
 			return nil, fmt.Errorf("parse '%s': %w", tmpl, err)
 		}
@@ -73,21 +75,21 @@ func PrepareTextTemplates(templateDir fs.FS, templates []string) (map[string]*tt
 	return textTemplates, nil
 }
 
-func PrepareHTMLTemplates(templateDir fs.FS, templates []string) (map[string]*htemplate.Template, error) {
-	components := path.Join(templateComponentsDir, "*_html.tmpl")
-	rootTmpl, err := htemplate.ParseFS(templateDir, components)
+func PrepareHTMLTemplates(templates []string) (map[string]*htemplate.Template, error) {
+	components := path.Join("email-templates", "components", "*_html.tmpl")
+	rootTmpl, err := htemplate.ParseFS(resources.FS, components)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse templates '%s': %w", components, err)
 	}
 
-	var htmlTemplates = make(map[string]*htemplate.Template, len(templates))
+	htmlTemplates := make(map[string]*htemplate.Template, len(templates))
 	for _, tmpl := range templates {
 		rootTmplClone, err := rootTmpl.Clone()
 		if err != nil {
 			return nil, fmt.Errorf("clone root template: %w", err)
 		}
 
-		htmlTemplates[tmpl], err = prepareTemplate[*htemplate.Template](tmpl, rootTmplClone, templateDir, "_html.tmpl")
+		htmlTemplates[tmpl], err = prepareTemplate[*htemplate.Template](resources.FS, tmpl, rootTmplClone, "_html.tmpl")
 		if err != nil {
 			return nil, fmt.Errorf("parse '%s': %w", tmpl, err)
 		}

@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"github.com/fxamacker/cbor/v2"
 	"github.com/stonith404/pocket-id/backend/internal/model/types"
+	"github.com/stonith404/pocket-id/backend/resources"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -245,9 +247,19 @@ func (s *TestService) ResetApplicationImages() error {
 		return err
 	}
 
-	if err := utils.CopyDirectory("./images", common.EnvConfig.UploadPath+"/application-images"); err != nil {
-		log.Printf("Error copying directory: %v", err)
+	files, err := resources.FS.ReadDir("images")
+	if err != nil {
 		return err
+	}
+
+	for _, file := range files {
+		srcFilePath := filepath.Join("images", file.Name())
+		destFilePath := filepath.Join(common.EnvConfig.UploadPath, "application-images", file.Name())
+
+		err := utils.CopyEmbeddedFileToDisk(srcFilePath, destFilePath)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

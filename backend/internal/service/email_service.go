@@ -10,7 +10,6 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	"gorm.io/gorm"
 	htemplate "html/template"
-	"io/fs"
 	"mime/multipart"
 	"mime/quotedprintable"
 	"net"
@@ -26,13 +25,13 @@ type EmailService struct {
 	textTemplates    map[string]*ttemplate.Template
 }
 
-func NewEmailService(appConfigService *AppConfigService, db *gorm.DB, templateDir fs.FS) (*EmailService, error) {
-	htmlTemplates, err := email.PrepareHTMLTemplates(templateDir, emailTemplatesPaths)
+func NewEmailService(appConfigService *AppConfigService, db *gorm.DB) (*EmailService, error) {
+	htmlTemplates, err := email.PrepareHTMLTemplates(emailTemplatesPaths)
 	if err != nil {
 		return nil, fmt.Errorf("prepare html templates: %w", err)
 	}
 
-	textTemplates, err := email.PrepareTextTemplates(templateDir, emailTemplatesPaths)
+	textTemplates, err := email.PrepareTextTemplates(emailTemplatesPaths)
 	if err != nil {
 		return nil, fmt.Errorf("prepare html templates: %w", err)
 	}
