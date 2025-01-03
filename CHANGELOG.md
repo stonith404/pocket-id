@@ -1,3 +1,11 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.22.0...v) (2025-01-03)
+
+
+### Features
+
+* add PKCE for non public clients ([adcf3dd](https://github.com/stonith404/pocket-id/commit/adcf3ddc6682794e136a454ef9e69ddd130626a8))
+* use same table component for OIDC client list as all other lists ([2d31fc2](https://github.com/stonith404/pocket-id/commit/2d31fc2cc9201bb93d296faae622f52c6dcdfebc))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.21.0...v) (2025-01-01)
 
 
