@@ -54,4 +54,8 @@ export default class UserService extends APIService {
 		const res = await this.api.post(`/one-time-access-token/${token}`);
 		return res.data as User;
 	}
+
+	async requestOneTimeAccessEmail(email: string) {
+		await this.api.post('/one-time-access-email', { email });
+	}
 }

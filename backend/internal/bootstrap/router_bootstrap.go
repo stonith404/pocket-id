@@ -37,7 +37,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	auditLogService := service.NewAuditLogService(db, appConfigService, emailService, geoLiteService)
 	jwtService := service.NewJwtService(appConfigService)
 	webauthnService := service.NewWebAuthnService(db, jwtService, auditLogService, appConfigService)
-	userService := service.NewUserService(db, jwtService, auditLogService)
+	userService := service.NewUserService(db, jwtService, auditLogService, emailService)
 	customClaimService := service.NewCustomClaimService(db)
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)

@@ -88,7 +88,6 @@
 			label="Public Client"
 			description="Public clients do not have a client secret and use PKCE instead. Enable this if your client is a SPA or mobile app."
 			onCheckedChange={(v) => {
-				console.log(v)
 				if (v == true) form.setValue('pkceEnabled', true);
 			}}
 			bind:checked={$inputs.isPublic.value}
