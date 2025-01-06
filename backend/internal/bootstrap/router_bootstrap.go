@@ -43,20 +43,23 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	testService := service.NewTestService(db, appConfigService)
 	userGroupService := service.NewUserGroupService(db)
 
+	rateLimitMiddleware := middleware.NewRateLimitMiddleware()
+
+	// Setup global middleware
 	r.Use(middleware.NewCorsMiddleware().Add())
 	r.Use(middleware.NewErrorHandlerMiddleware().Add())
-	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
+	r.Use(rateLimitMiddleware.Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
 
-	// Initialize middleware
+	// Initialize middleware for specific routes
 	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)
 	fileSizeLimitMiddleware := middleware.NewFileSizeLimitMiddleware()
 
 	// Set up API routes
 	apiGroup := r.Group("/api")
-	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService)
+	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, rateLimitMiddleware, webauthnService)
 	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
-	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService, appConfigService)
+	controller.NewUserController(apiGroup, jwtAuthMiddleware, rateLimitMiddleware, userService, appConfigService)
 	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
 	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
