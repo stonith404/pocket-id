@@ -21,14 +21,14 @@
 
 	const oidcService = new OidcService();
 
-	const setupDetails = {
+	const setupDetails = $state({
 		'Authorization URL': `https://${$page.url.hostname}/authorize`,
 		'OIDC Discovery URL': `https://${$page.url.hostname}/.well-known/openid-configuration`,
 		'Token URL': `https://${$page.url.hostname}/api/oidc/token`,
 		'Userinfo URL': `https://${$page.url.hostname}/api/oidc/userinfo`,
 		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`,
-		PKCE: client.isPublic ? 'Enabled' : 'Disabled'
-	};
+		PKCE: client.pkceEnabled ? 'Enabled' : 'Disabled'
+	});
 
 	async function updateClient(updatedClient: OidcClientCreateWithLogo) {
 		let success = true;
@@ -39,6 +39,7 @@
 				: Promise.resolve();
 
 		client.isPublic = updatedClient.isPublic;
+		setupDetails.PKCE = updatedClient.pkceEnabled ? 'Enabled' : 'Disabled';
 
 		await Promise.all([dataPromise, imagePromise])
 			.then(() => {
