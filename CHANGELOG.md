@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.23.0...v) (2025-01-11)
+
+
+### Features
+
+* add sorting for tables ([fd69830](https://github.com/stonith404/pocket-id/commit/fd69830c2681985e4fd3c5336a2b75c9fb7bc5d4))
+
+
+### Bug Fixes
+
+* pkce state not correctly reflected in oidc client info ([61d18a9](https://github.com/stonith404/pocket-id/commit/61d18a9d1b167ff59a59523ff00d00ca8f23258d))
+* send test email to the user that has requested it ([a649c4b](https://github.com/stonith404/pocket-id/commit/a649c4b4a543286123f4d1f3c411fe1a7e2c6d71))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.22.0...v) (2025-01-03)
 
 
