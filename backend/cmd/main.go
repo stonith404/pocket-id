@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/stonith404/pocket-id/backend/internal/bootstrap"
+	"github.com/stonith404/pocket-id/backend/internal/ldap"
 )
 
 func main() {
-	bootstrap.Bootstrap()
+	// bootstrap.Bootstrap()
+	ldap.GetLdapUser()
 }
