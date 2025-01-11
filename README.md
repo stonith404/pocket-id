@@ -12,7 +12,7 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
 
 ## Setup
 
-> [!WARNING]  
+> [!WARNING]
 > Pocket ID is in its early stages and may contain bugs. There might be OIDC features that are not yet implemented. If you encounter any issues, please open an issue.
 
 ### Before you start
@@ -154,8 +154,15 @@ docker compose up -d
 | `INTERNAL_BACKEND_URL`       | `http://localhost:8080`   | no                    | The URL where the backend is accessible.                                                                                                                                                                                                                                                                                                                                  |
 | `GEOLITE_DB_PATH`            | `data/GeoLite2-City.mmdb` | no                    | The path where the GeoLite2 database should be stored.                                                                                                                                                                                                                                                                                                                    |
 | `CADDY_PORT`                 | `80`                      | no                    | The port on which Caddy should listen. Caddy is only active inside the Docker container. If you want to change the exposed port of the container then you sould change this variable.                                                                                                                                                                                     |
-| `PORT`                       | `3000`                    | no                    | The port on which the frontend should listen.                                                                                                                                                                                                                                                                                                                             |
-| `BACKEND_PORT`               | `8080`                    | no                    | The port on which the backend should listen.                                                                                                                                                                                                                                                                                                                              |
+| `PORT`                       | `3000`                    | no                    | The port on which the frontend should listen.
+| `BACKEND_PORT`               | `8080`                    | no                    | The port on which the backend should listen
+| `LDAP_SERVER`                | ``                        | yes                   | The Server of your ldap instance with the protocol. ie: ldaps://ldap.example.com
+| `LDAP_PORT`                  | ``                        | yes                   | The port that your ldap server listens on.
+| `LDAP_BIND_USER`             | ``                        | yes                   | The bind user for your ldap instance.
+| `LDAP_BIND_PASSWORD`         | ``                        | yes                   | The bind user password for your ldap instance.
+| `LDAP_SEARCH_BASE`           | ``                        | yes                   | The OU to search for all LDAP Objects
+| `LDAP_TLS_VERIFY`            | `false`                   | yes                   | Choose to Verify LDAPS Certifcates or ignore them.
+
 
 ## Contribute
 
