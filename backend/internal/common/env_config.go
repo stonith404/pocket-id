@@ -44,6 +44,12 @@ var EnvConfig = &EnvConfigSchema{
 	Host:                     "localhost",
 	MaxMindLicenseKey:        "",
 	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
+	LDAPServer:               "",
+	LDAPPort:                 "",
+	LDAPBindUser:             "",
+	LDAPBindPassword:         "",
+	LDAPSearchBase:           "",
+	LDAPTLSVerify:            false,
 }
 
 func init() {
