@@ -5,7 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserGroupService from '$lib/services/user-group-service';
-	import type { Paginated } from '$lib/types/pagination.type';
+	import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 	import type { UserGroup, UserGroupWithUserCount } from '$lib/types/user-group.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucidePencil, LucideTrash } from 'lucide-svelte';
@@ -16,6 +16,7 @@
 		$props();
 
 	let userGroups = $state<Paginated<UserGroupWithUserCount>>(initialUserGroups);
+	let requestOptions: SearchPaginationSortRequest | undefined = $state();
 
 	const userGroupService = new UserGroupService();
 
@@ -29,7 +30,7 @@
 				action: async () => {
 					try {
 						await userGroupService.remove(userGroup.id);
-						userGroups = await userGroupService.list();
+						userGroups = await userGroupService.list(requestOptions!);
 					} catch (e) {
 						axiosErrorToast(e);
 					}
@@ -38,13 +39,19 @@
 			}
 		});
 	}
-
-	async function fetchItems(search: string, page: number, limit: number) {
-		return userGroupService.list(search, { page, limit });
-	}
 </script>
 
-<AdvancedTable items={userGroups} {fetchItems} columns={['Friendly Name', 'Name', 'User Count', {label: "Actions", hidden: true}]}>
+<AdvancedTable
+	items={userGroups}
+	onRefresh={async (o) => (userGroups = await userGroupService.list(o))}
+	{requestOptions}
+	columns={[
+		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
+		{ label: 'Name', sortColumn: 'name' },
+		{ label: 'User Count', sortColumn: 'userCount' },
+		{ label: 'Actions', hidden: true }
+	]}
+>
 	{#snippet rows({ item })}
 		<Table.Cell>{item.friendlyName}</Table.Cell>
 		<Table.Cell>{item.name}</Table.Cell>

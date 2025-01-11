@@ -84,11 +84,11 @@ func (s *AuditLogService) CreateNewSignInWithEmail(ipAddress, userAgent, userID 
 }
 
 // ListAuditLogsForUser retrieves all audit logs for a given user ID
-func (s *AuditLogService) ListAuditLogsForUser(userID string, page int, pageSize int) ([]model.AuditLog, utils.PaginationResponse, error) {
+func (s *AuditLogService) ListAuditLogsForUser(userID string, sortedPaginationRequest utils.SortedPaginationRequest) ([]model.AuditLog, utils.PaginationResponse, error) {
 	var logs []model.AuditLog
-	query := s.db.Model(&model.AuditLog{}).Where("user_id = ?", userID).Order("created_at desc")
+	query := s.db.Model(&model.AuditLog{}).Where("user_id = ?", userID)
 
-	pagination, err := utils.Paginate(page, pageSize, query, &logs)
+	pagination, err := utils.PaginateAndSort(sortedPaginationRequest, query, &logs)
 	return logs, pagination, err
 }
 
