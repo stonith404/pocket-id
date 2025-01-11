@@ -1,9 +1,10 @@
 package common
 
 import (
+	"log"
+
 	"github.com/caarlos0/env/v11"
 	_ "github.com/joho/godotenv/autoload"
-	"log"
 )
 
 type DbProvider string
@@ -24,6 +25,12 @@ type EnvConfigSchema struct {
 	Host                     string     `env:"HOST"`
 	MaxMindLicenseKey        string     `env:"MAXMIND_LICENSE_KEY"`
 	GeoLiteDBPath            string     `env:"GEOLITE_DB_PATH"`
+	LDAPServer               string     `env:"LDAP_SERVER"`
+	LDAPPort                 string     `env:"LDAP_PORT"`
+	LDAPBindUser             string     `env:"LDAP_BIND_USER"`
+	LDAPBindPassword         string     `env:"LDAP_BIND_PASSWORD"`
+	LDAPSearchBase           string     `env:"LDAP_SEARCH_BASE"`
+	LDAPTLSVerify            bool       `env:"LDAP_TLS_VERIFY"`
 }
 
 var EnvConfig = &EnvConfigSchema{
