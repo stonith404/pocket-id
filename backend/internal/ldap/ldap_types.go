@@ -8,4 +8,6 @@ type LDAPUserSeachResult struct {
 	MemberOf          []string `ldap:"memberOf"`
 	GivenName         string   `ldap:"givenName"`
 	LastName          string   `ldap:"sn"`
+	CN                string   `ldap:"cn"`
+	UID               string   `ldap:"uid"`
 }

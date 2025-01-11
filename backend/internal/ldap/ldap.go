@@ -37,6 +37,7 @@ func GetLdapUser() LDAPUserSeachResult {
 	baseDN := common.EnvConfig.LDAPSearchBase
 	filter := "(objectClass=person)"
 
+	//TODO Make options in UI to configure what options should be synced etc etc, as this depends on what ldap backend is being used.
 	searchAttrs := []string{
 		"sAMAccountName",
 		"mail",
@@ -44,6 +45,8 @@ func GetLdapUser() LDAPUserSeachResult {
 		"userPrincipalName",
 		"givenName",
 		"sn",
+		"cn",
+		"uid",
 	}
 
 	// Filters must start and finish with ()!
@@ -66,10 +69,16 @@ func GetLdapUser() LDAPUserSeachResult {
 			if err := value.Unmarshal(&userResult); err != nil {
 				panic(err)
 			}
+
+			// This temp username is just for my testing, until we can build out a full Web Config UI for this.
+			tempUsername := ""
+			if userResult.Username == "" {
+				tempUsername = userResult.UID
+			}
 			fmt.Println("\nUser Attributes:")
 			fmt.Printf("Full Name: %s\n", printGreen(userResult.GivenName+" "+userResult.LastName))
 			fmt.Printf("Email: %s\n", printGreen(userResult.Mail))
-			fmt.Printf("Username: %s\n", printGreen(userResult.Username))
+			fmt.Printf("Username: %s\n", printGreen(tempUsername))
 			fmt.Printf("DN: %s\n", printGreen(userResult.DN))
 		}
 
