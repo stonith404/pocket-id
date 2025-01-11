@@ -6,5 +6,6 @@ import (
 
 func main() {
 	// bootstrap.Bootstrap()
+	// this is for testing only so its easier to debug
 	ldap.GetLdapUser()
 }
