@@ -49,9 +49,15 @@ func GetLdapGroups() []model.UserGroup {
 		var ldapGroups []model.UserGroup
 		for _, value := range result.Entries {
 			group := model.UserGroup{
-				Name: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+				Name:         value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+				FriendlyName: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
 			}
 			ldapGroups = append(ldapGroups, group)
+		}
+
+		//Below Loop only for debug testing
+		for _, group := range ldapGroups {
+			fmt.Printf("Group Name: %s\n", group.Name)
 		}
 
 		client.Close()
@@ -101,6 +107,7 @@ func GetLdapUsers() []model.User {
 			ldapUsers = append(ldapUsers, user)
 		}
 
+		//Below Loop only for debug testing
 		for _, user := range ldapUsers {
 			fmt.Printf("Username: %s\n", user.Username)
 			fmt.Printf("First Name: %s\n", user.FirstName)

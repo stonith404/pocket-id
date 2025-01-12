@@ -6,4 +6,5 @@ func main() {
 	bootstrap.Bootstrap()
 	// Uncomment the line below to only test the ldap functionality
 	// ldap.GetLdapUsers()
+	// ldap.GetLdapGroups()
 }
