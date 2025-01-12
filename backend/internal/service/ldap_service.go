@@ -61,10 +61,11 @@ func (s *LdapService) GetLdapUsers() (model.User, error) {
 		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
 	}
 
+	var userError error
+
 	if len(result.Entries) >= 1 {
 
 		var userModel model.User
-		var userError error
 
 		for _, value := range result.Entries {
 
@@ -87,8 +88,7 @@ func (s *LdapService) GetLdapUsers() (model.User, error) {
 
 	} else {
 		fmt.Println("No Users Found")
-		//TODO Handle Errors Better
-		panic(1)
+		return model.User{}, userError
 	}
 
 }
