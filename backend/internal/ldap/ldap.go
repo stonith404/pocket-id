@@ -28,29 +28,7 @@ func ldapInit() *ldap.Conn {
 	return client
 }
 
-func printGreen(text string) string {
-	return fmt.Sprintf("\033[92m%s\033[0m", text)
-}
-
-func MergeLdapUsers(result LDAPUserSeachResult) {
-	userObject := model.User{}
-	if common.EnvConfig.LDAPUsernameAttribute == "uid" {
-		userObject = model.User{
-			Username:  result.UID,
-			Email:     result.Mail,
-			FirstName: result.GivenName,
-			LastName:  result.LastName,
-			IsAdmin:   false,
-		}
-	}
-	fmt.Printf("First Name: %s\n", printGreen(userObject.FirstName))
-	fmt.Printf("Last Name: %s\n", printGreen(userObject.LastName))
-	fmt.Printf("Email: %s\n", printGreen(userObject.Email))
-	fmt.Printf("Username: %s\n", printGreen(userObject.Username))
-	fmt.Println("Admin Status:", userObject.IsAdmin)
-}
-
-func GetLdapUsers() LDAPUserSeachResult {
+func GetLdapUsers() []model.User {
 	client := ldapInit()
 	// user := username
 	baseDN := common.EnvConfig.LDAPSearchBase
@@ -58,14 +36,12 @@ func GetLdapUsers() LDAPUserSeachResult {
 
 	//TODO Make options in UI to configure what options should be synced etc etc, as this depends on what ldap backend is being used.
 	searchAttrs := []string{
-		"sAMAccountName",
 		"mail",
 		"memberOf",
-		"userPrincipalName",
 		"givenName",
 		"sn",
 		"cn",
-		"uid",
+		common.EnvConfig.LDAPUsernameAttribute, // Search for the Username Attribute supplied by the user.
 	}
 
 	// Filters must start and finish with ()!
@@ -76,32 +52,28 @@ func GetLdapUsers() LDAPUserSeachResult {
 		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
 	}
 
-	userResult := LDAPUserSeachResult{}
-
 	if len(result.Entries) >= 1 {
 
-		if err := result.Entries[0].Unmarshal(&userResult); err != nil {
-			panic(err)
-		}
-
+		var ldapUsers []model.User
 		for _, value := range result.Entries {
-			if err := value.Unmarshal(&userResult); err != nil {
-				panic(err)
+			user := model.User{
+				Username:  value.GetAttributeValue(common.EnvConfig.LDAPUsernameAttribute),
+				Email:     value.GetAttributeValue("mail"),
+				FirstName: value.GetAttributeValue("givenName"),
+				LastName:  value.GetAttributeValue("sn"),
 			}
-			MergeLdapUsers(userResult)
-			// This temp username is just for my testing, until we can build out a full Web Config UI for this.
-			// tempUsername := ""
-			// if userResult.Username == "" {
-			// 	tempUsername = userResult.UID
-			// }
-			// // fmt.Println("\nUser Attributes:")
-			// // fmt.Printf("Full Name: %s\n", printGreen(userResult.GivenName+" "+userResult.LastName))
-			// // fmt.Printf("Email: %s\n", printGreen(userResult.Mail))
-			// // fmt.Printf("Username: %s\n", printGreen(tempUsername))
-			// // fmt.Printf("DN: %s\n", printGreen(userResult.DN))
+			ldapUsers = append(ldapUsers, user)
 		}
 
-		return userResult
+		for _, user := range ldapUsers {
+			fmt.Printf("Username: %s\n", user.Username)
+			fmt.Printf("First Name: %s\n", user.FirstName)
+			fmt.Printf("Last Name: %s\n", user.LastName)
+			fmt.Printf("Email: %s\n", user.Email)
+			fmt.Printf("Admin: %t\n", user.IsAdmin)
+		}
+
+		return ldapUsers
 
 	} else {
 		fmt.Println("No Users Found")
