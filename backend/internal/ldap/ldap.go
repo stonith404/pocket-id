@@ -28,6 +28,42 @@ func ldapInit() *ldap.Conn {
 	return client
 }
 
+func GetLdapGroups() []model.UserGroup {
+	client := ldapInit()
+	baseDN := common.EnvConfig.LDAPSearchBase
+	filter := "(objectClass=groupOfUniqueNames)"
+
+	searchAttrs := []string{
+		common.EnvConfig.LDAPGroupAttribute,
+		"member",
+	}
+
+	searchReq := ldap.NewSearchRequest(baseDN, ldap.ScopeWholeSubtree, 0, 0, 0, false, filter, searchAttrs, []ldap.Control{})
+	result, err := client.Search(searchReq)
+	if err != nil {
+		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
+	}
+
+	if len(result.Entries) >= 1 {
+
+		var ldapGroups []model.UserGroup
+		for _, value := range result.Entries {
+			group := model.UserGroup{
+				Name: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+			}
+			ldapGroups = append(ldapGroups, group)
+		}
+
+		client.Close()
+
+		return ldapGroups
+	} else {
+		fmt.Println("No Groups Found")
+		panic(1)
+	}
+
+}
+
 func GetLdapUsers() []model.User {
 	client := ldapInit()
 	// user := username
@@ -73,10 +109,12 @@ func GetLdapUsers() []model.User {
 			fmt.Printf("Admin: %t\n", user.IsAdmin)
 		}
 
+		client.Close()
 		return ldapUsers
 
 	} else {
 		fmt.Println("No Users Found")
 		panic(1)
 	}
+
 }
