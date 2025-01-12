@@ -33,12 +33,15 @@ func printGreen(text string) string {
 }
 
 func MergeLdapUsers(result LDAPUserSeachResult) {
-	userObject := model.User{
-		Username:  result.Username,
-		Email:     result.Mail,
-		FirstName: result.GivenName,
-		LastName:  result.LastName,
-		IsAdmin:   false,
+	userObject := model.User{}
+	if common.EnvConfig.LDAPUsernameAttribute == "uid" {
+		userObject = model.User{
+			Username:  result.UID,
+			Email:     result.Mail,
+			FirstName: result.GivenName,
+			LastName:  result.LastName,
+			IsAdmin:   false,
+		}
 	}
 	fmt.Printf("First Name: %s\n", printGreen(userObject.FirstName))
 	fmt.Printf("Last Name: %s\n", printGreen(userObject.LastName))

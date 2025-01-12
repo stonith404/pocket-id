@@ -31,6 +31,7 @@ type EnvConfigSchema struct {
 	LDAPBindPassword         string     `env:"LDAP_BIND_PASSWORD"`
 	LDAPSearchBase           string     `env:"LDAP_SEARCH_BASE"`
 	LDAPTLSVerify            bool       `env:"LDAP_TLS_VERIFY"`
+	LDAPUsernameAttribute    string     `env:"LDAP_USERNAME_ATTRIBUTE"`
 }
 
 var EnvConfig = &EnvConfigSchema{
@@ -50,6 +51,7 @@ var EnvConfig = &EnvConfigSchema{
 	LDAPBindPassword:         "",
 	LDAPSearchBase:           "",
 	LDAPTLSVerify:            false,
+	LDAPUsernameAttribute:    "",
 }
 
 func init() {
