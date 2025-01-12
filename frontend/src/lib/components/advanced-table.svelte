@@ -101,7 +101,7 @@
 		<p class="text-muted-foreground mt-3 text-sm">No items found</p>
 	</div>
 {:else}
-	<div class="w-full">
+	<div class="w-full overflow-x-auto">
 		{#if !withoutSearch}
 			<Input
 				class="mb-4 max-w-sm"
@@ -111,11 +111,11 @@
 			/>
 		{/if}
 
-		<Table.Root>
+		<Table.Root class="min-w-full table-auto">
 			<Table.Header>
 				<Table.Row>
 					{#if selectedIds}
-						<Table.Head>
+						<Table.Head class="w-12">
 							<Checkbox checked={allChecked} onCheckedChange={(c) => onAllCheck(c as boolean)} />
 						</Table.Head>
 					{/if}
@@ -152,7 +152,7 @@
 				{#each items.data as item}
 					<Table.Row class={selectedIds?.includes(item.id) ? 'bg-muted/20' : ''}>
 						{#if selectedIds}
-							<Table.Cell>
+							<Table.Cell class="w-12">
 								<Checkbox
 									checked={selectedIds.includes(item.id)}
 									onCheckedChange={(c) => onCheck(c as boolean, item.id)}
@@ -165,9 +165,7 @@
 			</Table.Body>
 		</Table.Root>
 
-		<div
-			class="mt-5 flex flex-col-reverse items-center justify-between gap-3 space-x-2 sm:flex-row"
-		>
+		<div class="mt-5 flex flex-col-reverse items-center justify-between gap-3 sm:flex-row">
 			<div class="flex items-center space-x-2">
 				<p class="text-sm font-medium">Items per page</p>
 				<Select.Root
