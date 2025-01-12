@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-ldap/ldap/v3"
 	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/model"
 )
 
 func ldapInit() *ldap.Conn {
@@ -31,7 +32,22 @@ func printGreen(text string) string {
 	return fmt.Sprintf("\033[92m%s\033[0m", text)
 }
 
-func GetLdapUser() LDAPUserSeachResult {
+func MergeLdapUsers(result LDAPUserSeachResult) {
+	userObject := model.User{
+		Username:  result.Username,
+		Email:     result.Mail,
+		FirstName: result.GivenName,
+		LastName:  result.LastName,
+		IsAdmin:   false,
+	}
+	fmt.Printf("First Name: %s\n", printGreen(userObject.FirstName))
+	fmt.Printf("Last Name: %s\n", printGreen(userObject.LastName))
+	fmt.Printf("Email: %s\n", printGreen(userObject.Email))
+	fmt.Printf("Username: %s\n", printGreen(userObject.Username))
+	fmt.Println("Admin Status:", userObject.IsAdmin)
+}
+
+func GetLdapUsers() LDAPUserSeachResult {
 	client := ldapInit()
 	// user := username
 	baseDN := common.EnvConfig.LDAPSearchBase
@@ -69,17 +85,17 @@ func GetLdapUser() LDAPUserSeachResult {
 			if err := value.Unmarshal(&userResult); err != nil {
 				panic(err)
 			}
-
+			MergeLdapUsers(userResult)
 			// This temp username is just for my testing, until we can build out a full Web Config UI for this.
-			tempUsername := ""
-			if userResult.Username == "" {
-				tempUsername = userResult.UID
-			}
-			fmt.Println("\nUser Attributes:")
-			fmt.Printf("Full Name: %s\n", printGreen(userResult.GivenName+" "+userResult.LastName))
-			fmt.Printf("Email: %s\n", printGreen(userResult.Mail))
-			fmt.Printf("Username: %s\n", printGreen(tempUsername))
-			fmt.Printf("DN: %s\n", printGreen(userResult.DN))
+			// tempUsername := ""
+			// if userResult.Username == "" {
+			// 	tempUsername = userResult.UID
+			// }
+			// // fmt.Println("\nUser Attributes:")
+			// // fmt.Printf("Full Name: %s\n", printGreen(userResult.GivenName+" "+userResult.LastName))
+			// // fmt.Printf("Email: %s\n", printGreen(userResult.Mail))
+			// // fmt.Printf("Username: %s\n", printGreen(tempUsername))
+			// // fmt.Printf("DN: %s\n", printGreen(userResult.DN))
 		}
 
 		return userResult
