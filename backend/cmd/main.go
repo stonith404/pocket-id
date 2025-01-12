@@ -1,11 +1,9 @@
 package main
 
-import (
-	"github.com/stonith404/pocket-id/backend/internal/ldap"
-)
+import "github.com/stonith404/pocket-id/backend/internal/bootstrap"
 
 func main() {
-	// bootstrap.Bootstrap()
-	// this is for testing only so its easier to debug
-	ldap.GetLdapUser()
+	bootstrap.Bootstrap()
+	// Uncomment the line below to only test the ldap functionality
+	// ldap.GetLdapUser()
 }
