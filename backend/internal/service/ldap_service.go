@@ -8,7 +8,6 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/service"
 	"gorm.io/gorm"
 )
 
@@ -78,7 +77,7 @@ func (s *LdapService) GetLdapUsers() (model.User, error) {
 			}
 
 			var userService *UserService
-			userService = service.NewUserService(s.db, s.jwtService, s.auditLogService)
+			userService = NewUserService(s.db, s.jwtService, s.auditLogService)
 
 			userModel, userError = userService.CreateUser(newUser)
 		}
