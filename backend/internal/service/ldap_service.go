@@ -12,13 +12,12 @@ import (
 )
 
 type LdapService struct {
-	db              *gorm.DB
-	jwtService      *JwtService
-	auditLogService *AuditLogService
+	db          *gorm.DB
+	userService *UserService
 }
 
-func NewLdapService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService) *LdapService {
-	return &LdapService{db: db, jwtService: jwtService, auditLogService: auditLogService}
+func NewLdapService(db *gorm.DB, userService *UserService) *LdapService {
+	return &LdapService{db: db, userService: userService}
 }
 
 func ldapInit() *ldap.Conn {
@@ -77,10 +76,7 @@ func (s *LdapService) GetLdapUsers() (model.User, error) {
 				IsAdmin:   false,
 			}
 
-			var userService *UserService
-			userService = NewUserService(s.db, s.jwtService, s.auditLogService)
-
-			userModel, userError = userService.CreateUser(newUser)
+			userModel, userError = s.userService.CreateUser(newUser)
 		}
 
 		client.Close()
