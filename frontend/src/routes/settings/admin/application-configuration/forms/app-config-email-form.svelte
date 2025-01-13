@@ -45,7 +45,6 @@
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
 
 	async function onSubmit() {
-		console.log('submit');
 		const data = form.validate();
 		if (!data) return false;
 		await callback({

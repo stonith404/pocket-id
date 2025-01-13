@@ -1,0 +1,17 @@
+{{ define "base" }}
+    <div class="header">
+        <div class="logo">
+            <img src="{{ .LogoURL }}" alt="{{ .AppName }}"/>
+            <h1>{{ .AppName }}</h1>
+        </div>
+    </div>
+    <div class="content">
+        <h2>One-Time Access</h2>
+        <p class="message">
+            Click the button below to sign in to {{ .AppName }} with a one-time access link. This link expires in 15 minutes.
+        </p>
+        <div class="button-container">
+            <a class="button" href="{{ .Data.Link }}" class="button">Sign In</a>
+        </div>
+    </div>
+{{ end -}}

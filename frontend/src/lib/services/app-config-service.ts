@@ -11,13 +11,7 @@ export default class AppConfigService extends APIService {
 		}
 
 		const { data } = await this.api.get<AppConfigRawResponse>(url);
-
-		const appConfig: Partial<AllAppConfig> = {};
-		data.forEach(({ key, value }) => {
-			(appConfig as any)[key] = this.parseValue(value);
-		});
-
-		return appConfig as AllAppConfig;
+		return this.parseConfigList(data);
 	}
 
 	async update(appConfig: AllAppConfig) {
@@ -27,7 +21,7 @@ export default class AppConfigService extends APIService {
 			(appConfigConvertedToString as any)[key] = (appConfig as any)[key].toString();
 		}
 		const res = await this.api.put('/application-configuration', appConfigConvertedToString);
-		return res.data as AllAppConfig;
+		return this.parseConfigList(res.data);
 	}
 
 	async updateFavicon(favicon: File) {
@@ -70,6 +64,15 @@ export default class AppConfigService extends APIService {
 			newestVersion,
 			currentVersion
 		};
+	}
+
+	private parseConfigList(data: AppConfigRawResponse) {
+		const appConfig: Partial<AllAppConfig> = {};
+		data.forEach(({ key, value }) => {
+			(appConfig as any)[key] = this.parseValue(value);
+		});
+
+		return appConfig as AllAppConfig;
 	}
 
 	private parseValue(value: string) {

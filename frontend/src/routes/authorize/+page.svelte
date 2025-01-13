@@ -91,7 +91,7 @@
 {#if client == null}
 	<p>Client not found</p>
 {:else}
-	<SignInWrapper>
+	<SignInWrapper showEmailOneTimeAccessButton={$appConfigStore.emailOneTimeAccessEnabled}>
 		<ClientProviderImages {client} {success} error={!!errorMessage} />
 		<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">Sign in to {client.name}</h1>
 		{#if errorMessage}
@@ -136,7 +136,7 @@
 				</Card.Root>
 			</div>
 		{/if}
-		<div class="flex justify-center gap-2">
+		<div class="flex w-full justify-stretch gap-2">
 			<Button onclick={() => history.back()} class="w-full" variant="secondary">Cancel</Button>
 			{#if !errorMessage}
 				<Button

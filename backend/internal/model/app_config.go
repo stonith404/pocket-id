@@ -10,10 +10,11 @@ type AppConfigVariable struct {
 }
 
 type AppConfig struct {
-	AppName             AppConfigVariable
-	SessionDuration     AppConfigVariable
-	EmailsVerified      AppConfigVariable
-	AllowOwnAccountEdit AppConfigVariable
+	AppName                   AppConfigVariable
+	SessionDuration           AppConfigVariable
+	EmailsVerified            AppConfigVariable
+	AllowOwnAccountEdit       AppConfigVariable
+	EmailOneTimeAccessEnabled AppConfigVariable
 
 	BackgroundImageType AppConfigVariable
 	LogoLightImageType  AppConfigVariable

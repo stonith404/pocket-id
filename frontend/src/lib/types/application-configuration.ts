@@ -1,6 +1,7 @@
 export type AppConfig = {
 	appName: string;
 	allowOwnAccountEdit: boolean;
+	emailOneTimeAccessEnabled: boolean
 };
 
 export type AllAppConfig = AppConfig & {

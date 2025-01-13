@@ -15,7 +15,7 @@
 	const appConfigService = new AppConfigService();
 
 	async function updateAppConfig(updatedAppConfig: Partial<AllAppConfig>) {
-		await appConfigService
+		appConfig = await appConfigService
 			.update({
 				...appConfig,
 				...updatedAppConfig
@@ -34,8 +34,12 @@
 		favicon: File | null
 	) {
 		const faviconPromise = favicon ? appConfigService.updateFavicon(favicon) : Promise.resolve();
-		const lightLogoPromise = logoLight ? appConfigService.updateLogo(logoLight, true) : Promise.resolve();
-		const darkLogoPromise = logoDark ? appConfigService.updateLogo(logoDark, false) : Promise.resolve();
+		const lightLogoPromise = logoLight
+			? appConfigService.updateLogo(logoLight, true)
+			: Promise.resolve();
+		const darkLogoPromise = logoDark
+			? appConfigService.updateLogo(logoDark, false)
+			: Promise.resolve();
 		const backgroundImagePromise = backgroundImage
 			? appConfigService.updateBackgroundImage(backgroundImage)
 			: Promise.resolve();

@@ -24,3 +24,7 @@ type OneTimeAccessTokenCreateDto struct {
 	UserID    string    `json:"userId" binding:"required"`
 	ExpiresAt time.Time `json:"expiresAt" binding:"required"`
 }
+
+type OneTimeAccessEmailDto struct {
+	Email string `json:"email" binding:"required,email"`
+}

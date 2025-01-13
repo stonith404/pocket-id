@@ -58,7 +58,9 @@ func (e *OidcInvalidAuthorizationCodeError) HttpStatusCode() int { return 400 }
 
 type OidcInvalidCallbackURLError struct{}
 
-func (e *OidcInvalidCallbackURLError) Error() string       { return "invalid callback URL, it might be necessary for an admin to fix this" }
+func (e *OidcInvalidCallbackURLError) Error() string {
+	return "invalid callback URL, it might be necessary for an admin to fix this"
+}
 func (e *OidcInvalidCallbackURLError) HttpStatusCode() int { return 400 }
 
 type FileTypeNotSupportedError struct{}
@@ -95,7 +97,7 @@ func (e *MissingPermissionError) HttpStatusCode() int { return http.StatusForbid
 type TooManyRequestsError struct{}
 
 func (e *TooManyRequestsError) Error() string {
-	return "Too many requests. Please wait a while before trying again."
+	return "Too many requests"
 }
 func (e *TooManyRequestsError) HttpStatusCode() int { return http.StatusTooManyRequests }
 
