@@ -21,7 +21,7 @@ func NewUserService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditL
 	return &UserService{db: db, jwtService: jwtService, auditLogService: auditLogService}
 }
 
-func (s *UserService) ListUsers(searchTerm string, page int, pageSize int) ([]model.User, utils.PaginationResponse, error) {
+func (s *UserService) ListUsers(searchTerm string, sortedPaginationRequest utils.SortedPaginationRequest) ([]model.User, utils.PaginationResponse, error) {
 	var users []model.User
 	query := s.db.Model(&model.User{})
 
@@ -30,7 +30,7 @@ func (s *UserService) ListUsers(searchTerm string, page int, pageSize int) ([]mo
 		query = query.Where("email LIKE ? OR first_name LIKE ? OR username LIKE ?", searchPattern, searchPattern, searchPattern)
 	}
 
-	pagination, err := utils.Paginate(page, pageSize, query, &users)
+	pagination, err := utils.PaginateAndSort(sortedPaginationRequest, query, &users)
 	return users, pagination, err
 }
 

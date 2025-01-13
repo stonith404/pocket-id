@@ -9,8 +9,8 @@ import (
 
 // Base contains common columns for all tables.
 type Base struct {
-	ID        string `gorm:"primaryKey;not null"`
-	CreatedAt model.DateTime
+	ID        string         `gorm:"primaryKey;not null"`
+	CreatedAt model.DateTime `sortable:"true"`
 }
 
 func (b *Base) BeforeCreate(_ *gorm.DB) (err error) {

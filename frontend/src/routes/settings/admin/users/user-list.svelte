@@ -7,7 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserService from '$lib/services/user-service';
-	import type { Paginated } from '$lib/types/pagination.type';
+	import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 	import type { User } from '$lib/types/user.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucideLink, LucidePencil, LucideTrash } from 'lucide-svelte';
@@ -15,19 +15,12 @@
 	import { toast } from 'svelte-sonner';
 	import OneTimeLinkModal from './one-time-link-modal.svelte';
 
-	let { users: initialUsers }: { users: Paginated<User> } = $props();
-	let users = $state<Paginated<User>>(initialUsers);
-	$effect(() => {
-		users = initialUsers;
-	});
+	let { users = $bindable() }: { users: Paginated<User> } = $props();
+	let requestOptions: SearchPaginationSortRequest | undefined = $state();
 
-	let userIdToCreateOneTimeLink: string | null =  $state(null);;
+	let userIdToCreateOneTimeLink: string | null = $state(null);
 
 	const userService = new UserService();
-
-	function fetchItems(search: string, page: number, limit: number) {
-		return userService.list(search, { page, limit });
-	}
 
 	async function deleteUser(user: User) {
 		openConfirmDialog({
@@ -39,7 +32,7 @@
 				action: async () => {
 					try {
 						await userService.remove(user.id);
-						users = await userService.list();
+						users = await userService.list(requestOptions!);
 					} catch (e) {
 						axiosErrorToast(e);
 					}
@@ -52,16 +45,34 @@
 
 <AdvancedTable
 	items={users}
-	{fetchItems}
+	{requestOptions}
+	onRefresh={async (options) => (users = await userService.list(options))}
 	columns={[
-		'First name',
-		'Last name',
-		'Email',
-		'Username',
-		'Role',
-		{ label: 'Actions', hidden: true }
+		{
+			label: 'First name',
+			sortColumn: 'firstName'
+		},
+		{
+			label: 'Last name',
+			sortColumn: 'lastName'
+		},
+		{
+			label: 'Email',
+			sortColumn: 'email'
+		},
+		{
+			label: 'Username',
+			sortColumn: 'username'
+		},
+		{
+			label: 'Role',
+			sortColumn: 'isAdmin'
+		},
+		{
+			label: 'Actions',
+			hidden: true
+		}
 	]}
-	withoutSearch
 >
 	{#snippet rows({ item })}
 		<Table.Cell>{item.firstName}</Table.Cell>

@@ -1,6 +1,5 @@
 DB_PATH="./backend/data/pocket-id.db"
 DB_PROVIDER="${DB_PROVIDER:=sqlite}"
-USER_IDENTIFIER="$1"
 
 # Parse command-line arguments for the -d flag (database path)
 while getopts ":d:" opt; do
@@ -15,10 +14,12 @@ while getopts ":d:" opt; do
     esac
 done
 
+# Shift past the processed options
 shift $((OPTIND - 1))
 
 # Ensure username or email is provided as a parameter
-if [ -z "$1" ]; then
+USER_IDENTIFIER="$1"
+if [ -z "$USER_IDENTIFIER" ]; then
     echo "Usage: $0 [-d <database_path>] <username or email>"
     if [ "$DB_PROVIDER" == "sqlite" ]; then
         echo "-d <database_path> (optional): Path to the SQLite database file. Default: $DB_PATH"

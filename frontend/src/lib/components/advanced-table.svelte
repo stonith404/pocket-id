@@ -5,25 +5,43 @@
 	import * as Select from '$lib/components/ui/select';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import Empty from '$lib/icons/empty.svelte';
-	import type { Paginated } from '$lib/types/pagination.type';
+	import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 	import { debounced } from '$lib/utils/debounce-util';
+	import { cn } from '$lib/utils/style';
+	import { ChevronDown } from 'lucide-svelte';
 	import type { Snippet } from 'svelte';
+	import Button from './ui/button/button.svelte';
 
 	let {
 		items,
+		requestOptions = $bindable(),
 		selectedIds = $bindable(),
 		withoutSearch = false,
-		fetchItems,
+		defaultSort,
+		onRefresh,
 		columns,
 		rows
 	}: {
 		items: Paginated<T>;
+		requestOptions?: SearchPaginationSortRequest;
 		selectedIds?: string[];
 		withoutSearch?: boolean;
-		fetchItems: (search: string, page: number, limit: number) => Promise<Paginated<T>>;
-		columns: (string | { label: string; hidden?: boolean })[];
+		defaultSort?: { column: string; direction: 'asc' | 'desc' };
+		onRefresh: (requestOptions: SearchPaginationSortRequest) => Promise<Paginated<T>>;
+		columns: { label: string; hidden?: boolean; sortColumn?: string }[];
 		rows: Snippet<[{ item: T }]>;
 	} = $props();
+
+	if (!requestOptions) {
+		requestOptions = {
+			search: '',
+			sort: defaultSort,
+			pagination: {
+				page: items.pagination.currentPage,
+				limit: items.pagination.itemsPerPage
+			}
+		};
+	}
 
 	let availablePageSizes: number[] = [10, 20, 50, 100];
 
@@ -38,7 +56,8 @@
 	});
 
 	const onSearch = debounced(async (searchValue: string) => {
-		items = await fetchItems(searchValue, 1, items.pagination.itemsPerPage);
+		requestOptions.search = searchValue;
+		onRefresh(requestOptions);
 	}, 300);
 
 	async function onAllCheck(checked: boolean) {
@@ -59,11 +78,20 @@
 	}
 
 	async function onPageChange(page: number) {
-		items = await fetchItems('', page, items.pagination.itemsPerPage);
+		requestOptions!.pagination = { limit: items.pagination.itemsPerPage, page };
+		onRefresh(requestOptions!);
 	}
 
 	async function onPageSizeChange(size: number) {
-		items = await fetchItems('', 1, size);
+		requestOptions!.pagination = { limit: size, page: 1 };
+		onRefresh(requestOptions!);
+	}
+
+	async function onSort(column?: string, direction: 'asc' | 'desc' = 'asc') {
+		if (!column) return;
+
+		requestOptions!.sort = { column, direction };
+		onRefresh(requestOptions!);
 	}
 </script>
 
@@ -73,7 +101,7 @@
 		<p class="text-muted-foreground mt-3 text-sm">No items found</p>
 	</div>
 {:else}
-	<div class="w-full">
+	<div class="w-full overflow-x-auto">
 		{#if !withoutSearch}
 			<Input
 				class="mb-4 max-w-sm"
@@ -83,20 +111,40 @@
 			/>
 		{/if}
 
-		<Table.Root>
+		<Table.Root class="min-w-full table-auto">
 			<Table.Header>
 				<Table.Row>
 					{#if selectedIds}
-						<Table.Head>
+						<Table.Head class="w-12">
 							<Checkbox checked={allChecked} onCheckedChange={(c) => onAllCheck(c as boolean)} />
 						</Table.Head>
 					{/if}
 					{#each columns as column}
-						{#if typeof column === 'string'}
-							<Table.Head>{column}</Table.Head>
-						{:else}
-							<Table.Head class={column.hidden ? 'sr-only' : ''}>{column.label}</Table.Head>
-						{/if}
+						<Table.Head class={cn(column.hidden && 'sr-only', column.sortColumn && 'px-0')}>
+							{#if column.sortColumn}
+								<Button
+									variant="ghost"
+									class="flex items-center"
+									on:click={() =>
+										onSort(
+											column.sortColumn,
+											requestOptions.sort?.direction === 'desc' ? 'asc' : 'desc'
+										)}
+								>
+									{column.label}
+									{#if requestOptions.sort?.column === column.sortColumn}
+										<ChevronDown
+											class={cn(
+												'ml-2 h-4 w-4',
+												requestOptions.sort?.direction === 'asc' ? 'rotate-180' : ''
+											)}
+										/>
+									{/if}
+								</Button>
+							{:else}
+								{column.label}
+							{/if}
+						</Table.Head>
 					{/each}
 				</Table.Row>
 			</Table.Header>
@@ -104,7 +152,7 @@
 				{#each items.data as item}
 					<Table.Row class={selectedIds?.includes(item.id) ? 'bg-muted/20' : ''}>
 						{#if selectedIds}
-							<Table.Cell>
+							<Table.Cell class="w-12">
 								<Checkbox
 									checked={selectedIds.includes(item.id)}
 									onCheckedChange={(c) => onCheck(c as boolean, item.id)}
@@ -117,9 +165,7 @@
 			</Table.Body>
 		</Table.Root>
 
-		<div
-			class="mt-5 flex flex-col-reverse items-center justify-between gap-3 space-x-2 sm:flex-row"
-		>
+		<div class="mt-5 flex flex-col-reverse items-center justify-between gap-3 sm:flex-row">
 			<div class="flex items-center space-x-2">
 				<p class="text-sm font-medium">Items per page</p>
 				<Select.Root

@@ -6,9 +6,9 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"golang.org/x/time/rate"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -37,11 +37,14 @@ type UserController struct {
 }
 
 func (uc *UserController) listUsersHandler(c *gin.Context) {
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	searchTerm := c.Query("search")
+	var sortedPaginationRequest utils.SortedPaginationRequest
+	if err := c.ShouldBindQuery(&sortedPaginationRequest); err != nil {
+		c.Error(err)
+		return
+	}
 
-	users, pagination, err := uc.UserService.ListUsers(searchTerm, page, pageSize)
+	users, pagination, err := uc.UserService.ListUsers(searchTerm, sortedPaginationRequest)
 	if err != nil {
 		c.Error(err)
 		return

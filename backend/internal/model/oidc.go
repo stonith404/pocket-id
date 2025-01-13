@@ -36,7 +36,7 @@ type OidcAuthorizationCode struct {
 type OidcClient struct {
 	Base
 
-	Name         string
+	Name         string `sortable:"true"`
 	Secret       string
 	CallbackURLs CallbackURLs
 	ImageType    *string

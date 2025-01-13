@@ -3,8 +3,8 @@ package controller
 import (
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/service"
@@ -23,12 +23,16 @@ type AuditLogController struct {
 }
 
 func (alc *AuditLogController) listAuditLogsForUserHandler(c *gin.Context) {
+	var sortedPaginationRequest utils.SortedPaginationRequest
+	if err := c.ShouldBindQuery(&sortedPaginationRequest); err != nil {
+		c.Error(err)
+		return
+	}
+
 	userID := c.GetString("userID")
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 
 	// Fetch audit logs for the user
-	logs, pagination, err := alc.auditLogService.ListAuditLogsForUser(userID, page, pageSize)
+	logs, pagination, err := alc.auditLogService.ListAuditLogsForUser(userID, sortedPaginationRequest)
 	if err != nil {
 		c.Error(err)
 		return
