@@ -1,3 +1,12 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.24.0...v) (2025-01-13)
+
+
+### Bug Fixes
+
+* audit log table overflow if row data is long ([4d337a2](https://github.com/stonith404/pocket-id/commit/4d337a20c5cb92ef80bb7402f9b99b08e3ad0b6b))
+* optional arguments not working with `create-one-time-access-token.sh` ([8885571](https://github.com/stonith404/pocket-id/commit/888557171d61589211b10f70dce405126216ad61))
+* remove restrictive validation for group names ([be6e25a](https://github.com/stonith404/pocket-id/commit/be6e25a167de8bf07075b46f09d9fc1fa6c74426))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.23.0...v) (2025-01-11)
 
 
