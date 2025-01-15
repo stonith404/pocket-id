@@ -18,6 +18,7 @@ type UserCreateDto struct {
 	FirstName string `json:"firstName" binding:"required,min=1,max=50"`
 	LastName  string `json:"lastName" binding:"required,min=1,max=50"`
 	IsAdmin   bool   `json:"isAdmin"`
+	LdapID    string `json:"-"`
 }
 
 type OneTimeAccessTokenCreateDto struct {

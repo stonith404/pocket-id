@@ -30,6 +30,7 @@ type EnvConfigSchema struct {
 	LDAPBindPassword         string     `env:"LDAP_BIND_PASSWORD"`
 	LDAPSearchBase           string     `env:"LDAP_SEARCH_BASE"`
 	LDAPTLSVerify            bool       `env:"LDAP_TLS_VERIFY"`
+	LDAPUserIdAttribute      string     `env:"LDAP_USER_ID_ATTRIBUTE"`
 	LDAPUsernameAttribute    string     `env:"LDAP_USERNAME_ATTRIBUTE"`
 	LDAPGroupAttribute       string     `env:"LDAP_GROUP_ATTRIBUTE"`
 }
@@ -50,6 +51,7 @@ var EnvConfig = &EnvConfigSchema{
 	LDAPBindPassword:         "",
 	LDAPSearchBase:           "",
 	LDAPTLSVerify:            false,
+	LDAPUserIdAttribute:      "",
 	LDAPUsernameAttribute:    "",
 	LDAPGroupAttribute:       "",
 }

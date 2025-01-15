@@ -14,6 +14,7 @@ type User struct {
 	FirstName string `sortable:"true"`
 	LastName  string `sortable:"true"`
 	IsAdmin   bool   `sortable:"true"`
+	LdapID    *string
 
 	CustomClaims []CustomClaim
 	UserGroups   []UserGroup `gorm:"many2many:user_groups_users;"`

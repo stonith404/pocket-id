@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
 
 	"github.com/go-ldap/ldap/v3"
 	"github.com/stonith404/pocket-id/backend/internal/common"
@@ -100,41 +101,38 @@ func (s *LdapService) GetLdapUsers() error {
 		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
 	}
 
-	var userError error
+	for _, value := range result.Entries {
+		ldapId := value.GetAttributeValue(common.EnvConfig.LDAPUserIdAttribute)
 
-	if len(result.Entries) >= 1 {
+		// Get the user from the database
+		var databaseUser model.User
+		s.db.Where("ldap_id = ?", ldapId).First(&databaseUser)
 
-		for _, value := range result.Entries {
+		newUser := dto.UserCreateDto{
+			Username:  value.GetAttributeValue(common.EnvConfig.LDAPUsernameAttribute),
+			Email:     value.GetAttributeValue("mail"),
+			FirstName: value.GetAttributeValue("givenName"),
+			LastName:  value.GetAttributeValue("sn"),
+			IsAdmin:   false,
+			LdapID:    ldapId,
+		}
 
-			newUserModel := model.User{
-				Username:  value.GetAttributeValue(common.EnvConfig.LDAPUsernameAttribute),
-				Email:     value.GetAttributeValue("mail"),
-				FirstName: value.GetAttributeValue("givenName"),
-				LastName:  value.GetAttributeValue("sn"),
-				IsAdmin:   false,
+		if databaseUser.ID == "" {
+			_, err = s.userService.CreateUser(newUser)
+			if err != nil {
+				log.Printf("Error syncing user %s: %s", newUser.Username, err)
 			}
-
-			if s.userService.checkDuplicatedFields(newUserModel) == nil {
-				newUser := dto.UserCreateDto{
-					Username:  value.GetAttributeValue(common.EnvConfig.LDAPUsernameAttribute),
-					Email:     value.GetAttributeValue("mail"),
-					FirstName: value.GetAttributeValue("givenName"),
-					LastName:  value.GetAttributeValue("sn"),
-					IsAdmin:   false,
-				}
-				_, userError = s.userService.CreateUser(newUser)
-			} else {
-				// Update Exsisting User Entry Logic here.
+		} else {
+			_, err = s.userService.UpdateUser(databaseUser.ID, newUser, false)
+			if err != nil {
+				log.Printf("Error syncing user %s: %s", newUser.Username, err)
 			}
 
 		}
 
-		client.Close()
-		return userError
-
-	} else {
-		fmt.Println("No Users Found")
-		return userError
 	}
+
+	client.Close()
+	return nil
 
 }
