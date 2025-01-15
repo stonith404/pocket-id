@@ -19,10 +19,15 @@ func RegisterLdapJobs(ls *service.LdapService) {
 
 	jobs := &LdapJobs{ldapService: ls}
 
-	registerJob(scheduler, "SyncLdapUsers", "*/5 * * * *", jobs.ldapSyncJob)
+	registerJob(scheduler, "SyncLdapUsers", "*/5 * * * *", jobs.ldapUserSyncJob)
+	registerJob(scheduler, "SyncLdapGroups", "*/5 * * * *", jobs.ldapGroupSyncJob)
 	scheduler.Start()
 }
 
-func (j *LdapJobs) ldapSyncJob() error {
+func (j *LdapJobs) ldapUserSyncJob() error {
 	return j.ldapService.GetLdapUsers()
+}
+
+func (j *LdapJobs) ldapGroupSyncJob() error {
+	return j.ldapService.GetLdapGroups()
 }

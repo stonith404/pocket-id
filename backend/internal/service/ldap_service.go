@@ -11,12 +11,13 @@ import (
 )
 
 type LdapService struct {
-	db          *gorm.DB
-	userService *UserService
+	db           *gorm.DB
+	userService  *UserService
+	groupService *UserGroupService
 }
 
-func NewLdapService(db *gorm.DB, userService *UserService) *LdapService {
-	return &LdapService{db: db, userService: userService}
+func NewLdapService(db *gorm.DB, userService *UserService, groupService *UserGroupService) *LdapService {
+	return &LdapService{db: db, userService: userService, groupService: groupService}
 }
 
 func ldapInit() *ldap.Conn {
@@ -35,6 +36,46 @@ func ldapInit() *ldap.Conn {
 		panic(err)
 	}
 	return client
+}
+
+func (s *LdapService) GetLdapGroups() error {
+	client := ldapInit()
+	baseDN := common.EnvConfig.LDAPSearchBase
+	filter := "(objectClass=groupOfUniqueNames)"
+
+	searchAttrs := []string{
+		common.EnvConfig.LDAPGroupAttribute,
+		"member",
+	}
+
+	searchReq := ldap.NewSearchRequest(baseDN, ldap.ScopeWholeSubtree, 0, 0, 0, false, filter, searchAttrs, []ldap.Control{})
+	result, err := client.Search(searchReq)
+	if err != nil {
+		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
+	}
+
+	var groupError error
+
+	if len(result.Entries) >= 1 {
+
+		for _, value := range result.Entries {
+
+			syncGroup := dto.UserGroupCreateDto{
+				Name:         value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+				FriendlyName: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+			}
+
+			_, groupError = s.groupService.Create(syncGroup)
+
+		}
+
+		client.Close()
+		return groupError
+	} else {
+		fmt.Println("No Groups Found")
+		return groupError
+	}
+
 }
 
 func (s *LdapService) GetLdapUsers() error {
