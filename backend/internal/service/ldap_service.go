@@ -7,6 +7,7 @@ import (
 	"github.com/go-ldap/ldap/v3"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
+	"github.com/stonith404/pocket-id/backend/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -106,7 +107,7 @@ func (s *LdapService) GetLdapUsers() error {
 
 		for _, value := range result.Entries {
 
-			newUser := dto.UserCreateDto{
+			newUserModel := model.User{
 				Username:  value.GetAttributeValue(common.EnvConfig.LDAPUsernameAttribute),
 				Email:     value.GetAttributeValue("mail"),
 				FirstName: value.GetAttributeValue("givenName"),
@@ -114,7 +115,19 @@ func (s *LdapService) GetLdapUsers() error {
 				IsAdmin:   false,
 			}
 
-			_, userError = s.userService.CreateUser(newUser)
+			if s.userService.checkDuplicatedFields(newUserModel) == nil {
+				newUser := dto.UserCreateDto{
+					Username:  value.GetAttributeValue(common.EnvConfig.LDAPUsernameAttribute),
+					Email:     value.GetAttributeValue("mail"),
+					FirstName: value.GetAttributeValue("givenName"),
+					LastName:  value.GetAttributeValue("sn"),
+					IsAdmin:   false,
+				}
+				_, userError = s.userService.CreateUser(newUser)
+			} else {
+				// Update Exsisting User Entry Logic here.
+			}
+
 		}
 
 		client.Close()
