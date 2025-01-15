@@ -84,6 +84,10 @@ func (s *LdapService) GetLdapGroups() error {
 			FriendlyName: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
 		}
 
+		usersToAddDto = dto.UserGroupUpdateUsersDto{
+			UserIDs: userIDStrings,
+		}
+
 		if databaseGroup.ID == "" {
 			var newGroup model.UserGroup
 			newGroup, groupMemberAddError = s.groupService.Create(syncGroup)

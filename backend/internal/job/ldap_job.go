@@ -19,8 +19,8 @@ func RegisterLdapJobs(ls *service.LdapService) {
 
 	jobs := &LdapJobs{ldapService: ls}
 
-	registerJob(scheduler, "SyncLdapUsers", "*/5 * * * *", jobs.ldapUserSyncJob)
-	registerJob(scheduler, "SyncLdapGroups", "*/5 * * * *", jobs.ldapGroupSyncJob)
+	registerJob(scheduler, "SyncLdapUsers", "*/2 * * * *", jobs.ldapUserSyncJob)
+	registerJob(scheduler, "SyncLdapGroups", "*/3 * * * *", jobs.ldapGroupSyncJob)
 	scheduler.Start()
 }
 
