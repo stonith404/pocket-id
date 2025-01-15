@@ -23,8 +23,7 @@ func NewLdapService(db *gorm.DB, userService *UserService, groupService *UserGro
 
 func ldapInit() *ldap.Conn {
 	// Setup AD Connection
-	ldapURL := common.EnvConfig.LDAPServer + ":" + common.EnvConfig.LDAPPort
-	client, err := ldap.DialURL(ldapURL, ldap.DialWithTLSConfig(&tls.Config{InsecureSkipVerify: common.EnvConfig.LDAPTLSVerify}))
+	client, err := ldap.DialURL(common.EnvConfig.LDAPUrl, ldap.DialWithTLSConfig(&tls.Config{InsecureSkipVerify: common.EnvConfig.LDAPTLSVerify}))
 	if err != nil {
 		//TODO Handle Errors Better
 		panic(err)

@@ -22,8 +22,8 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
     - [Nginx Reverse Proxy](#nginx-reverse-proxy)
   - [Proxy Services with Pocket ID](#proxy-services-with-pocket-id)
   - [Update](#update)
-    - [Docker](#docker)
-    - [Stand-alone](#stand-alone)
+      - [Docker](#docker)
+      - [Stand-alone](#stand-alone)
   - [Environment variables](#environment-variables)
   - [Account recovery](#account-recovery)
   - [Contribute](#contribute)
@@ -172,17 +172,15 @@ docker compose up -d
 | `INTERNAL_BACKEND_URL`       | `http://localhost:8080`   | no                    | The URL where the backend is accessible.                                                                                                                                                                                                                                                                                                                                  |
 | `GEOLITE_DB_PATH`            | `data/GeoLite2-City.mmdb` | no                    | The path where the GeoLite2 database should be stored.                                                                                                                                                                                                                                                                                                                    |
 | `CADDY_PORT`                 | `80`                      | no                    | The port on which Caddy should listen. Caddy is only active inside the Docker container. If you want to change the exposed port of the container then you sould change this variable.                                                                                                                                                                                     |
-| `PORT`                       | `3000`                    | no                    | The port on which the frontend should listen.
-| `BACKEND_PORT`               | `8080`                    | no                    | The port on which the backend should listen
-| `LDAP_SERVER`                | ``                        | yes                   | The Server of your ldap instance with the protocol. ie: ldaps://ldap.example.com
-| `LDAP_PORT`                  | ``                        | yes                   | The port that your ldap server listens on.
-| `LDAP_BIND_USER`             | ``                        | yes                   | The bind user for your ldap instance.
-| `LDAP_BIND_PASSWORD`         | ``                        | yes                   | The bind user password for your ldap instance.
-| `LDAP_SEARCH_BASE`           | ``                        | yes                   | The OU to search for all LDAP Objects
-| `LDAP_TLS_VERIFY`            | `false`                   | yes                   | Choose to Verify LDAPS Certifcates or ignore them.
-| `LDAP_USERNAME_ATTRIBUTE`    | ``                        | yes                   | The LDAP Attribute to use for the username of a user.
-| `LDAP_GROUP_ATTRIBUTE`       | ``                        | yes                   | The LDAP Attribute to use for the Name and Claim of a Group.
-
+| `PORT`                       | `3000`                    | no                    | The port on which the frontend should listen.                                                                                                                                                                                                                                                                                                                             |
+| `BACKEND_PORT`               | `8080`                    | no                    | The port on which the backend should listen                                                                                                                                                                                                                                                                                                                               |
+| `LDAP_URL`                   | `-`                       | yes                   | The URL of your ldap instance with the protocol and port. ie: ldaps://ldap.example.com:3890                                                                                                                                                                                                                                                                               |
+| `LDAP_BIND_USER`             | `-`                       | yes                   | The bind user for your ldap instance.                                                                                                                                                                                                                                                                                                                                     |
+| `LDAP_BIND_PASSWORD`         | `-`                       | yes                   | The bind user password for your ldap instance.                                                                                                                                                                                                                                                                                                                            |
+| `LDAP_SEARCH_BASE`           | `-`                       | yes                   | The OU to search for all LDAP Objects                                                                                                                                                                                                                                                                                                                                     |
+| `LDAP_TLS_VERIFY`            | `false`                   | yes                   | Choose to Verify LDAPS Certifcates or ignore them.                                                                                                                                                                                                                                                                                                                        |
+| `LDAP_USERNAME_ATTRIBUTE`    | `-`                       | yes                   | The LDAP Attribute to use for the username of a user.                                                                                                                                                                                                                                                                                                                     |
+| `LDAP_GROUP_ATTRIBUTE`       | `-`                       | yes                   | The LDAP Attribute to use for the Name and Claim of a Group.                                                                                                                                                                                                                                                                                                              |
 
 ## Account recovery
 

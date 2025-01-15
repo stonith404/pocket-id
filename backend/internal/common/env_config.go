@@ -25,8 +25,7 @@ type EnvConfigSchema struct {
 	Host                     string     `env:"HOST"`
 	MaxMindLicenseKey        string     `env:"MAXMIND_LICENSE_KEY"`
 	GeoLiteDBPath            string     `env:"GEOLITE_DB_PATH"`
-	LDAPServer               string     `env:"LDAP_SERVER"`
-	LDAPPort                 string     `env:"LDAP_PORT"`
+	LDAPUrl                  string     `env:"LDAP_URL"`
 	LDAPBindUser             string     `env:"LDAP_BIND_USER"`
 	LDAPBindPassword         string     `env:"LDAP_BIND_PASSWORD"`
 	LDAPSearchBase           string     `env:"LDAP_SEARCH_BASE"`
@@ -46,8 +45,7 @@ var EnvConfig = &EnvConfigSchema{
 	Host:                     "localhost",
 	MaxMindLicenseKey:        "",
 	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
-	LDAPServer:               "",
-	LDAPPort:                 "",
+	LDAPUrl:                  "",
 	LDAPBindUser:             "",
 	LDAPBindPassword:         "",
 	LDAPSearchBase:           "",
