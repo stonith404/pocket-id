@@ -55,27 +55,34 @@ func (s *LdapService) GetLdapGroups() error {
 		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
 	}
 
-	var groupError error
+	for _, value := range result.Entries {
 
-	if len(result.Entries) >= 1 {
+		var databaseGroup model.UserGroup
+		groupUniqueName := value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute)
+		s.db.Where("name = ?", groupUniqueName).First(&databaseGroup)
 
-		for _, value := range result.Entries {
+		syncGroup := dto.UserGroupCreateDto{
+			Name:         value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+			FriendlyName: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+		}
 
-			syncGroup := dto.UserGroupCreateDto{
-				Name:         value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
-				FriendlyName: value.GetAttributeValue(common.EnvConfig.LDAPGroupAttribute),
+		if databaseGroup.ID == "" {
+			_, err = s.groupService.Create(syncGroup)
+			if err != nil {
+				log.Printf("Error syncing group %s: %s", syncGroup.Name, err)
 			}
-
-			_, groupError = s.groupService.Create(syncGroup)
+		} else {
+			_, err := s.groupService.Update(databaseGroup.ID, syncGroup)
+			if err != nil {
+				log.Printf("Error syncing group %s: %s", syncGroup.Name, err)
+			}
 
 		}
 
-		client.Close()
-		return groupError
-	} else {
-		fmt.Println("No Groups Found")
-		return groupError
 	}
+
+	client.Close()
+	return nil
 
 }
 
