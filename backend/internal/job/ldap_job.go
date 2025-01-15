@@ -19,7 +19,7 @@ func RegisterLdapJobs(ls *service.LdapService) {
 
 	jobs := &LdapJobs{ldapService: ls}
 
-	registerJob(scheduler, "ClearWebauthnSessions", "*/5 * * * *", jobs.ldapSyncJob)
+	registerJob(scheduler, "SyncLdapUsers", "*/5 * * * *", jobs.ldapSyncJob)
 	scheduler.Start()
 }
 
