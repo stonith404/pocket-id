@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/controller"
+	"github.com/stonith404/pocket-id/backend/internal/job"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"golang.org/x/time/rate"
@@ -48,6 +49,8 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	r.Use(middleware.NewErrorHandlerMiddleware().Add())
 	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
+
+	job.RegisterLdapJobs(ldapService)
 
 	// Initialize middleware
 	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)

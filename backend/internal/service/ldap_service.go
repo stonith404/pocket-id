@@ -7,7 +7,6 @@ import (
 	"github.com/go-ldap/ldap/v3"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
-	"github.com/stonith404/pocket-id/backend/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -38,7 +37,7 @@ func ldapInit() *ldap.Conn {
 	return client
 }
 
-func (s *LdapService) GetLdapUsers() (model.User, error) {
+func (s *LdapService) GetLdapUsers() error {
 	client := ldapInit()
 	baseDN := common.EnvConfig.LDAPSearchBase
 	filter := "(objectClass=person)"
@@ -64,8 +63,6 @@ func (s *LdapService) GetLdapUsers() (model.User, error) {
 
 	if len(result.Entries) >= 1 {
 
-		var userModel model.User
-
 		for _, value := range result.Entries {
 
 			newUser := dto.UserCreateDto{
@@ -76,15 +73,15 @@ func (s *LdapService) GetLdapUsers() (model.User, error) {
 				IsAdmin:   false,
 			}
 
-			userModel, userError = s.userService.CreateUser(newUser)
+			_, userError = s.userService.CreateUser(newUser)
 		}
 
 		client.Close()
-		return userModel, userError
+		return userError
 
 	} else {
 		fmt.Println("No Users Found")
-		return model.User{}, userError
+		return userError
 	}
 
 }
