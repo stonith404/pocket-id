@@ -37,3 +37,21 @@ data
 /frontend/tests/.report
 pocket-id-backend
 /backend/GeoLite2-City.mmdb
+
+# Production
+/build
+
+# Generated files
+docs/.docusaurus
+docs/.cache-loader
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
