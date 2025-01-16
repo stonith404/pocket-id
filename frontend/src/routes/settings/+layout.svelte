@@ -62,7 +62,7 @@
 					</nav>
 				</div>
 			</div>
-			<div class="flex w-full flex-col gap-5">
+			<div class="flex w-full flex-col gap-5 overflow-x-hidden">
 				{@render children()}
 			</div>
 		</main>

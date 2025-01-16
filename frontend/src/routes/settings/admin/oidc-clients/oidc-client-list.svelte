@@ -5,7 +5,7 @@
 	import * as Table from '$lib/components/ui/table';
 	import OIDCService from '$lib/services/oidc-service';
 	import type { OidcClient } from '$lib/types/oidc.type';
-	import type { Paginated, PaginationRequest } from '$lib/types/pagination.type';
+	import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
 	import { LucidePencil, LucideTrash } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
@@ -14,18 +14,13 @@
 	let { clients: initialClients }: { clients: Paginated<OidcClient> } = $props();
 	let clients = $state<Paginated<OidcClient>>(initialClients);
 	let oneTimeLink = $state<string | null>(null);
+	let requestOptions: SearchPaginationSortRequest | undefined = $state();
 
 	$effect(() => {
 		clients = initialClients;
 	});
 
 	const oidcService = new OIDCService();
-
-	let pagination = $state<PaginationRequest>({
-		page: 1,
-		limit: 10
-	});
-	let search = $state('');
 
 	async function deleteClient(client: OidcClient) {
 		openConfirmDialog({
@@ -37,7 +32,7 @@
 				action: async () => {
 					try {
 						await oidcService.removeClient(client.id);
-						clients = await oidcService.listClients(search, pagination);
+						clients = await oidcService.listClients(requestOptions!);
 						toast.success('OIDC client deleted successfully');
 					} catch (e) {
 						axiosErrorToast(e);
@@ -46,16 +41,17 @@
 			}
 		});
 	}
-
-	async function fetchItems(search: string, page: number, limit: number) {
-		return oidcService.listClients(search, { page, limit });
-	}
 </script>
 
 <AdvancedTable
 	items={clients}
-	{fetchItems}
-	columns={['Logo', 'Name', { label: 'Actions', hidden: true }]}
+	{requestOptions}
+	onRefresh={async(o) => clients = await oidcService.listClients(o)}
+	columns={[
+		{ label: 'Logo' },
+		{ label: 'Name', sortColumn: 'name' },
+		{ label: 'Actions', hidden: true }
+	]}
 >
 	{#snippet rows({ item })}
 		<Table.Cell class="w-8 font-medium">

@@ -9,11 +9,11 @@ import (
 type AuditLog struct {
 	Base
 
-	Event     AuditLogEvent
-	IpAddress string
-	Country   string
-	City      string
-	UserAgent string
+	Event     AuditLogEvent `sortable:"true"`
+	IpAddress string        `sortable:"true"`
+	Country   string        `sortable:"true"`
+	City      string        `sortable:"true"`
+	UserAgent string        `sortable:"true"`
 	UserID    string
 	Data      AuditLogData
 }

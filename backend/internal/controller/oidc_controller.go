@@ -5,8 +5,8 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -153,11 +153,14 @@ func (oc *OidcController) getClientHandler(c *gin.Context) {
 }
 
 func (oc *OidcController) listClientsHandler(c *gin.Context) {
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	searchTerm := c.Query("search")
+	var sortedPaginationRequest utils.SortedPaginationRequest
+	if err := c.ShouldBindQuery(&sortedPaginationRequest); err != nil {
+		c.Error(err)
+		return
+	}
 
-	clients, pagination, err := oc.oidcService.ListClients(searchTerm, page, pageSize)
+	clients, pagination, err := oc.oidcService.ListClients(searchTerm, sortedPaginationRequest)
 	if err != nil {
 		c.Error(err)
 		return

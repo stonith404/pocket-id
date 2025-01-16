@@ -1,4 +1,4 @@
-import type { Paginated, PaginationRequest } from '$lib/types/pagination.type';
+import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 import type {
 	UserGroupCreate,
 	UserGroupWithUserCount,
@@ -7,12 +7,9 @@ import type {
 import APIService from './api-service';
 
 export default class UserGroupService extends APIService {
-	async list(search?: string, pagination?: PaginationRequest) {
+	async list(options?: SearchPaginationSortRequest) {
 		const res = await this.api.get('/user-groups', {
-			params: {
-				search,
-				...pagination
-			}
+			params: options
 		});
 		return res.data as Paginated<UserGroupWithUserCount>;
 	}

@@ -10,6 +10,24 @@ The goal of Pocket ID is to be a simple and easy-to-use. There are other self-ho
 
 Additionally, what makes Pocket ID special is that it only supports [passkey](https://www.passkeys.io/) authentication, which means you don’t need a password. Some people might not like this idea at first, but I believe passkeys are the future, and once you try them, you’ll love them. For example, you can now use a physical Yubikey to sign in to all your self-hosted services easily and securely.
 
+## Table of Contents
+
+- [ Pocket ID](#-pocket-id)
+  - [Table of Contents](#table-of-contents)
+  - [Setup](#setup)
+    - [Before you start](#before-you-start)
+    - [Installation with Docker (recommended)](#installation-with-docker-recommended)
+    - [Unraid](#unraid)
+    - [Stand-alone Installation](#stand-alone-installation)
+    - [Nginx Reverse Proxy](#nginx-reverse-proxy)
+  - [Proxy Services with Pocket ID](#proxy-services-with-pocket-id)
+  - [Update](#update)
+    - [Docker](#docker)
+    - [Stand-alone](#stand-alone)
+  - [Environment variables](#environment-variables)
+  - [Account recovery](#account-recovery)
+  - [Contribute](#contribute)
+
 ## Setup
 
 > [!WARNING]  
@@ -156,6 +174,16 @@ docker compose up -d
 | `CADDY_PORT`                 | `80`                      | no                    | The port on which Caddy should listen. Caddy is only active inside the Docker container. If you want to change the exposed port of the container then you sould change this variable.                                                                                                                                                                                     |
 | `PORT`                       | `3000`                    | no                    | The port on which the frontend should listen.                                                                                                                                                                                                                                                                                                                             |
 | `BACKEND_PORT`               | `8080`                    | no                    | The port on which the backend should listen.                                                                                                                                                                                                                                                                                                                              |
+
+## Account recovery
+
+There are two ways to create a one-time access link for a user:
+
+1. **UI**: An admin can create a one-time access link for the user in the admin panel under the "Users" tab by clicking on the three dots next to the user's name and selecting "One-time link".
+2. **Terminal**: You can create a one-time access link for a user by running the `scripts/create-one-time-access-token.sh` script. To execute this script with Docker you have to run the following command:
+   ```bash
+   docker compose exec pocket-id sh "sh scripts/create-one-time-access-token.sh <username or email>"
+   ```
 
 ## Contribute
 

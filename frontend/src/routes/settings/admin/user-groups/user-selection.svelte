@@ -13,16 +13,15 @@
 	const userService = new UserService();
 
 	let users = $state(initialUsers);
-
-	function fetchItems(search: string, page: number, limit: number) {
-		return userService.list(search, { page, limit });
-	}
 </script>
 
 <AdvancedTable
 	items={users}
-	{fetchItems}
-	columns={['Name', 'Email']}
+	onRefresh={async (o) => (users = await userService.list(o))}
+	columns={[
+		{ label: 'Name', sortColumn: 'name' },
+		{ label: 'Email', sortColumn: 'email' }
+	]}
 	bind:selectedIds={selectedUserIds}
 >
 	{#snippet rows({ item })}

@@ -3,6 +3,17 @@ export type PaginationRequest = {
 	limit: number;
 };
 
+export type SortRequest = {
+	column: string;
+	direction: "asc" | "desc";
+};
+
+export type SearchPaginationSortRequest = {
+	search?: string,
+	pagination?: PaginationRequest;
+	sort?: SortRequest;
+}
+
 export type PaginationResponse = {
 	totalPages: number;
 	totalItems: number;
