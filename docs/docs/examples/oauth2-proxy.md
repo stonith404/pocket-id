@@ -1,4 +1,10 @@
-# Proxy Services through Pocket ID
+---
+id: oauth2-proxy
+---
+
+# OAuth2 Proxy
+
+## Proxy Services through Pocket ID
 
 The goal of Pocket ID is to stay simple. Because of that we don't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) to add authentication to your services that don't support OIDC. This guide will show you how to set up OAuth2 Proxy with Pocket ID.
 

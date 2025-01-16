@@ -1,0 +1,26 @@
+{
+  "id": "troubleshooting/account-recovery",
+  "title": "Account recovery",
+  "description": "There are two ways to create a one-time access link for a user:",
+  "source": "@site/docs/troubleshooting/account-recovery.md",
+  "sourceDirName": "troubleshooting",
+  "slug": "/troubleshooting/account-recovery",
+  "permalink": "/pocket-id/troubleshooting/account-recovery",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/stonith404/pocket-id/edit/main/docs/docs/troubleshooting/account-recovery.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "account-recovery"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Upgrading",
+    "permalink": "/pocket-id/setup/upgrading"
+  },
+  "next": {
+    "title": "OAuth2 Proxy",
+    "permalink": "/pocket-id/examples/oauth2-proxy"
+  }
+}

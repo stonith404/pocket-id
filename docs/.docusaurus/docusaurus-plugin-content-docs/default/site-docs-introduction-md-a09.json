@@ -1,0 +1,22 @@
+{
+  "id": "introduction",
+  "title": "Introduction",
+  "description": "Pocket ID is a simple OIDC provider that allows users to authenticate with their passkeys to your services.",
+  "source": "@site/docs/introduction.md",
+  "sourceDirName": ".",
+  "slug": "/introduction",
+  "permalink": "/pocket-id/introduction",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/stonith404/pocket-id/edit/main/docs/docs/introduction.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "introduction"
+  },
+  "sidebar": "docsSidebar",
+  "next": {
+    "title": "Installation",
+    "permalink": "/pocket-id/setup/installation"
+  }
+}

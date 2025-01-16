@@ -1,0 +1,26 @@
+{
+  "id": "setup/upgrading",
+  "title": "Upgrading",
+  "description": "Updating to a New Version",
+  "source": "@site/docs/setup/upgrading.md",
+  "sourceDirName": "setup",
+  "slug": "/setup/upgrading",
+  "permalink": "/pocket-id/setup/upgrading",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/stonith404/pocket-id/edit/main/docs/docs/setup/upgrading.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "upgrading"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Nginx Reverse Proxy",
+    "permalink": "/pocket-id/setup/nginx-reverse-proxy"
+  },
+  "next": {
+    "title": "Account recovery",
+    "permalink": "/pocket-id/troubleshooting/account-recovery"
+  }
+}

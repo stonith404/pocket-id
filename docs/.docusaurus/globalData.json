@@ -1,0 +1,73 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/pocket-id/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/pocket-id/",
+          "mainDocId": "introduction",
+          "docs": [
+            {
+              "id": "examples/jellyfin",
+              "path": "/pocket-id/examples/jellyfin",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "examples/oauth2-proxy",
+              "path": "/pocket-id/examples/oauth2-proxy",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "help-out/contribute",
+              "path": "/pocket-id/help-out/contribute",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "introduction",
+              "path": "/pocket-id/introduction",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "setup/configuration",
+              "path": "/pocket-id/setup/configuration",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "setup/installation",
+              "path": "/pocket-id/setup/installation",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "setup/nginx-reverse-proxy",
+              "path": "/pocket-id/setup/nginx-reverse-proxy",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "setup/upgrading",
+              "path": "/pocket-id/setup/upgrading",
+              "sidebar": "docsSidebar"
+            },
+            {
+              "id": "troubleshooting/account-recovery",
+              "path": "/pocket-id/troubleshooting/account-recovery",
+              "sidebar": "docsSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "docsSidebar": {
+              "link": {
+                "path": "/pocket-id/introduction",
+                "label": "introduction"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

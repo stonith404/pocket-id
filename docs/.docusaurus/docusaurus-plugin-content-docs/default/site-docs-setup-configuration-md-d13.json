@@ -1,0 +1,26 @@
+{
+  "id": "setup/configuration",
+  "title": "Configuration",
+  "description": "Environment variables",
+  "source": "@site/docs/setup/configuration.md",
+  "sourceDirName": "setup",
+  "slug": "/setup/configuration",
+  "permalink": "/pocket-id/setup/configuration",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/stonith404/pocket-id/edit/main/docs/docs/setup/configuration.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "configuration"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Installation",
+    "permalink": "/pocket-id/setup/installation"
+  },
+  "next": {
+    "title": "Nginx Reverse Proxy",
+    "permalink": "/pocket-id/setup/nginx-reverse-proxy"
+  }
+}

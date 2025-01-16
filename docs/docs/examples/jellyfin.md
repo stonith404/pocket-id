@@ -1,4 +1,10 @@
-# Jellyfin SSO Integration Guide
+---
+id: jellyfin
+---
+
+# Jellyfin
+
+## Jellyfin SSO Integration Guide
 
 > Due to the current limitations of the Jellyfin SSO plugin, this integration will only work in a browser. When tested, the Jellyfin app did not work and displayed an error, even when custom menu buttons were created.
 

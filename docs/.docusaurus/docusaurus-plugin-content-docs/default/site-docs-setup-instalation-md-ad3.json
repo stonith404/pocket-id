@@ -1,0 +1,26 @@
+{
+  "id": "setup/installation",
+  "title": "Installation",
+  "description": "Pocket ID requires a secure context, meaning it must be served over HTTPS. This is necessary because Pocket ID uses the WebAuthn API.",
+  "source": "@site/docs/setup/instalation.md",
+  "sourceDirName": "setup",
+  "slug": "/setup/installation",
+  "permalink": "/pocket-id/setup/installation",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/stonith404/pocket-id/edit/main/docs/docs/setup/instalation.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "id": "installation"
+  },
+  "sidebar": "docsSidebar",
+  "previous": {
+    "title": "Introduction",
+    "permalink": "/pocket-id/introduction"
+  },
+  "next": {
+    "title": "Configuration",
+    "permalink": "/pocket-id/setup/configuration"
+  }
+}
