@@ -202,7 +202,7 @@ func (uc *UserController) updateUser(c *gin.Context, updateOwnUser bool) {
 		userID = c.Param("id")
 	}
 
-	user, err := uc.UserService.UpdateUser(userID, input, updateOwnUser)
+	user, err := uc.UserService.UpdateUser(userID, input, updateOwnUser, false)
 	if err != nil {
 		c.Error(err)
 		return

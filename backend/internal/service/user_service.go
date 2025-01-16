@@ -67,11 +67,16 @@ func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
 	return user, nil
 }
 
-func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, updateOwnUser bool) (model.User, error) {
+func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, updateOwnUser bool, allowLdapUpdate bool) (model.User, error) {
 	var user model.User
 	if err := s.db.Where("id = ?", userID).First(&user).Error; err != nil {
 		return model.User{}, err
 	}
+
+	if user.LdapID != nil && !allowLdapUpdate {
+		return model.User{}, &common.LdapUserUpdateError{}
+	}
+
 	user.FirstName = updatedUser.FirstName
 	user.LastName = updatedUser.LastName
 	user.Email = updatedUser.Email

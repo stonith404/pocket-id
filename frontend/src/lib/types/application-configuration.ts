@@ -4,8 +4,10 @@ export type AppConfig = {
 };
 
 export type AllAppConfig = AppConfig & {
+	// General
 	sessionDuration: number;
 	emailsVerified: boolean;
+	// Email
 	emailEnabled: boolean;
 	smtpHost: string;
 	smtpPort: number;
@@ -14,6 +16,20 @@ export type AllAppConfig = AppConfig & {
 	smtpPassword: string;
 	smtpTls: boolean;
 	smtpSkipCertVerify: boolean;
+	// LDAP
+	ldapEnabled: boolean;
+	ldapUrl: string;
+	ldapBindDn: string;
+	ldapBindPassword: string;
+	ldapBase: string;
+	ldapSkipCertVerify: boolean;
+	ldapAttributeUserUniqueIdentifier: string;
+	ldapAttributeUserUsername: string;
+	ldapAttributeUserEmail: string;
+	ldapAttributeUserFirstName: string;
+	ldapAttributeUserLastName: string;
+	ldapAttributeGroupUniqueIdentifier: string;
+	ldapAttributeGroupName: string;
 };
 
 export type AppConfigRawResponse = {

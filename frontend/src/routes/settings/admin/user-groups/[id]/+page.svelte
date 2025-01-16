@@ -11,6 +11,7 @@
 	import { toast } from 'svelte-sonner';
 	import UserGroupForm from '../user-group-form.svelte';
 	import UserSelection from '../user-selection.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 
 	let { data } = $props();
 	let userGroup = $state({
@@ -58,10 +59,13 @@
 	<title>User Group Details {userGroup.name}</title>
 </svelte:head>
 
-<div>
+<div class="flex items-center justify-between">
 	<a class="text-muted-foreground flex text-sm" href="/settings/admin/user-groups"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
+	{#if !!userGroup.ldapId}
+	<Badge variant="default" class="">LDAP</Badge>
+{/if}
 </div>
 <Card.Root>
 	<Card.Header>

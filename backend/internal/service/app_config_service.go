@@ -30,6 +30,7 @@ func NewAppConfigService(db *gorm.DB) *AppConfigService {
 }
 
 var defaultDbConfig = model.AppConfig{
+	// General
 	AppName: model.AppConfigVariable{
 		Key:          "appName",
 		Type:         "string",
@@ -52,6 +53,7 @@ var defaultDbConfig = model.AppConfig{
 		IsPublic:     true,
 		DefaultValue: "true",
 	},
+	// Internal
 	BackgroundImageType: model.AppConfigVariable{
 		Key:          "backgroundImageType",
 		Type:         "string",
@@ -70,6 +72,7 @@ var defaultDbConfig = model.AppConfig{
 		IsInternal:   true,
 		DefaultValue: "svg",
 	},
+	// Email
 	EmailEnabled: model.AppConfigVariable{
 		Key:          "emailEnabled",
 		Type:         "bool",
@@ -104,6 +107,61 @@ var defaultDbConfig = model.AppConfig{
 		Key:          "smtpSkipCertVerify",
 		Type:         "bool",
 		DefaultValue: "false",
+	},
+	// LDAP
+	LdapEnabled: model.AppConfigVariable{
+		Key:          "ldapEnabled",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
+	LdapUrl: model.AppConfigVariable{
+		Key:  "ldapUrl",
+		Type: "string",
+	},
+	LdapBindDn: model.AppConfigVariable{
+		Key:  "ldapBindDn",
+		Type: "string",
+	},
+	LdapBindPassword: model.AppConfigVariable{
+		Key:  "ldapBindPassword",
+		Type: "string",
+	},
+	LdapBase: model.AppConfigVariable{
+		Key:  "ldapBase",
+		Type: "string",
+	},
+	LdapSkipCertVerify: model.AppConfigVariable{
+		Key:          "ldapSkipCertVerify",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
+	LdapAttributeUserUniqueIdentifier: model.AppConfigVariable{
+		Key:  "ldapAttributeUserUniqueIdentifier",
+		Type: "string",
+	},
+	LdapAttributeUserUsername: model.AppConfigVariable{
+		Key:  "ldapAttributeUserUsername",
+		Type: "string",
+	},
+	LdapAttributeUserEmail: model.AppConfigVariable{
+		Key:  "ldapAttributeUserEmail",
+		Type: "string",
+	},
+	LdapAttributeUserFirstName: model.AppConfigVariable{
+		Key:  "ldapAttributeUserFirstName",
+		Type: "string",
+	},
+	LdapAttributeUserLastName: model.AppConfigVariable{
+		Key:  "ldapAttributeUserLastName",
+		Type: "string",
+	},
+	LdapAttributeGroupUniqueIdentifier: model.AppConfigVariable{
+		Key:  "ldapAttributeGroupUniqueIdentifier",
+		Type: "string",
+	},
+	LdapAttributeGroupName: model.AppConfigVariable{
+		Key:  "ldapAttributeGroupName",
+		Type: "string",
 	},
 }
 

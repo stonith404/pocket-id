@@ -8,6 +8,7 @@ export type User = {
 	lastName: string;
 	isAdmin: boolean;
 	customClaims: CustomClaim[];
+	ldapId?: string;
 };
 
-export type UserCreate = Omit<User, 'id' | 'customClaims'>;
+export type UserCreate = Omit<User, 'id' | 'customClaims' | 'ldapId'>;

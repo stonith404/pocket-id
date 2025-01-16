@@ -14,6 +14,7 @@
 	} = $props();
 
 	let isLoading = $state(false);
+	let inputDisabled = $derived(!!existingUserGroup?.ldapId);
 	let hasManualNameEdit = $state(!!existingUserGroup?.friendlyName);
 
 	const userGroup = {
@@ -57,6 +58,7 @@
 </script>
 
 <form onsubmit={onSubmit}>
+	<fieldset disabled={inputDisabled} title={inputDisabled ? 'LDAP user groups cannot be edited' : ''}>
 	<div class="flex flex-col gap-3 sm:flex-row">
 		<div class="w-full">
 			<FormInput
@@ -78,4 +80,5 @@
 	<div class="mt-5 flex justify-end">
 		<Button {isLoading} type="submit">Save</Button>
 	</div>
+</fieldset>
 </form>

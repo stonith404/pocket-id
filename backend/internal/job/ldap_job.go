@@ -8,26 +8,32 @@ import (
 )
 
 type LdapJobs struct {
-	ldapService *service.LdapService
+	ldapService      *service.LdapService
+	appConfigService *service.AppConfigService
 }
 
-func RegisterLdapJobs(ls *service.LdapService) {
+func RegisterLdapJobs(ldapService *service.LdapService, appConfigService *service.AppConfigService) {
+	jobs := &LdapJobs{ldapService: ldapService, appConfigService: appConfigService}
+
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
 		log.Fatalf("Failed to create a new scheduler: %s", err)
 	}
 
-	jobs := &LdapJobs{ldapService: ls}
+	// Register the job to run every hour
+	registerJob(scheduler, "SyncLdap", "0 * * * *", jobs.syncLdap)
 
-	registerJob(scheduler, "SyncLdapUsers", "*/2 * * * *", jobs.ldapUserSyncJob)
-	registerJob(scheduler, "SyncLdapGroups", "*/3 * * * *", jobs.ldapGroupSyncJob)
+	// Run the job immediately on startup
+	if err := jobs.syncLdap(); err != nil {
+		log.Fatalf("Failed to sync LDAP: %s", err)
+	}
+
 	scheduler.Start()
 }
 
-func (j *LdapJobs) ldapUserSyncJob() error {
-	return j.ldapService.GetLdapUsers()
-}
-
-func (j *LdapJobs) ldapGroupSyncJob() error {
-	return j.ldapService.GetLdapGroups()
+func (j *LdapJobs) syncLdap() error {
+	if j.appConfigService.DbConfig.LdapEnabled.Value == "true" {
+		return j.ldapService.SyncAll()
+	}
+	return nil
 }

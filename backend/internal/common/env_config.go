@@ -25,14 +25,6 @@ type EnvConfigSchema struct {
 	Host                     string     `env:"HOST"`
 	MaxMindLicenseKey        string     `env:"MAXMIND_LICENSE_KEY"`
 	GeoLiteDBPath            string     `env:"GEOLITE_DB_PATH"`
-	LDAPUrl                  string     `env:"LDAP_URL"`
-	LDAPBindUser             string     `env:"LDAP_BIND_USER"`
-	LDAPBindPassword         string     `env:"LDAP_BIND_PASSWORD"`
-	LDAPSearchBase           string     `env:"LDAP_SEARCH_BASE"`
-	LDAPTLSVerify            bool       `env:"LDAP_TLS_VERIFY"`
-	LDAPUserIdAttribute      string     `env:"LDAP_USER_ID_ATTRIBUTE"`
-	LDAPUsernameAttribute    string     `env:"LDAP_USERNAME_ATTRIBUTE"`
-	LDAPGroupAttribute       string     `env:"LDAP_GROUP_ATTRIBUTE"`
 }
 
 var EnvConfig = &EnvConfigSchema{
@@ -46,14 +38,6 @@ var EnvConfig = &EnvConfigSchema{
 	Host:                     "localhost",
 	MaxMindLicenseKey:        "",
 	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
-	LDAPUrl:                  "",
-	LDAPBindUser:             "",
-	LDAPBindPassword:         "",
-	LDAPSearchBase:           "",
-	LDAPTLSVerify:            false,
-	LDAPUserIdAttribute:      "",
-	LDAPUsernameAttribute:    "",
-	LDAPGroupAttribute:       "",
 }
 
 func init() {

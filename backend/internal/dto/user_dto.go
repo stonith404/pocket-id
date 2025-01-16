@@ -10,6 +10,7 @@ type UserDto struct {
 	LastName     string           `json:"lastName"`
 	IsAdmin      bool             `json:"isAdmin"`
 	CustomClaims []CustomClaimDto `json:"customClaims"`
+	LdapID       *string          `json:"ldapId"`
 }
 
 type UserCreateDto struct {

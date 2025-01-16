@@ -9,6 +9,7 @@
 		input = $bindable(),
 		label,
 		description,
+		placeholder,
 		disabled = false,
 		type = 'text',
 		children,
@@ -18,6 +19,7 @@
 		input?: FormInput<string | boolean | number>;
 		label?: string;
 		description?: string;
+		placeholder?: string;
 		disabled?: boolean;
 		type?: 'text' | 'password' | 'email' | 'number' | 'checkbox';
 		onInput?: (e: FormInputEvent) => void;
@@ -38,7 +40,7 @@
 		{#if children}
 			{@render children()}
 		{:else if input}
-			<Input {id} {type} bind:value={input.value} {disabled} on:input={(e) => onInput?.(e)} />
+			<Input {id} {placeholder} {type} bind:value={input.value} {disabled} on:input={(e) => onInput?.(e)} />
 		{/if}
 		{#if input?.error}
 			<p class="mt-1 text-sm text-red-500">{input.error}</p>

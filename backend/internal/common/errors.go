@@ -58,7 +58,9 @@ func (e *OidcInvalidAuthorizationCodeError) HttpStatusCode() int { return 400 }
 
 type OidcInvalidCallbackURLError struct{}
 
-func (e *OidcInvalidCallbackURLError) Error() string       { return "invalid callback URL, it might be necessary for an admin to fix this" }
+func (e *OidcInvalidCallbackURLError) Error() string {
+	return "invalid callback URL, it might be necessary for an admin to fix this"
+}
 func (e *OidcInvalidCallbackURLError) HttpStatusCode() int { return 400 }
 
 type FileTypeNotSupportedError struct{}
@@ -160,3 +162,10 @@ func (e *OidcMissingCodeChallengeError) Error() string {
 	return "Missing code challenge"
 }
 func (e *OidcMissingCodeChallengeError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type LdapUserUpdateError struct{}
+
+func (e *LdapUserUpdateError) Error() string {
+	return "LDAP users can't be updated"
+}
+func (e *LdapUserUpdateError) HttpStatusCode() int { return http.StatusForbidden }
