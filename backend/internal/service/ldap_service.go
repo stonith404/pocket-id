@@ -176,8 +176,21 @@ func (s *LdapService) SyncUsers() error {
 		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
 	}
 
+	//Get all Current Database Users
+	var databaseUsers []model.User
+	if err := s.db.Find(&databaseUsers).Error; err != nil {
+		fmt.Println(fmt.Errorf("Failed to Fetch Users from Database: %v", err))
+	}
+
+	//Create Mapping for Users that exsist
+	ldapUsers := make(map[*string]bool)
+	missingUsers := []model.User{}
+
 	for _, value := range result.Entries {
 		ldapId := value.GetAttributeValue(uniqueIdentifierAttribute)
+
+		//This Maps the Users to this array if they exsist
+		ldapUsers[&ldapId] = true
 
 		// Get the user from the database
 		var databaseUser model.User
@@ -205,6 +218,28 @@ func (s *LdapService) SyncUsers() error {
 
 		}
 
+	}
+
+	dbUserCount := len(databaseUsers) - 1 //Accounting for the built in Admin User
+	//Compare Database Users with LDAP Users
+	if dbUserCount > len(ldapUsers) {
+		for _, dbUser := range databaseUsers {
+			if dbUser.LdapID == nil {
+				continue
+			}
+			if _, exists := ldapUsers[dbUser.LdapID]; !exists {
+				missingUsers = append(missingUsers, dbUser)
+			}
+		}
+
+		//Remove Users from Database if they no longer exsist in LDAP
+		for _, missingUser := range missingUsers {
+			if err := s.db.Delete(&missingUser).Error; err != nil {
+				log.Printf("Failed to delete user %s: %v", missingUser.Username, err)
+			} else {
+				fmt.Printf("Removed missing user: %s\n", missingUser.Username)
+			}
+		}
 	}
 
 	return nil
