@@ -183,14 +183,14 @@ func (s *LdapService) SyncUsers() error {
 	}
 
 	//Create Mapping for Users that exsist
-	ldapUsers := make(map[*string]bool)
+	ldapUsers := make(map[string]bool)
 	missingUsers := []model.User{}
 
 	for _, value := range result.Entries {
 		ldapId := value.GetAttributeValue(uniqueIdentifierAttribute)
 
 		//This Maps the Users to this array if they exsist
-		ldapUsers[&ldapId] = true
+		ldapUsers[ldapId] = true
 
 		// Get the user from the database
 		var databaseUser model.User
@@ -227,7 +227,8 @@ func (s *LdapService) SyncUsers() error {
 			if dbUser.LdapID == nil {
 				continue
 			}
-			if _, exists := ldapUsers[dbUser.LdapID]; !exists {
+			if _, exists := ldapUsers[*dbUser.LdapID]; !exists {
+				fmt.Printf("Ldap id: %s, username: %s\n", *dbUser.LdapID, dbUser.Username)
 				missingUsers = append(missingUsers, dbUser)
 			}
 		}
