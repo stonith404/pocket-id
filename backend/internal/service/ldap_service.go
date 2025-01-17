@@ -148,12 +148,15 @@ func (s *LdapService) SyncUsers() error {
 	}
 	defer client.Close()
 
+	var adminStatus bool
+
 	baseDN := s.appConfigService.DbConfig.LdapBase.Value
 	uniqueIdentifierAttribute := s.appConfigService.DbConfig.LdapAttributeUserUniqueIdentifier.Value
 	usernameAttribute := s.appConfigService.DbConfig.LdapAttributeUserUsername.Value
 	emailAttribute := s.appConfigService.DbConfig.LdapAttributeUserEmail.Value
 	firstNameAttribute := s.appConfigService.DbConfig.LdapAttributeUserFirstName.Value
 	lastNameAttribute := s.appConfigService.DbConfig.LdapAttributeUserLastName.Value
+	adminGroupAttribute := s.appConfigService.DbConfig.LdapAttributeAdminGroup.Value
 
 	filter := "(objectClass=person)"
 
@@ -196,12 +199,18 @@ func (s *LdapService) SyncUsers() error {
 		var databaseUser model.User
 		s.db.Where("ldap_id = ?", ldapId).First(&databaseUser)
 
+		for _, group := range value.GetAttributeValues("memberOf") {
+			if strings.Contains(group, adminGroupAttribute) {
+				adminStatus = true
+			}
+		}
+
 		newUser := dto.UserCreateDto{
 			Username:  value.GetAttributeValue(usernameAttribute),
 			Email:     value.GetAttributeValue(emailAttribute),
 			FirstName: value.GetAttributeValue(firstNameAttribute),
 			LastName:  value.GetAttributeValue(lastNameAttribute),
-			IsAdmin:   false,
+			IsAdmin:   adminStatus,
 			LdapID:    ldapId,
 		}
 
