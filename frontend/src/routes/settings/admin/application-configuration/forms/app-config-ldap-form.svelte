@@ -35,7 +35,8 @@
 		ldapAttributeUserFirstName: appConfig.ldapAttributeUserFirstName,
 		ldapAttributeUserLastName: appConfig.ldapAttributeUserLastName,
 		ldapAttributeGroupUniqueIdentifier: appConfig.ldapAttributeGroupUniqueIdentifier,
-		ldapAttributeGroupName: appConfig.ldapAttributeGroupName
+		ldapAttributeGroupName: appConfig.ldapAttributeGroupName,
+		ldapAttributeAdminGroup: appConfig.ldapAttributeAdminGroup
 	};
 
 	const formSchema = z.object({
@@ -50,7 +51,8 @@
 		ldapAttributeUserFirstName: z.string().min(1),
 		ldapAttributeUserLastName: z.string().min(1),
 		ldapAttributeGroupUniqueIdentifier: z.string().min(1),
-		ldapAttributeGroupName: z.string().min(1)
+		ldapAttributeGroupName: z.string().min(1),
+		ldapAttributeAdminGroup: z.string().min(1)
 	});
 
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
@@ -85,7 +87,7 @@
 		.catch(axiosErrorToast);
 
 		ldapSyncing = false;
-		
+
 	}
 
 </script>
@@ -146,6 +148,12 @@
 			label="Group Name Attribute"
 			placeholder="cn"
 			bind:input={$inputs.ldapAttributeGroupName}
+		/>
+		<FormInput
+			label="Admin Group Name"
+			description="Members of this group will have Admin Privileges in Pocket ID"
+			placeholder="_admin_group_name"
+			bind:input={$inputs.ldapAttributeAdminGroup}
 		/>
 	</div>
 

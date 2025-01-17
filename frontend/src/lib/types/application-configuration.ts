@@ -30,6 +30,7 @@ export type AllAppConfig = AppConfig & {
 	ldapAttributeUserLastName: string;
 	ldapAttributeGroupUniqueIdentifier: string;
 	ldapAttributeGroupName: string;
+	ldapAttributeAdminGroup: string;
 };
 
 export type AppConfigRawResponse = {

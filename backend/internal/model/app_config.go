@@ -42,4 +42,5 @@ type AppConfig struct {
 	LdapAttributeUserLastName          AppConfigVariable
 	LdapAttributeGroupUniqueIdentifier AppConfigVariable
 	LdapAttributeGroupName             AppConfigVariable
+	LdapAttributeAdminGroup            AppConfigVariable
 }
