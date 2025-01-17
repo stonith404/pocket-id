@@ -96,6 +96,7 @@
 						><LucidePencil class="mr-2 h-4 w-4" /> Edit</DropdownMenu.Item
 					>
 					<DropdownMenu.Item
+					    disabled: {item.ldapId ? true : false}
 						class="text-red-500 focus:!text-red-700"
 						onclick={() => deleteUser(item)}
 						><LucideTrash class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
