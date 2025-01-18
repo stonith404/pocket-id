@@ -15,8 +15,8 @@ import (
 
 func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, rateLimitMiddleware *middleware.RateLimitMiddleware, userService *service.UserService, appConfigService *service.AppConfigService) {
 	uc := UserController{
-		UserService:      userService,
-		AppConfigService: appConfigService,
+		userService:      userService,
+		appConfigService: appConfigService,
 	}
 
 	group.GET("/users", jwtAuthMiddleware.Add(true), uc.listUsersHandler)
@@ -33,8 +33,8 @@ func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 }
 
 type UserController struct {
-	UserService      *service.UserService
-	AppConfigService *service.AppConfigService
+	userService      *service.UserService
+	appConfigService *service.AppConfigService
 }
 
 func (uc *UserController) listUsersHandler(c *gin.Context) {
@@ -45,7 +45,7 @@ func (uc *UserController) listUsersHandler(c *gin.Context) {
 		return
 	}
 
-	users, pagination, err := uc.UserService.ListUsers(searchTerm, sortedPaginationRequest)
+	users, pagination, err := uc.userService.ListUsers(searchTerm, sortedPaginationRequest)
 	if err != nil {
 		c.Error(err)
 		return
@@ -64,7 +64,7 @@ func (uc *UserController) listUsersHandler(c *gin.Context) {
 }
 
 func (uc *UserController) getUserHandler(c *gin.Context) {
-	user, err := uc.UserService.GetUser(c.Param("id"))
+	user, err := uc.userService.GetUser(c.Param("id"))
 	if err != nil {
 		c.Error(err)
 		return
@@ -80,7 +80,7 @@ func (uc *UserController) getUserHandler(c *gin.Context) {
 }
 
 func (uc *UserController) getCurrentUserHandler(c *gin.Context) {
-	user, err := uc.UserService.GetUser(c.GetString("userID"))
+	user, err := uc.userService.GetUser(c.GetString("userID"))
 	if err != nil {
 		c.Error(err)
 		return
@@ -96,7 +96,7 @@ func (uc *UserController) getCurrentUserHandler(c *gin.Context) {
 }
 
 func (uc *UserController) deleteUserHandler(c *gin.Context) {
-	if err := uc.UserService.DeleteUser(c.Param("id")); err != nil {
+	if err := uc.userService.DeleteUser(c.Param("id")); err != nil {
 		c.Error(err)
 		return
 	}
@@ -111,7 +111,7 @@ func (uc *UserController) createUserHandler(c *gin.Context) {
 		return
 	}
 
-	user, err := uc.UserService.CreateUser(input)
+	user, err := uc.userService.CreateUser(input)
 	if err != nil {
 		c.Error(err)
 		return
@@ -131,7 +131,7 @@ func (uc *UserController) updateUserHandler(c *gin.Context) {
 }
 
 func (uc *UserController) updateCurrentUserHandler(c *gin.Context) {
-	if uc.AppConfigService.DbConfig.AllowOwnAccountEdit.Value != "true" {
+	if uc.appConfigService.DbConfig.AllowOwnAccountEdit.Value != "true" {
 		c.Error(&common.AccountEditNotAllowedError{})
 		return
 	}
@@ -145,7 +145,7 @@ func (uc *UserController) createOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	token, err := uc.UserService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt, c.ClientIP(), c.Request.UserAgent())
+	token, err := uc.userService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt, c.ClientIP(), c.Request.UserAgent())
 	if err != nil {
 		c.Error(err)
 		return
@@ -155,7 +155,7 @@ func (uc *UserController) createOneTimeAccessTokenHandler(c *gin.Context) {
 }
 
 func (uc *UserController) exchangeOneTimeAccessTokenHandler(c *gin.Context) {
-	user, token, err := uc.UserService.ExchangeOneTimeAccessToken(c.Param("token"))
+	user, token, err := uc.userService.ExchangeOneTimeAccessToken(c.Param("token"))
 	if err != nil {
 		c.Error(err)
 		return
@@ -167,12 +167,12 @@ func (uc *UserController) exchangeOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", false, true)
+	utils.AddAccessTokenCookie(c, uc.appConfigService.DbConfig.SessionDuration.Value, token)
 	c.JSON(http.StatusOK, userDto)
 }
 
 func (uc *UserController) getSetupAccessTokenHandler(c *gin.Context) {
-	user, token, err := uc.UserService.SetupInitialAdmin()
+	user, token, err := uc.userService.SetupInitialAdmin()
 	if err != nil {
 		c.Error(err)
 		return
@@ -184,7 +184,7 @@ func (uc *UserController) getSetupAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", false, true)
+	utils.AddAccessTokenCookie(c, uc.appConfigService.DbConfig.SessionDuration.Value, token)
 	c.JSON(http.StatusOK, userDto)
 }
 
@@ -202,7 +202,7 @@ func (uc *UserController) updateUser(c *gin.Context, updateOwnUser bool) {
 		userID = c.Param("id")
 	}
 
-	user, err := uc.UserService.UpdateUser(userID, input, updateOwnUser, false)
+	user, err := uc.userService.UpdateUser(userID, input, updateOwnUser, false)
 	if err != nil {
 		c.Error(err)
 		return
