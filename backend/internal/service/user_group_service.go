@@ -51,6 +51,10 @@ func (s *UserGroupService) Delete(id string) error {
 		return err
 	}
 
+	if group.LdapID != nil {
+		return &common.LdapUserGroupUpdateError{}
+	}
+
 	return s.db.Delete(&group).Error
 }
 
@@ -77,7 +81,7 @@ func (s *UserGroupService) Update(id string, input dto.UserGroupCreateDto, allow
 	}
 
 	if group.LdapID != nil && !allowLdapUpdate {
-		return model.UserGroup{}, &common.LdapUserUpdateError{}
+		return model.UserGroup{}, &common.LdapUserGroupUpdateError{}
 	}
 
 	group.Name = input.Name

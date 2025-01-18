@@ -169,3 +169,10 @@ func (e *LdapUserUpdateError) Error() string {
 	return "LDAP users can't be updated"
 }
 func (e *LdapUserUpdateError) HttpStatusCode() int { return http.StatusForbidden }
+
+type LdapUserGroupUpdateError struct{}
+
+func (e *LdapUserGroupUpdateError) Error() string {
+	return "LDAP user groups can't be updated"
+}
+func (e *LdapUserGroupUpdateError) HttpStatusCode() int { return http.StatusForbidden }

@@ -46,6 +46,10 @@ func (s *UserService) DeleteUser(userID string) error {
 		return err
 	}
 
+	if user.LdapID != nil {
+		return &common.LdapUserUpdateError{}
+	}
+
 	return s.db.Delete(&user).Error
 }
 
