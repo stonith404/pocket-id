@@ -9,11 +9,11 @@ import (
 type User struct {
 	Base
 
-	Username  string
-	Email     string
-	FirstName string
-	LastName  string
-	IsAdmin   bool
+	Username  string `sortable:"true"`
+	Email     string `sortable:"true"`
+	FirstName string `sortable:"true"`
+	LastName  string `sortable:"true"`
+	IsAdmin   bool   `sortable:"true"`
 
 	CustomClaims []CustomClaim
 	UserGroups   []UserGroup `gorm:"many2many:user_groups_users;"`

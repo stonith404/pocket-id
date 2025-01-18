@@ -23,8 +23,8 @@ type UserGroupDtoWithUserCount struct {
 }
 
 type UserGroupCreateDto struct {
-	FriendlyName string `json:"friendlyName" binding:"required,min=3,max=30"`
-	Name         string `json:"name" binding:"required,min=3,max=30,userGroupName"`
+	FriendlyName string `json:"friendlyName" binding:"required,min=2,max=50"`
+	Name         string `json:"name" binding:"required,min=2,max=255"`
 }
 
 type UserGroupUpdateUsersDto struct {

@@ -183,7 +183,9 @@ func (acc *AppConfigController) updateImage(c *gin.Context, imageName string, ol
 }
 
 func (acc *AppConfigController) testEmailHandler(c *gin.Context) {
-	err := acc.emailService.SendTestEmail()
+	userID := c.GetString("userID")
+
+	err := acc.emailService.SendTestEmail(userID)
 	if err != nil {
 		c.Error(err)
 		return

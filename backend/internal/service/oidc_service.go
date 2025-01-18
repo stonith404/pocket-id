@@ -167,7 +167,7 @@ func (s *OidcService) GetClient(clientID string) (model.OidcClient, error) {
 	return client, nil
 }
 
-func (s *OidcService) ListClients(searchTerm string, page int, pageSize int) ([]model.OidcClient, utils.PaginationResponse, error) {
+func (s *OidcService) ListClients(searchTerm string, sortedPaginationRequest utils.SortedPaginationRequest) ([]model.OidcClient, utils.PaginationResponse, error) {
 	var clients []model.OidcClient
 
 	query := s.db.Preload("CreatedBy").Model(&model.OidcClient{})
@@ -176,7 +176,7 @@ func (s *OidcService) ListClients(searchTerm string, page int, pageSize int) ([]
 		query = query.Where("name LIKE ?", searchPattern)
 	}
 
-	pagination, err := utils.Paginate(page, pageSize, query, &clients)
+	pagination, err := utils.PaginateAndSort(sortedPaginationRequest, query, &clients)
 	if err != nil {
 		return nil, utils.PaginationResponse{}, err
 	}

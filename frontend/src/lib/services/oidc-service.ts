@@ -1,9 +1,16 @@
 import type { AuthorizeResponse, OidcClient, OidcClientCreate } from '$lib/types/oidc.type';
-import type { Paginated, PaginationRequest } from '$lib/types/pagination.type';
+import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 import APIService from './api-service';
 
 class OidcService extends APIService {
-	async authorize(clientId: string, scope: string, callbackURL: string, nonce?: string, codeChallenge?: string, codeChallengeMethod?: string) {
+	async authorize(
+		clientId: string,
+		scope: string,
+		callbackURL: string,
+		nonce?: string,
+		codeChallenge?: string,
+		codeChallengeMethod?: string
+	) {
 		const res = await this.api.post('/oidc/authorize', {
 			scope,
 			nonce,
@@ -16,7 +23,14 @@ class OidcService extends APIService {
 		return res.data as AuthorizeResponse;
 	}
 
-	async authorizeNewClient(clientId: string, scope: string, callbackURL: string, nonce?: string, codeChallenge?: string, codeChallengeMethod?: string) {
+	async authorizeNewClient(
+		clientId: string,
+		scope: string,
+		callbackURL: string,
+		nonce?: string,
+		codeChallenge?: string,
+		codeChallengeMethod?: string
+	) {
 		const res = await this.api.post('/oidc/authorize/new-client', {
 			scope,
 			nonce,
@@ -29,12 +43,9 @@ class OidcService extends APIService {
 		return res.data as AuthorizeResponse;
 	}
 
-	async listClients(search?: string, pagination?: PaginationRequest) {
+	async listClients(options?: SearchPaginationSortRequest) {
 		const res = await this.api.get('/oidc/clients', {
-			params: {
-				search,
-				...pagination
-			}
+			params: options
 		});
 		return res.data as Paginated<OidcClient>;
 	}

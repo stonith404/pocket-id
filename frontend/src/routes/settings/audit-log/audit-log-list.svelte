@@ -11,13 +11,6 @@
 
 	const auditLogService = new AuditLogService();
 
-	async function fetchItems(search: string, page: number, limit: number) {
-		return await auditLogService.list({
-			page,
-			limit
-		});
-	}
-
 	function toFriendlyEventString(event: string) {
 		const words = event.split('_');
 		const capitalizedWords = words.map((word) => {
@@ -29,8 +22,16 @@
 
 <AdvancedTable
 	items={auditLogs}
-	{fetchItems}
-	columns={['Time', 'Event', 'Approximate Location', 'IP Address', 'Device', 'Client']}
+	onRefresh={async (options) => (auditLogs = await auditLogService.list(options))}
+	defaultSort={{ column: 'createdAt', direction: 'desc' }}
+	columns={[
+		{ label: 'Time', sortColumn: 'createdAt' },
+		{ label: 'Event', sortColumn: 'event' },
+		{ label: 'Approximate Location', sortColumn: 'city' },
+		{ label: 'IP Address', sortColumn: 'ipAddress' },
+		{ label: 'Device', sortColumn: 'device' },
+		{ label: 'Client' }
+	]}
 	withoutSearch
 >
 	{#snippet rows({ item })}

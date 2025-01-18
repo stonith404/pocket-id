@@ -22,12 +22,11 @@
 	};
 
 	const formSchema = z.object({
-		friendlyName: z.string().min(2).max(30),
+		friendlyName: z.string().min(2).max(50),
 		name: z
 			.string()
 			.min(2)
-			.max(30)
-			.regex(/^[a-z0-9_]+$/, 'Name can only contain lowercase letters, numbers, and underscores')
+			.max(255)
 	});
 	type FormSchema = typeof formSchema;
 

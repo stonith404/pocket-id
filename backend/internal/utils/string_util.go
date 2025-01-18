@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"net/url"
+	"unicode"
 )
 
 // GenerateRandomAlphanumericString generates a random alphanumeric string of the given length
@@ -40,4 +41,24 @@ func GetHostnameFromURL(rawURL string) string {
 // StringPointer creates a string pointer from a string value
 func StringPointer(s string) *string {
 	return &s
+}
+
+func CapitalizeFirstLetter(s string) string {
+	if s == "" {
+		return s
+	}
+	runes := []rune(s)
+	runes[0] = unicode.ToUpper(runes[0])
+	return string(runes)
+}
+
+func CamelCaseToSnakeCase(s string) string {
+	var result []rune
+	for i, r := range s {
+		if unicode.IsUpper(r) && i > 0 {
+			result = append(result, '_')
+		}
+		result = append(result, unicode.ToLower(r))
+	}
+	return string(result)
 }

@@ -44,9 +44,9 @@ func NewEmailService(appConfigService *AppConfigService, db *gorm.DB) (*EmailSer
 	}, nil
 }
 
-func (srv *EmailService) SendTestEmail() error {
+func (srv *EmailService) SendTestEmail(recipientUserId string) error {
 	var user model.User
-	if err := srv.db.First(&user).Error; err != nil {
+	if err := srv.db.First(&user, "id = ?", recipientUserId).Error; err != nil {
 		return err
 	}
 
