@@ -26,5 +26,6 @@ type OneTimeAccessTokenCreateDto struct {
 }
 
 type OneTimeAccessEmailDto struct {
-	Email string `json:"email" binding:"required,email"`
+	Email        string `json:"email" binding:"required,email"`
+	RedirectPath string `json:"redirectPath"`
 }

@@ -158,7 +158,7 @@ func (uc *UserController) requestOneTimeAccessEmailHandler(c *gin.Context) {
 		return
 	}
 
-	err := uc.UserService.RequestOneTimeAccessEmail(input.Email)
+	err := uc.UserService.RequestOneTimeAccessEmail(input.Email, input.RedirectPath)
 	if err != nil {
 		c.Error(err)
 		return

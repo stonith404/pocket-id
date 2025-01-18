@@ -11,6 +11,8 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	"gorm.io/gorm"
 	"log"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -93,7 +95,7 @@ func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, u
 	return user, nil
 }
 
-func (s *UserService) RequestOneTimeAccessEmail(emailAddress string) error {
+func (s *UserService) RequestOneTimeAccessEmail(emailAddress, redirectPath string) error {
 	var user model.User
 	if err := s.db.Where("email = ?", emailAddress).First(&user).Error; err != nil {
 		// Do not return error if user not found to prevent email enumeration
@@ -108,7 +110,14 @@ func (s *UserService) RequestOneTimeAccessEmail(emailAddress string) error {
 	if err != nil {
 		return err
 	}
+
 	link := fmt.Sprintf("%s/login/%s", common.EnvConfig.AppURL, oneTimeAccessToken)
+
+	// Add redirect path to the link
+	if strings.HasPrefix(redirectPath, "/") {
+		encodedRedirectPath := url.QueryEscape(redirectPath)
+		link = fmt.Sprintf("%s?redirect=%s", link, encodedRedirectPath)
+	}
 
 	go func() {
 		err := SendEmail(s.emailService, email.Address{

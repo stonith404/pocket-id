@@ -5,6 +5,7 @@
 	import { Button } from './ui/button';
 	import * as Card from './ui/card';
 	import WebAuthnUnsupported from './web-authn-unsupported.svelte';
+	import { page } from '$app/stores';
 
 	let {
 		children,
@@ -27,8 +28,8 @@
 				</div>
 				{#if showEmailOneTimeAccessButton}
 					<div class="mb-4 flex justify-center">
-						<Button href="/login/email" variant="link" class="text-muted-foreground text-xs">
-							You don't have access to your passkey?
+						<Button href="/login/email?redirect={encodeURIComponent($page.url.pathname + $page.url.search)}" variant="link" class="text-muted-foreground text-xs">
+							Don't have access to your passkey?
 						</Button>
 					</div>
 				{/if}
@@ -56,8 +57,8 @@
 				{@render children()}
 				{#if showEmailOneTimeAccessButton}
 					<div class="mt-5">
-						<Button href="/login/email" variant="link" class="text-muted-foreground text-xs">
-							You don't have access to your passkey?
+						<Button href="/login/email?redirect={encodeURIComponent($page.url.pathname + $page.url.search)}" variant="link" class="text-muted-foreground text-xs">
+							Don't have access to your passkey?
 						</Button>
 					</div>
 				{/if}
