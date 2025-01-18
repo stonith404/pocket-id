@@ -44,6 +44,10 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: "doc",
+          id: "examples/caddy",
+        },
+        {
+          type: "doc",
           id: "examples/oauth2-proxy",
         },
         {
