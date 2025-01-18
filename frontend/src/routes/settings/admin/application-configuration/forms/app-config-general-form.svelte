@@ -22,7 +22,6 @@
 		sessionDuration: appConfig.sessionDuration,
 		emailsVerified: appConfig.emailsVerified,
 		allowOwnAccountEdit: appConfig.allowOwnAccountEdit,
-		emailOneTimeAccessEnabled: appConfig.emailOneTimeAccessEnabled
 	};
 
 	const formSchema = z.object({
@@ -30,7 +29,6 @@
 		sessionDuration: z.number().min(1).max(43200),
 		emailsVerified: z.boolean(),
 		allowOwnAccountEdit: z.boolean(),
-		emailOneTimeAccessEnabled: z.boolean()
 	});
 
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
@@ -63,14 +61,7 @@
 			label="Emails Verified"
 			description="Whether the user's email should be marked as verified for the OIDC clients."
 			bind:checked={$inputs.emailsVerified.value}
-		/>
-		<CheckboxWithLabel
-			id="email-one-time-access"
-			label="Email One Time Access"
-			description="Enables sign in with an email as an alternative. This reduces the security significantly as anyone with access to the user's email can gain entry."
-			disabled={!appConfig.emailEnabled}
-			bind:checked={$inputs.emailOneTimeAccessEnabled.value}
-		/>
+		/>		
 	</div>
 	<div class="mt-5 flex justify-end">
 		<Button {isLoading} type="submit">Save</Button>

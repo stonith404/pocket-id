@@ -7,7 +7,6 @@ export type AppConfig = {
 export type AllAppConfig = AppConfig & {
 	sessionDuration: number;
 	emailsVerified: boolean;
-	emailEnabled: boolean;
 	smtpHost: string;
 	smtpPort: number;
 	smtpFrom: string;
@@ -15,6 +14,7 @@ export type AllAppConfig = AppConfig & {
 	smtpPassword: string;
 	smtpTls: boolean;
 	smtpSkipCertVerify: boolean;
+	emailLoginNotificationEnabled: boolean;
 };
 
 export type AppConfigRawResponse = {

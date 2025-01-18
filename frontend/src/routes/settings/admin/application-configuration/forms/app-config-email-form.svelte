@@ -19,17 +19,17 @@
 	const appConfigService = new AppConfigService();
 
 	let isSendingTestEmail = $state(false);
-	let emailEnabled = $state(appConfig.emailEnabled);
 
 	const updatedAppConfig = {
-		emailEnabled: appConfig.emailEnabled,
 		smtpHost: appConfig.smtpHost,
 		smtpPort: appConfig.smtpPort,
 		smtpUser: appConfig.smtpUser,
 		smtpPassword: appConfig.smtpPassword,
 		smtpFrom: appConfig.smtpFrom,
 		smtpTls: appConfig.smtpTls,
-		smtpSkipCertVerify: appConfig.smtpSkipCertVerify
+		smtpSkipCertVerify: appConfig.smtpSkipCertVerify,
+		emailOneTimeAccessEnabled: appConfig.emailOneTimeAccessEnabled,
+		emailLoginNotificationEnabled: appConfig.emailLoginNotificationEnabled
 	};
 
 	const formSchema = z.object({
@@ -39,7 +39,9 @@
 		smtpPassword: z.string(),
 		smtpFrom: z.string().email(),
 		smtpTls: z.boolean(),
-		smtpSkipCertVerify: z.boolean()
+		smtpSkipCertVerify: z.boolean(),
+		emailOneTimeAccessEnabled: z.boolean(),
+		emailLoginNotificationEnabled: z.boolean()
 	});
 
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
@@ -47,24 +49,9 @@
 	async function onSubmit() {
 		const data = form.validate();
 		if (!data) return false;
-		await callback({
-			...data,
-			emailEnabled: true
-		});
+		await callback(data);
 		toast.success('Email configuration updated successfully');
 		return true;
-	}
-
-	async function onDisable() {
-		emailEnabled = false;
-		await callback({ emailEnabled });
-		toast.success('Email disabled successfully');
-	}
-
-	async function onEnable() {
-		if (await onSubmit()) {
-			emailEnabled = true;
-		}
 	}
 
 	async function onTestEmail() {
@@ -80,7 +67,8 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="mt-5 grid grid-cols-1 items-start gap-5 md:grid-cols-2">
+	<h4 class="text-lg font-semibold">SMTP Configuration</h4>
+	<div class="mt-4 grid grid-cols-1 items-start gap-5 md:grid-cols-2">
 		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
 		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
 		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
@@ -99,15 +87,24 @@
 			bind:checked={$inputs.smtpSkipCertVerify.value}
 		/>
 	</div>
+	<h4 class="mt-10 text-lg font-semibold">Enabled Emails</h4>
+	<CheckboxWithLabel
+		id="email-login-notification"
+		label="Email Login Notification"
+		description="Send an email to the user when they log in from a new device."
+		bind:checked={$inputs.emailLoginNotificationEnabled.value}
+	/>
+	<CheckboxWithLabel
+		id="email-one-time-access"
+		label="Email One Time Access"
+		description="Enables sign in with an email as an alternative. This reduces the security significantly as anyone with access to the user's email can gain entry."
+		bind:checked={$inputs.emailOneTimeAccessEnabled.value}
+	/>
+
 	<div class="mt-8 flex flex-wrap justify-end gap-3">
-		{#if emailEnabled}
-			<Button variant="secondary" onclick={onDisable}>Disable</Button>
-			<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
-				>Send Test Email</Button
-			>
-			<Button type="submit">Save</Button>
-		{:else}
-			<Button onclick={onEnable}>Enable</Button>
-		{/if}
+		<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
+			>Send Test Email</Button
+		>
+		<Button type="submit">Save</Button>
 	</div>
 </form>

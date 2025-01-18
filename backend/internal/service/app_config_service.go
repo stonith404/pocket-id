@@ -52,12 +52,6 @@ var defaultDbConfig = model.AppConfig{
 		IsPublic:     true,
 		DefaultValue: "true",
 	},
-	EmailOneTimeAccessEnabled: model.AppConfigVariable{
-		Key:          "emailOneTimeAccessEnabled",
-		Type:         "bool",
-		IsPublic:     true,
-		DefaultValue: "false",
-	},
 	BackgroundImageType: model.AppConfigVariable{
 		Key:          "backgroundImageType",
 		Type:         "string",
@@ -75,11 +69,6 @@ var defaultDbConfig = model.AppConfig{
 		Type:         "string",
 		IsInternal:   true,
 		DefaultValue: "svg",
-	},
-	EmailEnabled: model.AppConfigVariable{
-		Key:          "emailEnabled",
-		Type:         "bool",
-		DefaultValue: "false",
 	},
 	SmtpHost: model.AppConfigVariable{
 		Key:  "smtpHost",
@@ -109,6 +98,17 @@ var defaultDbConfig = model.AppConfig{
 	SmtpSkipCertVerify: model.AppConfigVariable{
 		Key:          "smtpSkipCertVerify",
 		Type:         "bool",
+		DefaultValue: "false",
+	},
+	EmailLoginNotificationEnabled: model.AppConfigVariable{
+		Key:          "emailLoginNotificationEnabled",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
+	EmailOneTimeAccessEnabled: model.AppConfigVariable{
+		Key:          "emailOneTimeAccessEnabled",
+		Type:         "bool",
+		IsPublic:     true,
 		DefaultValue: "false",
 	},
 }
