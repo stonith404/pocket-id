@@ -29,11 +29,12 @@ test('Update email configuration', async ({ page }) => {
 	await page.getByLabel('SMTP User').fill('test@gmail.com');
 	await page.getByLabel('SMTP Password').fill('password');
 	await page.getByLabel('SMTP From').fill('test@gmail.com');
-	await page.getByRole('button', { name: 'Enable' }).click();
-	await page.getByRole('status').click();
+	await page.getByLabel('Email Login Notification').click();
+	await page.getByLabel('Email One Time Access').click();
+
+	await page.getByRole('button', { name: 'Save' }).nth(1).click();
 
 	await expect(page.getByRole('status')).toHaveText('Email configuration updated successfully');
-	await expect(page.getByRole('button', { name: 'Disable' })).toBeVisible();
 
 	await page.reload();
 
@@ -42,10 +43,8 @@ test('Update email configuration', async ({ page }) => {
 	await expect(page.getByLabel('SMTP User')).toHaveValue('test@gmail.com');
 	await expect(page.getByLabel('SMTP Password')).toHaveValue('password');
 	await expect(page.getByLabel('SMTP From')).toHaveValue('test@gmail.com');
-
-	await page.getByRole('button', { name: 'Disable' }).click();
-
-	await expect(page.getByRole('status')).toHaveText('Email disabled successfully');
+	await expect(page.getByLabel('Email Login Notification')).toBeChecked();
+	await expect(page.getByLabel('Email One Time Access')).toBeChecked();
 });
 
 test('Update application images', async ({ page }) => {
@@ -55,7 +54,7 @@ test('Update application images', async ({ page }) => {
 	await page.getByLabel('Light Mode Logo').setInputFiles('tests/assets/pingvin-share-logo.png');
 	await page.getByLabel('Dark Mode Logo').setInputFiles('tests/assets/nextcloud-logo.png');
 	await page.getByLabel('Background Image').setInputFiles('tests/assets/clouds.jpg');
-	await page.getByRole('button', { name: 'Save' }).nth(1).click();
+	await page.getByRole('button', { name: 'Save' }).nth(2).click();
 
 	await expect(page.getByRole('status')).toHaveText('Images updated successfully');
 
