@@ -63,8 +63,13 @@ func Paginate(page int, pageSize int, query *gorm.DB, result interface{}) (Pagin
 		return PaginationResponse{}, err
 	}
 
+	totalPages := (totalItems + int64(pageSize) - 1) / int64(pageSize)
+	if totalItems == 0 {
+		totalPages = 1
+	}
+
 	return PaginationResponse{
-		TotalPages:   (totalItems + int64(pageSize) - 1) / int64(pageSize),
+		TotalPages:   totalPages,
 		TotalItems:   totalItems,
 		CurrentPage:  page,
 		ItemsPerPage: pageSize,
