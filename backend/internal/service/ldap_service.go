@@ -27,7 +27,7 @@ func (s *LdapService) createClient() (*ldap.Conn, error) {
 	if s.appConfigService.DbConfig.LdapEnabled.Value != "true" {
 		return nil, fmt.Errorf("LDAP is not enabled")
 	}
-	// Setup AD Connection
+	// Setup LDAP connection
 	ldapURL := s.appConfigService.DbConfig.LdapUrl.Value
 	skipTLSVerify := s.appConfigService.DbConfig.LdapSkipCertVerify.Value == "true"
 	client, err := ldap.DialURL(ldapURL, ldap.DialWithTLSConfig(&tls.Config{InsecureSkipVerify: skipTLSVerify}))
@@ -35,7 +35,7 @@ func (s *LdapService) createClient() (*ldap.Conn, error) {
 		return nil, fmt.Errorf("failed to connect to LDAP: %w", err)
 	}
 
-	// Bind as Service Account
+	// Bind as service account
 	bindDn := s.appConfigService.DbConfig.LdapBindDn.Value
 	bindPassword := s.appConfigService.DbConfig.LdapBindPassword.Value
 	err = client.Bind(bindDn, bindPassword)
@@ -60,7 +60,7 @@ func (s *LdapService) SyncAll() error {
 }
 
 func (s *LdapService) SyncGroups() error {
-	// Setup LDAP Connection
+	// Setup LDAP connection
 	client, err := s.createClient()
 	if err != nil {
 		return fmt.Errorf("failed to create LDAP client: %w", err)
@@ -84,16 +84,21 @@ func (s *LdapService) SyncGroups() error {
 		return fmt.Errorf("failed to query LDAP: %w", err)
 	}
 
+	// Create a mapping for groups that exist
+	ldapGroupIDs := make(map[string]bool)
+
 	for _, value := range result.Entries {
 		var usersToAddDto dto.UserGroupUpdateUsersDto
-		var userIDStrings []string
+		var membersUserId []string
+
+		ldapId := value.GetAttributeValue(uniqueIdentifierAttribute)
+		ldapGroupIDs[ldapId] = true
 
 		// Try to find the group in the database
-		ldapId := value.GetAttributeValue(uniqueIdentifierAttribute)
 		var databaseGroup model.UserGroup
 		s.db.Where("ldap_id = ?", ldapId).First(&databaseGroup)
 
-		//Get Group Members and add to the correct Group
+		// Get group members and add to the correct Group
 		groupMembers := value.GetAttributeValues("member")
 		for _, member := range groupMembers {
 			// Normal output of this would be CN=username,ou=people,dc=example,dc=com
@@ -102,7 +107,7 @@ func (s *LdapService) SyncGroups() error {
 
 			var databaseUser model.User
 			s.db.Where("username = ?", singleMember).First(&databaseUser)
-			userIDStrings = append(userIDStrings, databaseUser.ID)
+			membersUserId = append(membersUserId, databaseUser.ID)
 		}
 
 		syncGroup := dto.UserGroupCreateDto{
@@ -112,7 +117,7 @@ func (s *LdapService) SyncGroups() error {
 		}
 
 		usersToAddDto = dto.UserGroupUpdateUsersDto{
-			UserIDs: userIDStrings,
+			UserIDs: membersUserId,
 		}
 
 		if databaseGroup.ID == "" {
@@ -136,19 +141,33 @@ func (s *LdapService) SyncGroups() error {
 
 	}
 
-	return nil
+	// Get all LDAP groups from the database
+	var ldapGroupsInDb []model.UserGroup
+	if err := s.db.Find(&ldapGroupsInDb, "ldap_id IS NOT NULL").Select("ldap_id").Error; err != nil {
+		fmt.Println(fmt.Errorf("failed to fetch groups from database: %v", err))
+	}
 
+	// Delete groups that no longer exist in LDAP
+	for _, group := range ldapGroupsInDb {
+		if _, exists := ldapGroupIDs[*group.LdapID]; !exists {
+			if err := s.db.Delete(&model.UserGroup{}, "ldap_id = ?", group.LdapID).Error; err != nil {
+				log.Printf("Failed to delete group %s with: %v", group.Name, err)
+			} else {
+				log.Printf("Deleted group %s", group.Name)
+			}
+		}
+	}
+
+	return nil
 }
 
 func (s *LdapService) SyncUsers() error {
-	// Setup LDAP Connection
+	// Setup LDAP connection
 	client, err := s.createClient()
 	if err != nil {
 		return fmt.Errorf("failed to create LDAP client: %w", err)
 	}
 	defer client.Close()
-
-	var adminStatus bool
 
 	baseDN := s.appConfigService.DbConfig.LdapBase.Value
 	uniqueIdentifierAttribute := s.appConfigService.DbConfig.LdapAttributeUserUniqueIdentifier.Value
@@ -179,29 +198,22 @@ func (s *LdapService) SyncUsers() error {
 		fmt.Println(fmt.Errorf("failed to query LDAP: %w", err))
 	}
 
-	//Get all Current Database Users
-	var databaseUsers []model.User
-	if err := s.db.Find(&databaseUsers).Error; err != nil {
-		fmt.Println(fmt.Errorf("Failed to Fetch Users from Database: %v", err))
-	}
-
-	//Create Mapping for Users that exsist
-	ldapUsers := make(map[string]bool)
-	missingUsers := []model.User{}
+	// Create a mapping for users that exist
+	ldapUserIDs := make(map[string]bool)
 
 	for _, value := range result.Entries {
 		ldapId := value.GetAttributeValue(uniqueIdentifierAttribute)
-
-		//This Maps the Users to this array if they exsist
-		ldapUsers[ldapId] = true
+		ldapUserIDs[ldapId] = true
 
 		// Get the user from the database
 		var databaseUser model.User
 		s.db.Where("ldap_id = ?", ldapId).First(&databaseUser)
 
+		// Check if user is admin by checking if they are in the admin group
+		isAdmin := false
 		for _, group := range value.GetAttributeValues("memberOf") {
 			if strings.Contains(group, adminGroupAttribute) {
-				adminStatus = true
+				isAdmin = true
 			}
 		}
 
@@ -210,7 +222,7 @@ func (s *LdapService) SyncUsers() error {
 			Email:     value.GetAttributeValue(emailAttribute),
 			FirstName: value.GetAttributeValue(firstNameAttribute),
 			LastName:  value.GetAttributeValue(lastNameAttribute),
-			IsAdmin:   adminStatus,
+			IsAdmin:   isAdmin,
 			LdapID:    ldapId,
 		}
 
@@ -229,28 +241,21 @@ func (s *LdapService) SyncUsers() error {
 
 	}
 
-	dbUserCount := len(databaseUsers) - 1 //Accounting for the built in Admin User
-	//Compare Database Users with LDAP Users
-	if dbUserCount > len(ldapUsers) {
-		for _, dbUser := range databaseUsers {
-			if dbUser.LdapID == nil {
-				continue
-			}
-			if _, exists := ldapUsers[*dbUser.LdapID]; !exists {
-				fmt.Printf("Ldap id: %s, username: %s\n", *dbUser.LdapID, dbUser.Username)
-				missingUsers = append(missingUsers, dbUser)
-			}
-		}
+	// Get all LDAP users from the database
+	var ldapUsersInDb []model.User
+	if err := s.db.Find(&ldapUsersInDb, "ldap_id IS NOT NULL").Select("ldap_id").Error; err != nil {
+		fmt.Println(fmt.Errorf("failed to fetch users from database: %v", err))
+	}
 
-		//Remove Users from Database if they no longer exsist in LDAP
-		for _, missingUser := range missingUsers {
-			if err := s.db.Delete(&missingUser).Error; err != nil {
-				log.Printf("Failed to delete user %s: %v", missingUser.Username, err)
+	// Delete users that no longer exist in LDAP
+	for _, user := range ldapUsersInDb {
+		if _, exists := ldapUserIDs[*user.LdapID]; !exists {
+			if err := s.db.Delete(&model.User{}, "ldap_id = ?", user.LdapID).Error; err != nil {
+				log.Printf("Failed to delete user %s with: %v", user.Username, err)
 			} else {
-				fmt.Printf("Removed missing user: %s\n", missingUser.Username)
+				log.Printf("Deleted user %s", user.Username)
 			}
 		}
 	}
-
 	return nil
 }
