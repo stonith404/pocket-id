@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CustomClaimsInput from '$lib/components/custom-claims-input.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import CustomClaimService from '$lib/services/custom-claim-service';
@@ -11,7 +12,6 @@
 	import { toast } from 'svelte-sonner';
 	import UserGroupForm from '../user-group-form.svelte';
 	import UserSelection from '../user-selection.svelte';
-	import { Badge } from '$lib/components/ui/badge';
 
 	let { data } = $props();
 	let userGroup = $state({
@@ -64,8 +64,8 @@
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
 	{#if !!userGroup.ldapId}
-	<Badge variant="default" class="">LDAP</Badge>
-{/if}
+		<Badge variant="default" class="">LDAP</Badge>
+	{/if}
 </div>
 <Card.Root>
 	<Card.Header>
@@ -85,10 +85,17 @@
 
 	<Card.Content>
 		{#await userService.list() then users}
-			<UserSelection {users} bind:selectedUserIds={userGroup.userIds} />
+			<UserSelection
+				{users}
+				bind:selectedUserIds={userGroup.userIds}
+				selectionDisabled={!!userGroup.ldapId}
+			/>
 		{/await}
 		<div class="mt-5 flex justify-end">
-			<Button on:click={() => updateUserGroupUsers(userGroup.userIds)}>Save</Button>
+			<Button
+				disabled={!!userGroup.ldapId}
+				on:click={() => updateUserGroupUsers(userGroup.userIds)}>Save</Button
+			>
 		</div>
 	</Card.Content>
 </Card.Root>

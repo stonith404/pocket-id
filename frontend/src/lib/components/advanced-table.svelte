@@ -17,6 +17,7 @@
 		requestOptions = $bindable(),
 		selectedIds = $bindable(),
 		withoutSearch = false,
+		selectionDisabled = false,
 		defaultSort,
 		onRefresh,
 		columns,
@@ -26,6 +27,7 @@
 		requestOptions?: SearchPaginationSortRequest;
 		selectedIds?: string[];
 		withoutSearch?: boolean;
+		selectionDisabled?: boolean;
 		defaultSort?: { column: string; direction: 'asc' | 'desc' };
 		onRefresh: (requestOptions: SearchPaginationSortRequest) => Promise<Paginated<T>>;
 		columns: { label: string; hidden?: boolean; sortColumn?: string }[];
@@ -116,7 +118,7 @@
 				<Table.Row>
 					{#if selectedIds}
 						<Table.Head class="w-12">
-							<Checkbox checked={allChecked} onCheckedChange={(c) => onAllCheck(c as boolean)} />
+							<Checkbox disabled={selectionDisabled} checked={allChecked} onCheckedChange={(c) => onAllCheck(c as boolean)} />
 						</Table.Head>
 					{/if}
 					{#each columns as column}
@@ -154,6 +156,7 @@
 						{#if selectedIds}
 							<Table.Cell class="w-12">
 								<Checkbox
+									disabled={selectionDisabled}
 									checked={selectedIds.includes(item.id)}
 									onCheckedChange={(c) => onCheck(c as boolean, item.id)}
 								/>

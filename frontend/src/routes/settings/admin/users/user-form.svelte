@@ -54,29 +54,19 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<fieldset disabled={inputDisabled} title={inputDisabled ? 'LDAP users cannot be edited' : ''}>
-		<div class="flex flex-col gap-3 sm:flex-row">
-			<div class="w-full">
-				<FormInput label="First name" bind:input={$inputs.firstName} />
-			</div>
-			<div class="w-full">
-				<FormInput label="Last name" bind:input={$inputs.lastName} />
-			</div>
+	<fieldset disabled={inputDisabled}>
+		<div class="grid grid-cols-1 items-start gap-5 md:grid-cols-2">
+			<FormInput label="First name" bind:input={$inputs.firstName} />
+			<FormInput label="Last name" bind:input={$inputs.lastName} />
+			<FormInput label="Username" bind:input={$inputs.username} />
+			<FormInput label="Email" bind:input={$inputs.email} />
+			<CheckboxWithLabel
+				id="admin-privileges"
+				label="Admin Privileges"
+				description="Admins have full access to the admin panel."
+				bind:checked={$inputs.isAdmin.value}
+			/>
 		</div>
-		<div class="mt-3 flex flex-col gap-3 sm:flex-row">
-			<div class="w-full">
-				<FormInput label="Email" bind:input={$inputs.email} />
-			</div>
-			<div class="w-full">
-				<FormInput label="Username" bind:input={$inputs.username} />
-			</div>
-		</div>
-		<CheckboxWithLabel
-			id="admin-privileges"
-			label="Admin Privileges"
-			description="Admins have full access to the admin panel."
-			bind:checked={$inputs.isAdmin.value}
-		/>
 		<div class="mt-5 flex justify-end">
 			<Button {isLoading} type="submit">Save</Button>
 		</div>

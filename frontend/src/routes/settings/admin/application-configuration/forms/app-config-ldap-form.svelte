@@ -52,7 +52,7 @@
 		ldapAttributeUserLastName: z.string().min(1),
 		ldapAttributeGroupUniqueIdentifier: z.string().min(1),
 		ldapAttributeGroupName: z.string().min(1),
-		ldapAttributeAdminGroup: z.string().min(1)
+		ldapAttributeAdminGroup: z.string()
 	});
 
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
@@ -151,7 +151,7 @@
 		/>
 		<FormInput
 			label="Admin Group Name"
-			description="Members of this group will have Admin Privileges in Pocket ID"
+			description="Members of this group will have Admin Privileges in Pocket ID."
 			placeholder="_admin_group_name"
 			bind:input={$inputs.ldapAttributeAdminGroup}
 		/>
