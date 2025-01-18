@@ -40,7 +40,7 @@ func (wc *WebauthnController) beginRegistrationHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("session_id", options.SessionID, int(options.Timeout.Seconds()), "/", "", false, true)
+	c.SetCookie("session_id", options.SessionID, int(options.Timeout.Seconds()), "/", "", true, true)
 	c.JSON(http.StatusOK, options.Response)
 }
 
@@ -74,7 +74,7 @@ func (wc *WebauthnController) beginLoginHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("session_id", options.SessionID, int(options.Timeout.Seconds()), "/", "", false, true)
+	c.SetCookie("session_id", options.SessionID, int(options.Timeout.Seconds()), "/", "", true, true)
 	c.JSON(http.StatusOK, options.Response)
 }
 
@@ -103,7 +103,7 @@ func (wc *WebauthnController) verifyLoginHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", false, true)
+	c.SetCookie("access_token", token, int(time.Hour.Seconds()), "/", "", true, true)
 	c.JSON(http.StatusOK, userDto)
 }
 
@@ -163,6 +163,6 @@ func (wc *WebauthnController) updateCredentialHandler(c *gin.Context) {
 }
 
 func (wc *WebauthnController) logoutHandler(c *gin.Context) {
-	c.SetCookie("access_token", "", 0, "/", "", false, true)
+	c.SetCookie("access_token", "", 0, "/", "", true, true)
 	c.Status(http.StatusNoContent)
 }
