@@ -10,6 +10,7 @@
 	import { startAuthentication } from '@simplewebauthn/browser';
 	import { AxiosError } from 'axios';
 	import { LucideMail, LucideUser, LucideUsers } from 'lucide-svelte';
+	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import type { PageData } from './$types';
 	import ClientProviderImages from './components/client-provider-images.svelte';
@@ -25,6 +26,12 @@
 
 	export let data: PageData;
 	let { scope, nonce, client, state, callbackURL, codeChallenge, codeChallengeMethod } = data;
+
+	onMount(() => {
+		if ($userStore) {
+			authorize();
+		}
+	});
 
 	async function authorize() {
 		isLoading = true;
