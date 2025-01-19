@@ -25,7 +25,7 @@ func RegisterLdapJobs(ldapService *service.LdapService, appConfigService *servic
 
 	// Run the job immediately on startup
 	if err := jobs.syncLdap(); err != nil {
-		log.Fatalf("Failed to sync LDAP: %s", err)
+		log.Printf("Failed to sync LDAP: %s", err)
 	}
 
 	scheduler.Start()
