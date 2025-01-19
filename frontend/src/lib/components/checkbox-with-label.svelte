@@ -31,7 +31,7 @@
 			{label}
 		</Label>
 		{#if description}
-			<p class="text-muted-foreground text-[0.8rem]">
+			<p class="text-[0.8rem] text-muted-foreground">
 				{description}
 			</p>
 		{/if}

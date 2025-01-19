@@ -45,15 +45,15 @@
 	<div class="flex justify-center">
 		<LoginLogoErrorSuccessIndicator error={!!error} />
 	</div>
-	<h1 class="font-playfair mt-5 text-4xl font-bold">
+	<h1 class="mt-5 font-playfair text-4xl font-bold">
 		{data.token === 'setup' ? `${$appConfigStore.appName} Setup` : 'One Time Access'}
 	</h1>
 	{#if error}
-		<p class="text-muted-foreground mt-2">
+		<p class="mt-2 text-muted-foreground">
 			{error}. Please try again.
 		</p>
 	{:else if !skipPage}
-		<p class="text-muted-foreground mt-2">
+		<p class="mt-2 text-muted-foreground">
 			{#if data.token === 'setup'}
 				You're about to sign in to the initial admin account. Anyone with this link can access the
 				account until a passkey is added. Please set up a passkey as soon as possible to prevent

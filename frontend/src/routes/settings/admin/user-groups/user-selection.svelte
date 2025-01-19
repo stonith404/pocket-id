@@ -9,9 +9,7 @@
 		users: initialUsers,
 		selectionDisabled = false,
 		selectedUserIds = $bindable()
-	}: { users: Paginated<User>; 
-		selectionDisabled?: boolean;
-		selectedUserIds: string[] } = $props();
+	}: { users: Paginated<User>; selectionDisabled?: boolean; selectedUserIds: string[] } = $props();
 
 	const userService = new UserService();
 

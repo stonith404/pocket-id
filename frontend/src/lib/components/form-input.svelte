@@ -34,13 +34,20 @@
 		<Label class="mb-0" for={id}>{label}</Label>
 	{/if}
 	{#if description}
-		<p class="text-muted-foreground mt-1 text-xs">{description}</p>
+		<p class="mt-1 text-xs text-muted-foreground">{description}</p>
 	{/if}
 	<div class={label || description ? 'mt-2' : ''}>
 		{#if children}
 			{@render children()}
 		{:else if input}
-			<Input {id} {placeholder} {type} bind:value={input.value} {disabled} on:input={(e) => onInput?.(e)} />
+			<Input
+				{id}
+				{placeholder}
+				{type}
+				bind:value={input.value}
+				{disabled}
+				on:input={(e) => onInput?.(e)}
+			/>
 		{/if}
 		{#if input?.error}
 			<p class="mt-1 text-sm text-red-500">{input.error}</p>

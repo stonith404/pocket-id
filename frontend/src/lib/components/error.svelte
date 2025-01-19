@@ -6,7 +6,7 @@
 </script>
 
 <div class="mt-[20%] flex flex-col items-center">
-	<LucideXCircle class="text-muted-foreground h-12 w-12" />
+	<LucideXCircle class="h-12 w-12 text-muted-foreground" />
 	<h1 class="mt-3 text-2xl font-semibold">Something went wrong</h1>
 	<p class="text-muted-foreground">{message}</p>
 	{#if showButton}

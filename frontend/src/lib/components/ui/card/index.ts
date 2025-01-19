@@ -1,9 +1,9 @@
-import Root from "./card.svelte";
-import Content from "./card-content.svelte";
-import Description from "./card-description.svelte";
-import Footer from "./card-footer.svelte";
-import Header from "./card-header.svelte";
-import Title from "./card-title.svelte";
+import Root from './card.svelte';
+import Content from './card-content.svelte';
+import Description from './card-description.svelte';
+import Footer from './card-footer.svelte';
+import Header from './card-header.svelte';
+import Title from './card-title.svelte';
 
 export {
 	Root,
@@ -18,7 +18,7 @@ export {
 	Description as CardDescription,
 	Footer as CardFooter,
 	Header as CardHeader,
-	Title as CardTitle,
+	Title as CardTitle
 };
 
-export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';

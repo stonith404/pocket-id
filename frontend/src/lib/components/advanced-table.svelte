@@ -115,8 +115,8 @@
 
 {#if items.data.length === 0 && searchValue === ''}
 	<div class="my-5 flex flex-col items-center">
-		<Empty class="text-muted-foreground h-20" />
-		<p class="text-muted-foreground mt-3 text-sm">No items found</p>
+		<Empty class="h-20 text-muted-foreground" />
+		<p class="mt-3 text-sm text-muted-foreground">No items found</p>
 	</div>
 {:else}
 	<Table.Root class="min-w-full table-auto overflow-x-auto">

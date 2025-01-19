@@ -100,14 +100,14 @@
 {:else}
 	<SignInWrapper showEmailOneTimeAccessButton={$appConfigStore.emailOneTimeAccessEnabled}>
 		<ClientProviderImages {client} {success} error={!!errorMessage} />
-		<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">Sign in to {client.name}</h1>
+		<h1 class="mt-5 font-playfair text-3xl font-bold sm:text-4xl">Sign in to {client.name}</h1>
 		{#if errorMessage}
-			<p class="text-muted-foreground mb-10 mt-2">
+			<p class="mb-10 mt-2 text-muted-foreground">
 				{errorMessage}. Please try again.
 			</p>
 		{/if}
 		{#if !authorizationRequired && !errorMessage}
-			<p class="text-muted-foreground mb-10 mt-2">
+			<p class="mb-10 mt-2 text-muted-foreground">
 				Do you want to sign in to <b>{client.name}</b> with your
 				<b>{$appConfigStore.appName}</b> account?
 			</p>
@@ -115,7 +115,7 @@
 			<div transition:slide={{ duration: 300 }}>
 				<Card.Root class="mb-10 mt-6">
 					<Card.Header class="pb-5">
-						<p class="text-muted-foreground text-start">
+						<p class="text-start text-muted-foreground">
 							<b>{client.name}</b> wants to access the following information:
 						</p>
 					</Card.Header>

@@ -82,14 +82,13 @@
 
 	async function syncLdap() {
 		ldapSyncing = true;
-		await appConfigService.syncLdap()
-		.then(()=>		toast.success('LDAP sync finished'))
-		.catch(axiosErrorToast);
+		await appConfigService
+			.syncLdap()
+			.then(() => toast.success('LDAP sync finished'))
+			.catch(axiosErrorToast);
 
 		ldapSyncing = false;
-
 	}
-
 </script>
 
 <form onsubmit={onSubmit}>

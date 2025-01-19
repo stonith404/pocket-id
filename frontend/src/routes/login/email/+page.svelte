@@ -34,9 +34,9 @@
 	<div class="flex justify-center">
 		<LoginLogoErrorSuccessIndicator {success} error={!!error} />
 	</div>
-	<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">Email One Time Access</h1>
+	<h1 class="mt-5 font-playfair text-3xl font-bold sm:text-4xl">Email One Time Access</h1>
 	{#if error}
-		<p class="text-muted-foreground mt-2" in:fade>
+		<p class="mt-2 text-muted-foreground" in:fade>
 			{error}. Please try again.
 		</p>
 		<div class="mt-10 flex w-full justify-stretch gap-2">
@@ -44,12 +44,12 @@
 			<Button class="w-full" onclick={() => (error = undefined)}>Try again</Button>
 		</div>
 	{:else if success}
-		<p class="text-muted-foreground mt-2" in:fade>
+		<p class="mt-2 text-muted-foreground" in:fade>
 			An email has been sent to the provided email, if it exists in the system.
 		</p>
 	{:else}
 		<form onsubmit={requestEmail}>
-			<p class="text-muted-foreground mt-2" in:fade>
+			<p class="mt-2 text-muted-foreground" in:fade>
 				Enter your email to receive an email with a one time access link.
 			</p>
 			<Input id="Email" class="mt-7" placeholder="Your email" bind:value={email} />

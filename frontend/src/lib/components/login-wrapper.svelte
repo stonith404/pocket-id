@@ -28,7 +28,13 @@
 				</div>
 				{#if showEmailOneTimeAccessButton}
 					<div class="mb-4 flex justify-center">
-						<Button href="/login/email?redirect={encodeURIComponent($page.url.pathname + $page.url.search)}" variant="link" class="text-muted-foreground text-xs">
+						<Button
+							href="/login/email?redirect={encodeURIComponent(
+								$page.url.pathname + $page.url.search
+							)}"
+							variant="link"
+							class="text-xs text-muted-foreground"
+						>
 							Don't have access to your passkey?
 						</Button>
 					</div>
@@ -57,7 +63,13 @@
 				{@render children()}
 				{#if showEmailOneTimeAccessButton}
 					<div class="mt-5">
-						<Button href="/login/email?redirect={encodeURIComponent($page.url.pathname + $page.url.search)}" variant="link" class="text-muted-foreground text-xs">
+						<Button
+							href="/login/email?redirect={encodeURIComponent(
+								$page.url.pathname + $page.url.search
+							)}"
+							variant="link"
+							class="text-xs text-muted-foreground"
+						>
 							Don't have access to your passkey?
 						</Button>
 					</div>

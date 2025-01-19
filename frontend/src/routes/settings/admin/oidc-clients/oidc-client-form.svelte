@@ -96,7 +96,7 @@
 			id="pkce"
 			label="PKCE"
 			description="Public Key Code Exchange is a security feature to prevent CSRF and authorization code interception attacks."
-			disabled={$inputs.isPublic.value}		
+			disabled={$inputs.isPublic.value}
 			bind:checked={$inputs.pkceEnabled.value}
 		/>
 	</div>
@@ -104,7 +104,7 @@
 		<Label for="logo">Logo</Label>
 		<div class="mt-2 flex items-end gap-3">
 			{#if logoDataURL}
-				<div class="bg-muted h-32 w-32 rounded-2xl p-3">
+				<div class="h-32 w-32 rounded-2xl bg-muted p-3">
 					<img
 						class="m-auto max-h-full max-w-full object-contain"
 						src={logoDataURL}

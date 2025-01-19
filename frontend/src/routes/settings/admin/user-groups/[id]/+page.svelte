@@ -60,7 +60,7 @@
 </svelte:head>
 
 <div class="flex items-center justify-between">
-	<a class="text-muted-foreground flex text-sm" href="/settings/admin/user-groups"
+	<a class="flex text-sm text-muted-foreground" href="/settings/admin/user-groups"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
 	{#if !!userGroup.ldapId}
@@ -92,9 +92,8 @@
 			/>
 		{/await}
 		<div class="mt-5 flex justify-end">
-			<Button
-				disabled={!!userGroup.ldapId}
-				on:click={() => updateUserGroupUsers(userGroup.userIds)}>Save</Button
+			<Button disabled={!!userGroup.ldapId} on:click={() => updateUserGroupUsers(userGroup.userIds)}
+				>Save</Button
 			>
 		</div>
 	</Card.Content>

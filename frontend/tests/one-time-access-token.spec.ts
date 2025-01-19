@@ -17,5 +17,7 @@ test('Sign in with expired one time access token fails', async ({ page }) => {
 	await page.goto(`/login/${token.token}`);
 
 	await page.getByRole('button', { name: 'Continue' }).click();
-	await expect(page.getByRole('paragraph')).toHaveText('Token is invalid or expired. Please try again.');
+	await expect(page.getByRole('paragraph')).toHaveText(
+		'Token is invalid or expired. Please try again.'
+	);
 });

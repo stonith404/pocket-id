@@ -45,7 +45,7 @@
 </svelte:head>
 
 <div class="flex items-center justify-between">
-	<a class="text-muted-foreground flex text-sm" href="/settings/admin/users"
+	<a class="flex text-sm text-muted-foreground" href="/settings/admin/users"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
 	{#if !!user.ldapId}

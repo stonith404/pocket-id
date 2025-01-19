@@ -21,14 +21,14 @@
 		appName: appConfig.appName,
 		sessionDuration: appConfig.sessionDuration,
 		emailsVerified: appConfig.emailsVerified,
-		allowOwnAccountEdit: appConfig.allowOwnAccountEdit,
+		allowOwnAccountEdit: appConfig.allowOwnAccountEdit
 	};
 
 	const formSchema = z.object({
 		appName: z.string().min(2).max(30),
 		sessionDuration: z.number().min(1).max(43200),
 		emailsVerified: z.boolean(),
-		allowOwnAccountEdit: z.boolean(),
+		allowOwnAccountEdit: z.boolean()
 	});
 
 	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
@@ -61,7 +61,7 @@
 			label="Emails Verified"
 			description="Whether the user's email should be marked as verified for the OIDC clients."
 			bind:checked={$inputs.emailsVerified.value}
-		/>		
+		/>
 	</div>
 	<div class="mt-5 flex justify-end">
 		<Button {isLoading} type="submit">Save</Button>
