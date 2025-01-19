@@ -7,6 +7,7 @@ export type UserGroup = {
 	name: string;
 	createdAt: string;
 	customClaims: CustomClaim[];
+	ldapId?: string;
 };
 
 export type UserGroupWithUsers = UserGroup & {
@@ -17,4 +18,4 @@ export type UserGroupWithUserCount = UserGroup & {
 	userCount: number;
 };
 
-export type UserGroupCreate = Pick<UserGroup, 'friendlyName' | 'name'>;
+export type UserGroupCreate = Pick<UserGroup, 'friendlyName' | 'name' | 'ldapId'>;

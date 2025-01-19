@@ -51,6 +51,10 @@ export default class AppConfigService extends APIService {
 		await this.api.post('/application-configuration/test-email');
 	}
 
+	async syncLdap() {
+		await this.api.post('/application-configuration/sync-ldap');
+	}
+
 	async getVersionInformation() {
 		const response = (
 			await axios.get('https://api.github.com/repos/stonith404/pocket-id/releases/latest')

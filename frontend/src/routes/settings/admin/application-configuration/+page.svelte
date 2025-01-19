@@ -7,6 +7,7 @@
 	import { toast } from 'svelte-sonner';
 	import AppConfigEmailForm from './forms/app-config-email-form.svelte';
 	import AppConfigGeneralForm from './forms/app-config-general-form.svelte';
+	import AppConfigLdapForm from './forms/app-config-ldap-form.svelte';
 	import UpdateApplicationImages from './update-application-images.svelte';
 
 	let { data } = $props();
@@ -73,6 +74,18 @@
 	</Card.Header>
 	<Card.Content>
 		<AppConfigEmailForm {appConfig} callback={updateAppConfig} />
+	</Card.Content>
+</Card.Root>
+
+<Card.Root>
+	<Card.Header>
+		<Card.Title>LDAP</Card.Title>
+		<Card.Description>
+			Configure LDAP settings to sync users and groups from an LDAP server.
+		</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		<AppConfigLdapForm {appConfig} callback={updateAppConfig} />
 	</Card.Content>
 </Card.Root>
 

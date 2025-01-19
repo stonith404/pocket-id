@@ -2,15 +2,16 @@ package service
 
 import (
 	"fmt"
+	"log"
+	"mime/multipart"
+	"os"
+	"reflect"
+
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
-	"log"
-	"mime/multipart"
-	"os"
-	"reflect"
 )
 
 type AppConfigService struct {
@@ -30,6 +31,7 @@ func NewAppConfigService(db *gorm.DB) *AppConfigService {
 }
 
 var defaultDbConfig = model.AppConfig{
+	// General
 	AppName: model.AppConfigVariable{
 		Key:          "appName",
 		Type:         "string",
@@ -52,6 +54,7 @@ var defaultDbConfig = model.AppConfig{
 		IsPublic:     true,
 		DefaultValue: "true",
 	},
+	// Internal
 	BackgroundImageType: model.AppConfigVariable{
 		Key:          "backgroundImageType",
 		Type:         "string",
@@ -70,6 +73,7 @@ var defaultDbConfig = model.AppConfig{
 		IsInternal:   true,
 		DefaultValue: "svg",
 	},
+    // Email
 	SmtpHost: model.AppConfigVariable{
 		Key:  "smtpHost",
 		Type: "string",
@@ -100,7 +104,7 @@ var defaultDbConfig = model.AppConfig{
 		Type:         "bool",
 		DefaultValue: "false",
 	},
-	EmailLoginNotificationEnabled: model.AppConfigVariable{
+    EmailLoginNotificationEnabled: model.AppConfigVariable{
 		Key:          "emailLoginNotificationEnabled",
 		Type:         "bool",
 		DefaultValue: "false",
@@ -110,6 +114,65 @@ var defaultDbConfig = model.AppConfig{
 		Type:         "bool",
 		IsPublic:     true,
 		DefaultValue: "false",
+	},
+	// LDAP
+	LdapEnabled: model.AppConfigVariable{
+		Key:          "ldapEnabled",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
+	LdapUrl: model.AppConfigVariable{
+		Key:  "ldapUrl",
+		Type: "string",
+	},
+	LdapBindDn: model.AppConfigVariable{
+		Key:  "ldapBindDn",
+		Type: "string",
+	},
+	LdapBindPassword: model.AppConfigVariable{
+		Key:  "ldapBindPassword",
+		Type: "string",
+	},
+	LdapBase: model.AppConfigVariable{
+		Key:  "ldapBase",
+		Type: "string",
+	},
+	LdapSkipCertVerify: model.AppConfigVariable{
+		Key:          "ldapSkipCertVerify",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
+	LdapAttributeUserUniqueIdentifier: model.AppConfigVariable{
+		Key:  "ldapAttributeUserUniqueIdentifier",
+		Type: "string",
+	},
+	LdapAttributeUserUsername: model.AppConfigVariable{
+		Key:  "ldapAttributeUserUsername",
+		Type: "string",
+	},
+	LdapAttributeUserEmail: model.AppConfigVariable{
+		Key:  "ldapAttributeUserEmail",
+		Type: "string",
+	},
+	LdapAttributeUserFirstName: model.AppConfigVariable{
+		Key:  "ldapAttributeUserFirstName",
+		Type: "string",
+	},
+	LdapAttributeUserLastName: model.AppConfigVariable{
+		Key:  "ldapAttributeUserLastName",
+		Type: "string",
+	},
+	LdapAttributeGroupUniqueIdentifier: model.AppConfigVariable{
+		Key:  "ldapAttributeGroupUniqueIdentifier",
+		Type: "string",
+	},
+	LdapAttributeGroupName: model.AppConfigVariable{
+		Key:  "ldapAttributeGroupName",
+		Type: "string",
+	},
+	LdapAttributeAdminGroup: model.AppConfigVariable{
+		Key:  "ldapAttributeAdminGroup",
+		Type: "string",
 	},
 }
 

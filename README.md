@@ -30,7 +30,7 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
 
 ## Setup
 
-> [!WARNING]  
+> [!WARNING]
 > Pocket ID is in its early stages and may contain bugs. There might be OIDC features that are not yet implemented. If you encounter any issues, please open an issue.
 
 ### Before you start
@@ -174,6 +174,7 @@ docker compose up -d
 | `CADDY_PORT`                 | `80`                      | no                    | The port on which Caddy should listen. Caddy is only active inside the Docker container. If you want to change the exposed port of the container then you sould change this variable.                                                                                                                                                                                     |
 | `PORT`                       | `3000`                    | no                    | The port on which the frontend should listen.                                                                                                                                                                                                                                                                                                                             |
 | `BACKEND_PORT`               | `8080`                    | no                    | The port on which the backend should listen.                                                                                                                                                                                                                                                                                                                              |
+
 
 ## Account recovery
 

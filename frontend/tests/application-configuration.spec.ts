@@ -6,7 +6,7 @@ test.beforeEach(cleanupBackend);
 test('Update general configuration', async ({ page }) => {
 	await page.goto('/settings/admin/application-configuration');
 
-	await page.getByLabel('Name').fill('Updated Name');
+	await page.getByLabel('Application Name', { exact: true }).fill('Updated Name');
 	await page.getByLabel('Session Duration').fill('30');
 	await page.getByRole('button', { name: 'Save' }).first().click();
 
@@ -17,7 +17,7 @@ test('Update general configuration', async ({ page }) => {
 
 	await page.reload();
 
-	await expect(page.getByLabel('Name')).toHaveValue('Updated Name');
+	await expect(page.getByLabel('Application Name', { exact: true })).toHaveValue('Updated Name');
 	await expect(page.getByLabel('Session Duration')).toHaveValue('30');
 });
 

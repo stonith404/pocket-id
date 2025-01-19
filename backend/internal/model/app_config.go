@@ -10,22 +10,38 @@ type AppConfigVariable struct {
 }
 
 type AppConfig struct {
+	// General
 	AppName             AppConfigVariable
 	SessionDuration     AppConfigVariable
 	EmailsVerified      AppConfigVariable
 	AllowOwnAccountEdit AppConfigVariable
-
+	// Internal
 	BackgroundImageType AppConfigVariable
 	LogoLightImageType  AppConfigVariable
 	LogoDarkImageType   AppConfigVariable
-
-	SmtpHost                      AppConfigVariable
-	SmtpPort                      AppConfigVariable
-	SmtpFrom                      AppConfigVariable
-	SmtpUser                      AppConfigVariable
-	SmtpPassword                  AppConfigVariable
-	SmtpTls                       AppConfigVariable
-	SmtpSkipCertVerify            AppConfigVariable
-	EmailLoginNotificationEnabled AppConfigVariable
+	// Email
+	SmtpHost           AppConfigVariable
+	SmtpPort           AppConfigVariable
+	SmtpFrom           AppConfigVariable
+	SmtpUser           AppConfigVariable
+	SmtpPassword       AppConfigVariable
+	SmtpTls            AppConfigVariable
+	SmtpSkipCertVerify AppConfigVariable
+    EmailLoginNotificationEnabled AppConfigVariable
 	EmailOneTimeAccessEnabled     AppConfigVariable
+	// LDAP
+	LdapEnabled                        AppConfigVariable
+	LdapUrl                            AppConfigVariable
+	LdapBindDn                         AppConfigVariable
+	LdapBindPassword                   AppConfigVariable
+	LdapBase                           AppConfigVariable
+	LdapSkipCertVerify                 AppConfigVariable
+	LdapAttributeUserUniqueIdentifier  AppConfigVariable
+	LdapAttributeUserUsername          AppConfigVariable
+	LdapAttributeUserEmail             AppConfigVariable
+	LdapAttributeUserFirstName         AppConfigVariable
+	LdapAttributeUserLastName          AppConfigVariable
+	LdapAttributeGroupUniqueIdentifier AppConfigVariable
+	LdapAttributeGroupName             AppConfigVariable
+	LdapAttributeAdminGroup            AppConfigVariable
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/controller"
+	"github.com/stonith404/pocket-id/backend/internal/job"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"golang.org/x/time/rate"
@@ -42,6 +43,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)
 	userGroupService := service.NewUserGroupService(db)
+	ldapService := service.NewLdapService(db, appConfigService, userService, userGroupService)
 
 	rateLimitMiddleware := middleware.NewRateLimitMiddleware()
 
@@ -51,6 +53,9 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	r.Use(rateLimitMiddleware.Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
 
+	job.RegisterLdapJobs(ldapService, appConfigService)
+	job.RegisterDbCleanupJobs(db)
+
 	// Initialize middleware for specific routes
 	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)
 	fileSizeLimitMiddleware := middleware.NewFileSizeLimitMiddleware()
@@ -59,8 +64,8 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	apiGroup := r.Group("/api")
 	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService, appConfigService)
 	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
-	controller.NewUserController(apiGroup, jwtAuthMiddleware, rateLimitMiddleware, userService, appConfigService)
-	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService)
+	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService, appConfigService)
+	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService, ldapService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
 	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
 	controller.NewCustomClaimController(apiGroup, jwtAuthMiddleware, customClaimService)
