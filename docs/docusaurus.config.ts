@@ -36,7 +36,7 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: "img/pingvinshare.svg",
+    image: "img/pocket-id.png",
     colorMode: {
       respectPrefersColorScheme: true,
     },

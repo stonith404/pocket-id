@@ -5,17 +5,18 @@ id: introduction
 # Introduction
 Pocket ID is a simple OIDC provider that allows users to authenticate with their passkeys to your services.
 
-**Pocket ID is in its early stages and may contain bugs. There might be OIDC features that are not yet implemented. If you encounter any issues, please open an issue.**
+***Pocket ID is in its early stages and may contain bugs. There might be OIDC features that are not yet implemented. If you encounter any issues, please open an issue*** [Here](https://github.com/stonith404/pocket-id/issues/new?template=bug.yml).
 
 
 ## Features
 
-- User Authentication with Passkeys
-- OIDC Provider
+- Passkey Authentication
+- Selfhosted OIDC Provider
 - LDAP User and Group Sync
 - Designed to Be Simple
-- Email Support
+- Email Alert Support
 - Maxmind Location DB Support
+- Easy Setup with Docker!
 
 And more!
 
