@@ -22,8 +22,8 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
     - [Nginx Reverse Proxy](#nginx-reverse-proxy)
   - [Proxy Services with Pocket ID](#proxy-services-with-pocket-id)
   - [Update](#update)
-    - [Docker](#docker)
-    - [Stand-alone](#stand-alone)
+      - [Docker](#docker)
+      - [Stand-alone](#stand-alone)
   - [Environment variables](#environment-variables)
   - [Account recovery](#account-recovery)
   - [Contribute](#contribute)
@@ -113,7 +113,7 @@ proxy_buffer_size   256k;
 
 ## Proxy Services with Pocket ID
 
-As the goal of Pocket ID is to stay simple, it doesn't have a built-in proxy provider. However, you can use [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy) to add authentication to your services that don't support OIDC.
+The goal of Pocket ID is to function exclusively as an OIDC provider. As such, we don't have a built-in proxy provider. However, you can use other tools that act as a middleware to protect your services and support OIDC as an authentication provider.
 
 See the [guide](docs/proxy-services.md) for more information.
 
