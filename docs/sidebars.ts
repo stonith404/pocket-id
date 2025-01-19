@@ -16,19 +16,25 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "setup/configuration",
-        },
-        {
-          type: "doc",
-          id: "setup/ldap",
-        },
-        {
-          type: "doc",
           id: "setup/nginx-reverse-proxy",
         },
         {
           type: "doc",
           id: "setup/upgrading",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Configuration",
+      items: [
+        {
+          type: "doc",
+          id: "configuration/environment-variables",
+        },
+        {
+          type: "doc",
+          id: "configuration/ldap",
         },
       ],
     },

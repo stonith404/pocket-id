@@ -1,12 +1,12 @@
 ---
-id: configuration
+id: environment-variables
 ---
 
-# Configuration
+# Environment Variables
 
-## Environment variables
+Below are all the environment variables supported by Pocket ID. These should be configured in your `.env ` file. 
 
-Below are all the Environment variables Pocket ID Supports, These should be set in your `.env` file.
+Be cautious when modifying environment variables that are not recommended to change.
 
 | Variable                     | Default Value             | Recommended to change | Description                                                                                                                                                                                                                                                                                                                                                               |
 | ---------------------------- | ------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
