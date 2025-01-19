@@ -1,9 +1,10 @@
 package common
 
 import (
+	"log"
+
 	"github.com/caarlos0/env/v11"
 	_ "github.com/joho/godotenv/autoload"
-	"log"
 )
 
 type DbProvider string

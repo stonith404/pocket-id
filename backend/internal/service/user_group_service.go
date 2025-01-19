@@ -51,6 +51,10 @@ func (s *UserGroupService) Delete(id string) error {
 		return err
 	}
 
+	if group.LdapID != nil {
+		return &common.LdapUserGroupUpdateError{}
+	}
+
 	return s.db.Delete(&group).Error
 }
 
@@ -58,6 +62,7 @@ func (s *UserGroupService) Create(input dto.UserGroupCreateDto) (group model.Use
 	group = model.UserGroup{
 		FriendlyName: input.FriendlyName,
 		Name:         input.Name,
+		LdapID:       &input.LdapID,
 	}
 
 	if err := s.db.Preload("Users").Create(&group).Error; err != nil {
@@ -69,14 +74,19 @@ func (s *UserGroupService) Create(input dto.UserGroupCreateDto) (group model.Use
 	return group, nil
 }
 
-func (s *UserGroupService) Update(id string, input dto.UserGroupCreateDto) (group model.UserGroup, err error) {
+func (s *UserGroupService) Update(id string, input dto.UserGroupCreateDto, allowLdapUpdate bool) (group model.UserGroup, err error) {
 	group, err = s.Get(id)
 	if err != nil {
 		return model.UserGroup{}, err
 	}
 
+	if group.LdapID != nil && !allowLdapUpdate {
+		return model.UserGroup{}, &common.LdapUserGroupUpdateError{}
+	}
+
 	group.Name = input.Name
 	group.FriendlyName = input.FriendlyName
+	group.LdapID = &input.LdapID
 
 	if err := s.db.Preload("Users").Save(&group).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {

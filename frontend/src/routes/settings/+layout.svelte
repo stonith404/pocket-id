@@ -33,7 +33,7 @@
 </script>
 
 <section>
-	<div class="bg-muted/40 flex min-h-[calc(100vh-64px)] w-full flex-col justify-between">
+	<div class="flex min-h-[calc(100vh-64px)] w-full flex-col justify-between bg-muted/40">
 		<main
 			class="mx-auto flex w-full max-w-[1640px] flex-col gap-x-4 gap-y-10 p-4 md:p-10 lg:flex-row"
 		>
@@ -44,9 +44,9 @@
 				<div
 					class="mx-auto grid items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]"
 				>
-					<nav class="text-muted-foreground grid gap-4 text-sm">
+					<nav class="grid gap-4 text-sm text-muted-foreground">
 						{#each links as { href, label }}
-							<a {href} class={$page.url.pathname.startsWith(href) ? 'text-primary font-bold' : ''}>
+							<a {href} class={$page.url.pathname.startsWith(href) ? 'font-bold text-primary' : ''}>
 								{label}
 							</a>
 						{/each}
@@ -67,7 +67,7 @@
 			</div>
 		</main>
 		<div class="flex flex-col items-center">
-			<p class="text-muted-foreground py-3 text-xs">
+			<p class="py-3 text-xs text-muted-foreground">
 				Powered by <a
 					class="text-foreground"
 					href="https://github.com/stonith404/pocket-id"

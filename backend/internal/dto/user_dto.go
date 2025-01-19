@@ -10,6 +10,7 @@ type UserDto struct {
 	LastName     string           `json:"lastName"`
 	IsAdmin      bool             `json:"isAdmin"`
 	CustomClaims []CustomClaimDto `json:"customClaims"`
+	LdapID       *string          `json:"ldapId"`
 }
 
 type UserCreateDto struct {
@@ -18,9 +19,15 @@ type UserCreateDto struct {
 	FirstName string `json:"firstName" binding:"required,min=1,max=50"`
 	LastName  string `json:"lastName" binding:"required,min=1,max=50"`
 	IsAdmin   bool   `json:"isAdmin"`
+	LdapID    string `json:"-"`
 }
 
 type OneTimeAccessTokenCreateDto struct {
 	UserID    string    `json:"userId" binding:"required"`
 	ExpiresAt time.Time `json:"expiresAt" binding:"required"`
+}
+
+type OneTimeAccessEmailDto struct {
+	Email        string `json:"email" binding:"required,email"`
+	RedirectPath string `json:"redirectPath"`
 }

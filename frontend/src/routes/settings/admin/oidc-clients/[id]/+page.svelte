@@ -84,7 +84,7 @@
 </svelte:head>
 
 <div>
-	<a class="text-muted-foreground flex text-sm" href="/settings/admin/oidc-clients"
+	<a class="flex text-sm text-muted-foreground" href="/settings/admin/oidc-clients"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
 </div>
@@ -97,7 +97,7 @@
 			<div class="mb-2 flex">
 				<Label class="mb-0 w-44">Client ID</Label>
 				<CopyToClipboard value={client.id}>
-					<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
+					<span class="text-sm text-muted-foreground" data-testid="client-id"> {client.id}</span>
 				</CopyToClipboard>
 			</div>
 			{#if !client.isPublic}
@@ -105,12 +105,12 @@
 					<Label class="w-44">Client secret</Label>
 					{#if $clientSecretStore}
 						<CopyToClipboard value={$clientSecretStore}>
-							<span class="text-muted-foreground text-sm" data-testid="client-secret">
+							<span class="text-sm text-muted-foreground" data-testid="client-secret">
 								{$clientSecretStore}
 							</span>
 						</CopyToClipboard>
 					{:else}
-						<span class="text-muted-foreground text-sm" data-testid="client-secret"
+						<span class="text-sm text-muted-foreground" data-testid="client-secret"
 							>••••••••••••••••••••••••••••••••</span
 						>
 						<Button
@@ -129,7 +129,7 @@
 						<div class="mb-5 flex">
 							<Label class="mb-0 w-44">{key}</Label>
 							<CopyToClipboard {value}>
-								<span class="text-muted-foreground text-sm">{value}</span>
+								<span class="text-sm text-muted-foreground">{value}</span>
 							</CopyToClipboard>
 						</div>
 					{/each}

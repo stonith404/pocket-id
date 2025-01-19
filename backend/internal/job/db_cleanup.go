@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func RegisterJobs(db *gorm.DB) {
+func RegisterDbCleanupJobs(db *gorm.DB) {
 	scheduler, err := gocron.NewScheduler()
 	if err != nil {
 		log.Fatalf("Failed to create a new scheduler: %s", err)

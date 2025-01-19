@@ -2,7 +2,7 @@
 	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import type { UserCreate } from '$lib/types/user.type';
+	import type { User, UserCreate } from '$lib/types/user.type';
 	import { createForm } from '$lib/utils/form-util';
 	import { z } from 'zod';
 
@@ -10,11 +10,12 @@
 		callback,
 		existingUser
 	}: {
-		existingUser?: UserCreate;
+		existingUser?: User;
 		callback: (user: UserCreate) => Promise<boolean>;
 	} = $props();
 
 	let isLoading = $state(false);
+	let inputDisabled = $derived(!!existingUser?.ldapId);
 
 	const user = {
 		firstName: existingUser?.firstName || '',
@@ -53,29 +54,21 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="flex flex-col gap-3 sm:flex-row">
-		<div class="w-full">
+	<fieldset disabled={inputDisabled}>
+		<div class="grid grid-cols-1 items-start gap-5 md:grid-cols-2">
 			<FormInput label="First name" bind:input={$inputs.firstName} />
-		</div>
-		<div class="w-full">
 			<FormInput label="Last name" bind:input={$inputs.lastName} />
-		</div>
-	</div>
-	<div class="mt-3 flex flex-col gap-3 sm:flex-row">
-		<div class="w-full">
-			<FormInput label="Email" bind:input={$inputs.email} />
-		</div>
-		<div class="w-full">
 			<FormInput label="Username" bind:input={$inputs.username} />
+			<FormInput label="Email" bind:input={$inputs.email} />
+			<CheckboxWithLabel
+				id="admin-privileges"
+				label="Admin Privileges"
+				description="Admins have full access to the admin panel."
+				bind:checked={$inputs.isAdmin.value}
+			/>
 		</div>
-	</div>
-	<CheckboxWithLabel
-		id="admin-privileges"
-		label="Admin Privileges"
-		description="Admins have full access to the admin panel."
-		bind:checked={$inputs.isAdmin.value}
-	/>
-	<div class="mt-5 flex justify-end">
-		<Button {isLoading} type="submit">Save</Button>
-	</div>
+		<div class="mt-5 flex justify-end">
+			<Button {isLoading} type="submit">Save</Button>
+		</div>
+	</fieldset>
 </form>

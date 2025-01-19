@@ -68,11 +68,13 @@
 					<DropdownMenu.Item href="/settings/admin/user-groups/{item.id}"
 						><LucidePencil class="mr-2 h-4 w-4" /> Edit</DropdownMenu.Item
 					>
-					<DropdownMenu.Item
-						class="text-red-500 focus:!text-red-700"
-						on:click={() => deleteUserGroup(item)}
-						><LucideTrash class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
-					>
+					{#if !item.ldapId}
+						<DropdownMenu.Item
+							class="text-red-500 focus:!text-red-700"
+							on:click={() => deleteUserGroup(item)}
+							><LucideTrash class="mr-2 h-4 w-4" />Delete</DropdownMenu.Item
+						>
+					{/if}
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
 		</Table.Cell>

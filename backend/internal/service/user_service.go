@@ -2,12 +2,17 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/model"
 	"github.com/stonith404/pocket-id/backend/internal/model/types"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	"gorm.io/gorm"
+	"log"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -15,10 +20,11 @@ type UserService struct {
 	db              *gorm.DB
 	jwtService      *JwtService
 	auditLogService *AuditLogService
+	emailService    *EmailService
 }
 
-func NewUserService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService) *UserService {
-	return &UserService{db: db, jwtService: jwtService, auditLogService: auditLogService}
+func NewUserService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService, emailService *EmailService) *UserService {
+	return &UserService{db: db, jwtService: jwtService, auditLogService: auditLogService, emailService: emailService}
 }
 
 func (s *UserService) ListUsers(searchTerm string, sortedPaginationRequest utils.SortedPaginationRequest) ([]model.User, utils.PaginationResponse, error) {
@@ -46,6 +52,10 @@ func (s *UserService) DeleteUser(userID string) error {
 		return err
 	}
 
+	if user.LdapID != nil {
+		return &common.LdapUserUpdateError{}
+	}
+
 	return s.db.Delete(&user).Error
 }
 
@@ -56,6 +66,7 @@ func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
 		Email:     input.Email,
 		Username:  input.Username,
 		IsAdmin:   input.IsAdmin,
+		LdapID:    &input.LdapID,
 	}
 	if err := s.db.Create(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
@@ -66,11 +77,16 @@ func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
 	return user, nil
 }
 
-func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, updateOwnUser bool) (model.User, error) {
+func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, updateOwnUser bool, allowLdapUpdate bool) (model.User, error) {
 	var user model.User
 	if err := s.db.Where("id = ?", userID).First(&user).Error; err != nil {
 		return model.User{}, err
 	}
+
+	if user.LdapID != nil && !allowLdapUpdate {
+		return model.User{}, &common.LdapUserUpdateError{}
+	}
+
 	user.FirstName = updatedUser.FirstName
 	user.LastName = updatedUser.LastName
 	user.Email = updatedUser.Email
@@ -89,7 +105,46 @@ func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, u
 	return user, nil
 }
 
-func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Time, ipAddress, userAgent string) (string, error) {
+func (s *UserService) RequestOneTimeAccessEmail(emailAddress, redirectPath string) error {
+	var user model.User
+	if err := s.db.Where("email = ?", emailAddress).First(&user).Error; err != nil {
+		// Do not return error if user not found to prevent email enumeration
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		} else {
+			return err
+		}
+	}
+
+	oneTimeAccessToken, err := s.CreateOneTimeAccessToken(user.ID, time.Now().Add(time.Hour))
+	if err != nil {
+		return err
+	}
+
+	link := fmt.Sprintf("%s/login/%s", common.EnvConfig.AppURL, oneTimeAccessToken)
+
+	// Add redirect path to the link
+	if strings.HasPrefix(redirectPath, "/") {
+		encodedRedirectPath := url.QueryEscape(redirectPath)
+		link = fmt.Sprintf("%s?redirect=%s", link, encodedRedirectPath)
+	}
+
+	go func() {
+		err := SendEmail(s.emailService, email.Address{
+			Name:  user.Username,
+			Email: user.Email,
+		}, OneTimeAccessTemplate, &OneTimeAccessTemplateData{
+			Link: link,
+		})
+		if err != nil {
+			log.Printf("Failed to send email to '%s': %v\n", user.Email, err)
+		}
+	}()
+
+	return nil
+}
+
+func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Time) (string, error) {
 	randomString, err := utils.GenerateRandomAlphanumericString(16)
 	if err != nil {
 		return "", err
@@ -105,12 +160,10 @@ func (s *UserService) CreateOneTimeAccessToken(userID string, expiresAt time.Tim
 		return "", err
 	}
 
-	s.auditLogService.Create(model.AuditLogEventOneTimeAccessTokenSignIn, ipAddress, userAgent, userID, model.AuditLogData{})
-
 	return oneTimeAccessToken.Token, nil
 }
 
-func (s *UserService) ExchangeOneTimeAccessToken(token string) (model.User, string, error) {
+func (s *UserService) ExchangeOneTimeAccessToken(token string, ipAddress, userAgent string) (model.User, string, error) {
 	var oneTimeAccessToken model.OneTimeAccessToken
 	if err := s.db.Where("token = ? AND expires_at > ?", token, datatype.DateTime(time.Now())).Preload("User").First(&oneTimeAccessToken).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -125,6 +178,10 @@ func (s *UserService) ExchangeOneTimeAccessToken(token string) (model.User, stri
 
 	if err := s.db.Delete(&oneTimeAccessToken).Error; err != nil {
 		return model.User{}, "", err
+	}
+
+	if ipAddress != "" && userAgent != "" {
+		s.auditLogService.Create(model.AuditLogEventOneTimeAccessTokenSignIn, ipAddress, userAgent, oneTimeAccessToken.User.ID, model.AuditLogData{})
 	}
 
 	return oneTimeAccessToken.User, accessToken, nil

@@ -58,7 +58,9 @@ func (e *OidcInvalidAuthorizationCodeError) HttpStatusCode() int { return 400 }
 
 type OidcInvalidCallbackURLError struct{}
 
-func (e *OidcInvalidCallbackURLError) Error() string       { return "invalid callback URL, it might be necessary for an admin to fix this" }
+func (e *OidcInvalidCallbackURLError) Error() string {
+	return "invalid callback URL, it might be necessary for an admin to fix this"
+}
 func (e *OidcInvalidCallbackURLError) HttpStatusCode() int { return 400 }
 
 type FileTypeNotSupportedError struct{}
@@ -95,7 +97,7 @@ func (e *MissingPermissionError) HttpStatusCode() int { return http.StatusForbid
 type TooManyRequestsError struct{}
 
 func (e *TooManyRequestsError) Error() string {
-	return "Too many requests. Please wait a while before trying again."
+	return "Too many requests"
 }
 func (e *TooManyRequestsError) HttpStatusCode() int { return http.StatusTooManyRequests }
 
@@ -160,3 +162,17 @@ func (e *OidcMissingCodeChallengeError) Error() string {
 	return "Missing code challenge"
 }
 func (e *OidcMissingCodeChallengeError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type LdapUserUpdateError struct{}
+
+func (e *LdapUserUpdateError) Error() string {
+	return "LDAP users can't be updated"
+}
+func (e *LdapUserUpdateError) HttpStatusCode() int { return http.StatusForbidden }
+
+type LdapUserGroupUpdateError struct{}
+
+func (e *LdapUserGroupUpdateError) Error() string {
+	return "LDAP user groups can't be updated"
+}
+func (e *LdapUserGroupUpdateError) HttpStatusCode() int { return http.StatusForbidden }

@@ -103,7 +103,7 @@
 					onkeydown={(e) => {
 						if (e.key === 'Enter') handleSuggestionClick(suggestion);
 					}}
-					class="hover:bg-accent hover:text-accent-foreground relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 {selectedIndex ===
+					class="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 {selectedIndex ===
 					index
 						? 'bg-accent text-accent-foreground'
 						: ''}"

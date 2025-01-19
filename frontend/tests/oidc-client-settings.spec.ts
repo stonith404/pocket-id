@@ -19,7 +19,7 @@ test('Create OIDC client', async ({ page }) => {
 	await page.getByRole('button', { name: 'Save' }).click();
 
 	const clientId = await page.getByTestId('client-id').textContent();
-	
+
 	await expect(page.getByRole('status')).toHaveText('OIDC client created successfully');
 	expect(clientId?.length).toBe(36);
 	expect((await page.getByTestId('client-secret').textContent())?.length).toBe(32);

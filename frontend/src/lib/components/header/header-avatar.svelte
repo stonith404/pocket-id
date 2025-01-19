@@ -39,7 +39,7 @@
 					{$userStore?.firstName}
 					{$userStore?.lastName}
 				</p>
-				<p class="text-muted-foreground text-xs leading-none">{$userStore?.email}</p>
+				<p class="text-xs leading-none text-muted-foreground">{$userStore?.email}</p>
 			</div>
 		</DropdownMenu.Label>
 		<DropdownMenu.Separator />

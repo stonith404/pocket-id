@@ -12,7 +12,9 @@
 <Card.Root>
 	<Card.Header>
 		<Card.Title>Audit Log</Card.Title>
-		<Card.Description class="mt-1">See your account activities from the last 3 months.</Card.Description>
+		<Card.Description class="mt-1"
+			>See your account activities from the last 3 months.</Card.Description
+		>
 	</Card.Header>
 	<Card.Content>
 		<AuditLogList auditLogs={data.auditLogs} />
