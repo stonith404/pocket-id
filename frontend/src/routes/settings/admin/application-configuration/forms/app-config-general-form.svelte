@@ -2,8 +2,6 @@
 	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Label } from '$lib/components/ui/label';
 	import type { AllAppConfig } from '$lib/types/application-configuration';
 	import { createForm } from '$lib/utils/form-util';
 	import { toast } from 'svelte-sonner';

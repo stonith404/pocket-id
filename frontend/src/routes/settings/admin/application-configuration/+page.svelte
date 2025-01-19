@@ -7,6 +7,7 @@
 	import { toast } from 'svelte-sonner';
 	import AppConfigEmailForm from './forms/app-config-email-form.svelte';
 	import AppConfigGeneralForm from './forms/app-config-general-form.svelte';
+	import AppConfigLdapForm from './forms/app-config-ldap-form.svelte';
 	import UpdateApplicationImages from './update-application-images.svelte';
 
 	let { data } = $props();
@@ -15,7 +16,7 @@
 	const appConfigService = new AppConfigService();
 
 	async function updateAppConfig(updatedAppConfig: Partial<AllAppConfig>) {
-		await appConfigService
+		appConfig = await appConfigService
 			.update({
 				...appConfig,
 				...updatedAppConfig
@@ -34,8 +35,12 @@
 		favicon: File | null
 	) {
 		const faviconPromise = favicon ? appConfigService.updateFavicon(favicon) : Promise.resolve();
-		const lightLogoPromise = logoLight ? appConfigService.updateLogo(logoLight, true) : Promise.resolve();
-		const darkLogoPromise = logoDark ? appConfigService.updateLogo(logoDark, false) : Promise.resolve();
+		const lightLogoPromise = logoLight
+			? appConfigService.updateLogo(logoLight, true)
+			: Promise.resolve();
+		const darkLogoPromise = logoDark
+			? appConfigService.updateLogo(logoDark, false)
+			: Promise.resolve();
 		const backgroundImagePromise = backgroundImage
 			? appConfigService.updateBackgroundImage(backgroundImage)
 			: Promise.resolve();
@@ -69,6 +74,18 @@
 	</Card.Header>
 	<Card.Content>
 		<AppConfigEmailForm {appConfig} callback={updateAppConfig} />
+	</Card.Content>
+</Card.Root>
+
+<Card.Root>
+	<Card.Header>
+		<Card.Title>LDAP</Card.Title>
+		<Card.Description>
+			Configure LDAP settings to sync users and groups from an LDAP server.
+		</Card.Description>
+	</Card.Header>
+	<Card.Content>
+		<AppConfigLdapForm {appConfig} callback={updateAppConfig} />
 	</Card.Content>
 </Card.Root>
 

@@ -3,14 +3,8 @@
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 85 85"
 >
-	<path
-		class="line1"
-		d="M5,5 L80,80"
-	></path>
-	<path
-		class="line2"
-		d="M80,5 L5,80"
-	></path>
+	<path class="line1" d="M5,5 L80,80"></path>
+	<path class="line2" d="M80,5 L5,80"></path>
 </svg>
 
 <style>

@@ -1,16 +1,16 @@
 <script lang="ts">
-	import * as FormPrimitive from "formsnap";
-	import { cn } from "$lib/utils/style.js";
+	import * as FormPrimitive from 'formsnap';
+	import { cn } from '$lib/utils/style.js';
 
 	type $$Props = FormPrimitive.LegendProps;
 
-	let className: $$Props["class"] = undefined;
+	let className: $$Props['class'] = undefined;
 	export { className as class };
 </script>
 
 <FormPrimitive.Legend
 	{...$$restProps}
-	class={cn("data-[fs-error]:text-destructive text-sm font-medium leading-none", className)}
+	class={cn('text-sm font-medium leading-none data-[fs-error]:text-destructive', className)}
 	let:legendAttrs
 >
 	<slot {legendAttrs} />

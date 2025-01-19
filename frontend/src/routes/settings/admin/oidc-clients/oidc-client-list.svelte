@@ -46,7 +46,7 @@
 <AdvancedTable
 	items={clients}
 	{requestOptions}
-	onRefresh={async(o) => clients = await oidcService.listClients(o)}
+	onRefresh={async (o) => (clients = await oidcService.listClients(o))}
 	columns={[
 		{ label: 'Logo' },
 		{ label: 'Name', sortColumn: 'name' },

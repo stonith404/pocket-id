@@ -2,10 +2,19 @@ import { WebAuthnError } from '@simplewebauthn/browser';
 import { AxiosError } from 'axios';
 import { toast } from 'svelte-sonner';
 
-export function axiosErrorToast(e: unknown, message: string = 'An unknown error occurred') {
+export function getAxiosErrorMessage(
+	e: unknown,
+	defaultMessage: string = 'An unknown error occurred'
+) {
+	let message = defaultMessage;
 	if (e instanceof AxiosError) {
 		message = e.response?.data.error || message;
 	}
+	return message;
+}
+
+export function axiosErrorToast(e: unknown, defaultMessage: string = 'An unknown error occurred') {
+	const message = getAxiosErrorMessage(e, defaultMessage);
 	toast.error(message);
 }
 

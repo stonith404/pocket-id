@@ -30,7 +30,7 @@
 
 <div class="flex justify-center gap-3">
 	<div
-		class=" bg-muted rounded-2xl p-3 transition-transform duration-500 ease-in {success || error
+		class=" rounded-2xl bg-muted p-3 transition-transform duration-500 ease-in {success || error
 			? 'translate-x-[108px]'
 			: ''}"
 	>

@@ -5,14 +5,14 @@ export type PaginationRequest = {
 
 export type SortRequest = {
 	column: string;
-	direction: "asc" | "desc";
+	direction: 'asc' | 'desc';
 };
 
 export type SearchPaginationSortRequest = {
-	search?: string,
+	search?: string;
 	pagination?: PaginationRequest;
 	sort?: SortRequest;
-}
+};
 
 export type PaginationResponse = {
 	totalPages: number;

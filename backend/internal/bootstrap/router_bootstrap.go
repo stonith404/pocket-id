@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/controller"
+	"github.com/stonith404/pocket-id/backend/internal/job"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"golang.org/x/time/rate"
@@ -37,18 +38,25 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	auditLogService := service.NewAuditLogService(db, appConfigService, emailService, geoLiteService)
 	jwtService := service.NewJwtService(appConfigService)
 	webauthnService := service.NewWebAuthnService(db, jwtService, auditLogService, appConfigService)
-	userService := service.NewUserService(db, jwtService, auditLogService)
+	userService := service.NewUserService(db, jwtService, auditLogService, emailService)
 	customClaimService := service.NewCustomClaimService(db)
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)
 	userGroupService := service.NewUserGroupService(db)
+	ldapService := service.NewLdapService(db, appConfigService, userService, userGroupService)
 
+	rateLimitMiddleware := middleware.NewRateLimitMiddleware()
+
+	// Setup global middleware
 	r.Use(middleware.NewCorsMiddleware().Add())
 	r.Use(middleware.NewErrorHandlerMiddleware().Add())
-	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
+	r.Use(rateLimitMiddleware.Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
 
-	// Initialize middleware
+	job.RegisterLdapJobs(ldapService, appConfigService)
+	job.RegisterDbCleanupJobs(db)
+
+	// Initialize middleware for specific routes
 	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)
 	fileSizeLimitMiddleware := middleware.NewFileSizeLimitMiddleware()
 
@@ -57,7 +65,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService, appConfigService)
 	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
 	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService, appConfigService)
-	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService)
+	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService, ldapService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
 	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
 	controller.NewCustomClaimController(apiGroup, jwtAuthMiddleware, customClaimService)

@@ -14,6 +14,7 @@
 	} = $props();
 
 	let isLoading = $state(false);
+	let inputDisabled = $derived(!!existingUserGroup?.ldapId);
 	let hasManualNameEdit = $state(!!existingUserGroup?.friendlyName);
 
 	const userGroup = {
@@ -23,10 +24,7 @@
 
 	const formSchema = z.object({
 		friendlyName: z.string().min(2).max(50),
-		name: z
-			.string()
-			.min(2)
-			.max(255)
+		name: z.string().min(2).max(255)
 	});
 	type FormSchema = typeof formSchema;
 
@@ -57,25 +55,27 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="flex flex-col gap-3 sm:flex-row">
-		<div class="w-full">
-			<FormInput
-				label="Friendly Name"
-				description="Name that will be displayed in the UI"
-				bind:input={$inputs.friendlyName}
-				onInput={onFriendlyNameInput}
-			/>
+	<fieldset disabled={inputDisabled}>
+		<div class="flex flex-col gap-3 sm:flex-row">
+			<div class="w-full">
+				<FormInput
+					label="Friendly Name"
+					description="Name that will be displayed in the UI"
+					bind:input={$inputs.friendlyName}
+					onInput={onFriendlyNameInput}
+				/>
+			</div>
+			<div class="w-full">
+				<FormInput
+					label="Name"
+					description={`Name that will be in the "groups" claim`}
+					bind:input={$inputs.name}
+					onInput={onNameInput}
+				/>
+			</div>
 		</div>
-		<div class="w-full">
-			<FormInput
-				label="Name"
-				description={`Name that will be in the "groups" claim`}
-				bind:input={$inputs.name}
-				onInput={onNameInput}
-			/>
+		<div class="mt-5 flex justify-end">
+			<Button {isLoading} type="submit">Save</Button>
 		</div>
-	</div>
-	<div class="mt-5 flex justify-end">
-		<Button {isLoading} type="submit">Save</Button>
-	</div>
+	</fieldset>
 </form>

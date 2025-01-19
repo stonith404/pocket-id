@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/model"
@@ -16,7 +15,12 @@ import (
 	"net/smtp"
 	"net/textproto"
 	ttemplate "text/template"
+	"time"
 )
+
+var netDialer = &net.Dialer{
+	Timeout: 3 * time.Second,
+}
 
 type EmailService struct {
 	appConfigService *AppConfigService
@@ -58,11 +62,6 @@ func (srv *EmailService) SendTestEmail(recipientUserId string) error {
 }
 
 func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.Template[V], tData *V) error {
-	// Check if SMTP settings are set
-	if srv.appConfigService.DbConfig.EmailEnabled.Value != "true" {
-		return errors.New("email not enabled")
-	}
-
 	data := &email.TemplateData[V]{
 		AppName: srv.appConfigService.DbConfig.AppName.Value,
 		LogoURL: common.EnvConfig.AppURL + "/api/application-configuration/logo",
@@ -112,10 +111,12 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 			tlsConfig,
 		)
 	}
-	defer client.Quit()
+
 	if err != nil {
 		return fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
+
+	defer client.Close()
 
 	smtpUser := srv.appConfigService.DbConfig.SmtpUser.Value
 	smtpPassword := srv.appConfigService.DbConfig.SmtpPassword.Value
@@ -141,7 +142,11 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 }
 
 func (srv *EmailService) connectToSmtpServerUsingImplicitTLS(serverAddr string, tlsConfig *tls.Config) (*smtp.Client, error) {
-	conn, err := tls.Dial("tcp", serverAddr, tlsConfig)
+	tlsDialer := &tls.Dialer{
+		NetDialer: netDialer,
+		Config:    tlsConfig,
+	}
+	conn, err := tlsDialer.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
@@ -156,7 +161,7 @@ func (srv *EmailService) connectToSmtpServerUsingImplicitTLS(serverAddr string, 
 }
 
 func (srv *EmailService) connectToSmtpServerUsingStartTLS(serverAddr string, tlsConfig *tls.Config) (*smtp.Client, error) {
-	conn, err := net.Dial("tcp", serverAddr)
+	conn, err := netDialer.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}

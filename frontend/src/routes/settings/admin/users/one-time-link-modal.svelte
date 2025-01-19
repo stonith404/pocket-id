@@ -75,10 +75,7 @@
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<Button
-				onclick={() => createOneTimeAccessToken()}
-				disabled={!selectedExpiration}
-			>
+			<Button onclick={() => createOneTimeAccessToken()} disabled={!selectedExpiration}>
 				Generate Link
 			</Button>
 		{:else}

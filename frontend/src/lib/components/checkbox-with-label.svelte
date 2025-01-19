@@ -19,7 +19,7 @@
 	} = $props();
 </script>
 
-<div class="items-top mt-5 flex space-x-2">
+<div class="items-top flex space-x-2">
 	<Checkbox
 		{id}
 		{disabled}
@@ -31,7 +31,7 @@
 			{label}
 		</Label>
 		{#if description}
-			<p class="text-muted-foreground text-[0.8rem]">
+			<p class="text-[0.8rem] text-muted-foreground">
 				{description}
 			</p>
 		{/if}

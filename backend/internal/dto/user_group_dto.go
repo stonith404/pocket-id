@@ -10,6 +10,7 @@ type UserGroupDtoWithUsers struct {
 	Name         string            `json:"name"`
 	CustomClaims []CustomClaimDto  `json:"customClaims"`
 	Users        []UserDto         `json:"users"`
+	LdapID       *string           `json:"ldapId"`
 	CreatedAt    datatype.DateTime `json:"createdAt"`
 }
 
@@ -19,12 +20,14 @@ type UserGroupDtoWithUserCount struct {
 	Name         string            `json:"name"`
 	CustomClaims []CustomClaimDto  `json:"customClaims"`
 	UserCount    int64             `json:"userCount"`
+	LdapID       *string           `json:"ldapId"`
 	CreatedAt    datatype.DateTime `json:"createdAt"`
 }
 
 type UserGroupCreateDto struct {
 	FriendlyName string `json:"friendlyName" binding:"required,min=2,max=50"`
 	Name         string `json:"name" binding:"required,min=2,max=255"`
+	LdapID       string `json:"-"`
 }
 
 type UserGroupUpdateUsersDto struct {
