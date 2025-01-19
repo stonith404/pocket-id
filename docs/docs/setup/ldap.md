@@ -6,6 +6,11 @@ id: ldap
 
 Pocket ID can sync Users and Group from a LDAP Source (lldap, OpenLDAP, Active Directory, etc.)
 
+### LDAP Sync
+
+- The LDAP Service Will sync on Pocket ID Startup and Every Hour once Enabled from the Web UI
+- Users or Groups Synced from LDAP can **NOT** be Edited from the Pocket ID Web UI.
+
 ### Generic LDAP Setup
 
 1. Follow the Installation guide [Here](/pocket-id/setup/installation)
@@ -19,6 +24,8 @@ Pocket ID can sync Users and Group from a LDAP Source (lldap, OpenLDAP, Active D
 | LDAP Bind Password           | securepassword                        | The Password for the Bind DN Account                                        |
 | LDAP Search Base             | dc=domain,dc=com                      | The Top Level Path to search for Users and Groups                           |
 
+<br />
+
 4. LDAP Attribute Configuration Setup
 
 | LDAP Variable                     | Example Value                         | Description                                                            |
@@ -31,5 +38,3 @@ Pocket ID can sync Users and Group from a LDAP Source (lldap, OpenLDAP, Active D
 | Group Unique Identifier Attribute | uuid                                  | The LDAP Attribute to Unique Identify the Groups, **This Should never Change** |
 | Group Name Attribute              | uid                                   | The LDAP Attribute to use as the Name of Synced Groups                         |
 | Admin Group Name                  | _pocket_id_admins                     | The Group Name to Use for Admin Permissions for LDAP Users                     |
-
-<img src="/img/ldap-attrs-example.png" width="700"/>
