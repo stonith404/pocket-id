@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.25.0...v) (2025-01-19)
+
+
+### Bug Fixes
+
+* disable account details inputs if user is imported from LDAP ([a8b9d60](https://github.com/stonith404/pocket-id/commit/a8b9d60a86e80c10d6fba07072b1d32cec400ecb))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.24.1...v) (2025-01-19)
 
 
