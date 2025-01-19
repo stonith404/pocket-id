@@ -88,18 +88,20 @@
 		/>
 	</div>
 	<h4 class="mt-10 text-lg font-semibold">Enabled Emails</h4>
-	<CheckboxWithLabel
-		id="email-login-notification"
-		label="Email Login Notification"
-		description="Send an email to the user when they log in from a new device."
-		bind:checked={$inputs.emailLoginNotificationEnabled.value}
-	/>
-	<CheckboxWithLabel
-		id="email-one-time-access"
-		label="Email One Time Access"
-		description="Enables sign in with an email as an alternative. This reduces the security significantly as anyone with access to the user's email can gain entry."
-		bind:checked={$inputs.emailOneTimeAccessEnabled.value}
-	/>
+	<div class="mt-4 flex flex-col gap-3">
+		<CheckboxWithLabel
+			id="email-login-notification"
+			label="Email Login Notification"
+			description="Send an email to the user when they log in from a new device."
+			bind:checked={$inputs.emailLoginNotificationEnabled.value}
+		/>
+		<CheckboxWithLabel
+			id="email-one-time-access"
+			label="Email One Time Access"
+			description="Enables sign in with an email as an alternative. This reduces the security significantly as anyone with access to the user's email can gain entry."
+			bind:checked={$inputs.emailOneTimeAccessEnabled.value}
+		/>
+	</div>
 
 	<div class="mt-8 flex flex-wrap justify-end gap-3">
 		<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
