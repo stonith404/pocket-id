@@ -8,7 +8,7 @@
 	import { getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startAuthentication } from '@simplewebauthn/browser';
 	import { fade } from 'svelte/transition';
-	import LoginLogoErrorIndicator from './components/login-logo-error-indicator.svelte';
+	import LoginLogoErrorSuccessIndicator from './components/login-logo-error-success-indicator.svelte';
 	const webauthnService = new WebAuthnService();
 
 	let isLoading = $state(false);
@@ -35,9 +35,9 @@
 	<title>Sign In</title>
 </svelte:head>
 
-<SignInWrapper>
+<SignInWrapper showEmailOneTimeAccessButton={$appConfigStore.emailOneTimeAccessEnabled}>
 	<div class="flex justify-center">
-		<LoginLogoErrorIndicator error={!!error} />
+		<LoginLogoErrorSuccessIndicator error={!!error} />
 	</div>
 	<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">
 		Sign in to {$appConfigStore.appName}

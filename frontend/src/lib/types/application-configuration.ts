@@ -1,6 +1,7 @@
 export type AppConfig = {
 	appName: string;
 	allowOwnAccountEdit: boolean;
+	emailOneTimeAccessEnabled: boolean
 };
 
 export type AllAppConfig = AppConfig & {
@@ -8,7 +9,6 @@ export type AllAppConfig = AppConfig & {
 	sessionDuration: number;
 	emailsVerified: boolean;
 	// Email
-	emailEnabled: boolean;
 	smtpHost: string;
 	smtpPort: number;
 	smtpFrom: string;
@@ -16,6 +16,7 @@ export type AllAppConfig = AppConfig & {
 	smtpPassword: string;
 	smtpTls: boolean;
 	smtpSkipCertVerify: boolean;
+	emailLoginNotificationEnabled: boolean;
 	// LDAP
 	ldapEnabled: boolean;
 	ldapUrl: string;

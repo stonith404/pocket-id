@@ -16,7 +16,7 @@
 	const appConfigService = new AppConfigService();
 
 	async function updateAppConfig(updatedAppConfig: Partial<AllAppConfig>) {
-		await appConfigService
+		appConfig = await appConfigService
 			.update({
 				...appConfig,
 				...updatedAppConfig

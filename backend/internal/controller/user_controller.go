@@ -30,6 +30,7 @@ func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 	group.POST("/users/:id/one-time-access-token", jwtAuthMiddleware.Add(true), uc.createOneTimeAccessTokenHandler)
 	group.POST("/one-time-access-token/:token", rateLimitMiddleware.Add(rate.Every(10*time.Second), 5), uc.exchangeOneTimeAccessTokenHandler)
 	group.POST("/one-time-access-token/setup", uc.getSetupAccessTokenHandler)
+	group.POST("/one-time-access-email", rateLimitMiddleware.Add(rate.Every(10*time.Minute), 3), uc.requestOneTimeAccessEmailHandler)
 }
 
 type UserController struct {
@@ -145,7 +146,7 @@ func (uc *UserController) createOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	token, err := uc.userService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt, c.ClientIP(), c.Request.UserAgent())
+	token, err := uc.userService.CreateOneTimeAccessToken(input.UserID, input.ExpiresAt)
 	if err != nil {
 		c.Error(err)
 		return
@@ -154,8 +155,24 @@ func (uc *UserController) createOneTimeAccessTokenHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"token": token})
 }
 
+func (uc *UserController) requestOneTimeAccessEmailHandler(c *gin.Context) {
+	var input dto.OneTimeAccessEmailDto
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.Error(err)
+		return
+	}
+
+	err := uc.userService.RequestOneTimeAccessEmail(input.Email, input.RedirectPath)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
 func (uc *UserController) exchangeOneTimeAccessTokenHandler(c *gin.Context) {
-	user, token, err := uc.userService.ExchangeOneTimeAccessToken(c.Param("token"))
+	user, token, err := uc.userService.ExchangeOneTimeAccessToken(c.Param("token"), c.ClientIP(), c.Request.UserAgent())
 	if err != nil {
 		c.Error(err)
 		return

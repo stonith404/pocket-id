@@ -20,7 +20,6 @@ type AppConfig struct {
 	LogoLightImageType  AppConfigVariable
 	LogoDarkImageType   AppConfigVariable
 	// Email
-	EmailEnabled       AppConfigVariable
 	SmtpHost           AppConfigVariable
 	SmtpPort           AppConfigVariable
 	SmtpFrom           AppConfigVariable
@@ -28,6 +27,8 @@ type AppConfig struct {
 	SmtpPassword       AppConfigVariable
 	SmtpTls            AppConfigVariable
 	SmtpSkipCertVerify AppConfigVariable
+    EmailLoginNotificationEnabled AppConfigVariable
+	EmailOneTimeAccessEnabled     AppConfigVariable
 	// LDAP
 	LdapEnabled                        AppConfigVariable
 	LdapUrl                            AppConfigVariable

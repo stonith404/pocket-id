@@ -16,7 +16,6 @@ type AppConfigUpdateDto struct {
 	SessionDuration                    string `json:"sessionDuration" binding:"required"`
 	EmailsVerified                     string `json:"emailsVerified" binding:"required"`
 	AllowOwnAccountEdit                string `json:"allowOwnAccountEdit" binding:"required"`
-	EmailEnabled                       string `json:"emailEnabled" binding:"required"`
 	SmtHost                            string `json:"smtpHost"`
 	SmtpPort                           string `json:"smtpPort"`
 	SmtpFrom                           string `json:"smtpFrom" binding:"omitempty,email"`
@@ -38,4 +37,6 @@ type AppConfigUpdateDto struct {
 	LdapAttributeGroupUniqueIdentifier string `json:"ldapAttributeGroupUniqueIdentifier"`
 	LdapAttributeGroupName             string `json:"ldapAttributeGroupName"`
 	LdapAttributeAdminGroup            string `json:"ldapAttributeAdminGroup"`
+	EmailOneTimeAccessEnabled     string `json:"emailOneTimeAccessEnabled" binding:"required"`
+	EmailLoginNotificationEnabled string `json:"emailLoginNotificationEnabled" binding:"required"`
 }

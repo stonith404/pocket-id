@@ -73,12 +73,7 @@ var defaultDbConfig = model.AppConfig{
 		IsInternal:   true,
 		DefaultValue: "svg",
 	},
-	// Email
-	EmailEnabled: model.AppConfigVariable{
-		Key:          "emailEnabled",
-		Type:         "bool",
-		DefaultValue: "false",
-	},
+    // Email
 	SmtpHost: model.AppConfigVariable{
 		Key:  "smtpHost",
 		Type: "string",
@@ -107,6 +102,17 @@ var defaultDbConfig = model.AppConfig{
 	SmtpSkipCertVerify: model.AppConfigVariable{
 		Key:          "smtpSkipCertVerify",
 		Type:         "bool",
+		DefaultValue: "false",
+	},
+    EmailLoginNotificationEnabled: model.AppConfigVariable{
+		Key:          "emailLoginNotificationEnabled",
+		Type:         "bool",
+		DefaultValue: "false",
+	},
+	EmailOneTimeAccessEnabled: model.AppConfigVariable{
+		Key:          "emailOneTimeAccessEnabled",
+		Type:         "bool",
+		IsPublic:     true,
 		DefaultValue: "false",
 	},
 	// LDAP
@@ -181,6 +187,13 @@ func (s *AppConfigService) UpdateAppConfig(input dto.AppConfigUpdateDto) ([]mode
 		field := rt.Field(i)
 		key := field.Tag.Get("json")
 		value := rv.FieldByName(field.Name).String()
+
+		// If the emailEnabled is set to false, disable the emailOneTimeAccessEnabled
+		if key == s.DbConfig.EmailOneTimeAccessEnabled.Key {
+			if rv.FieldByName("EmailEnabled").String() == "false" {
+				value = "false"
+			}
+		}
 
 		var appConfigVariable model.AppConfigVariable
 		if err := tx.First(&appConfigVariable, "key = ? AND is_internal = false", key).Error; err != nil {

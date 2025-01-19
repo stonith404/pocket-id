@@ -38,21 +38,25 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	auditLogService := service.NewAuditLogService(db, appConfigService, emailService, geoLiteService)
 	jwtService := service.NewJwtService(appConfigService)
 	webauthnService := service.NewWebAuthnService(db, jwtService, auditLogService, appConfigService)
-	userService := service.NewUserService(db, jwtService, auditLogService)
+	userService := service.NewUserService(db, jwtService, auditLogService, emailService)
 	customClaimService := service.NewCustomClaimService(db)
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)
 	userGroupService := service.NewUserGroupService(db)
 	ldapService := service.NewLdapService(db, appConfigService, userService, userGroupService)
 
+	rateLimitMiddleware := middleware.NewRateLimitMiddleware()
+
+	// Setup global middleware
 	r.Use(middleware.NewCorsMiddleware().Add())
 	r.Use(middleware.NewErrorHandlerMiddleware().Add())
-	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
+	r.Use(rateLimitMiddleware.Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
 
 	job.RegisterLdapJobs(ldapService, appConfigService)
+	job.RegisterDbCleanupJobs(db)
 
-	// Initialize middleware
+	// Initialize middleware for specific routes
 	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)
 	fileSizeLimitMiddleware := middleware.NewFileSizeLimitMiddleware()
 

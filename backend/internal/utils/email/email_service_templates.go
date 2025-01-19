@@ -9,8 +9,6 @@ import (
 	ttemplate "text/template"
 )
 
-const templateComponentsDir = "components"
-
 type Template[V any] struct {
 	Path  string
 	Title func(data *TemplateData[V]) string
