@@ -32,4 +32,4 @@ Pocket ID can sync Users and Group from a LDAP Source (lldap, OpenLDAP, Active D
 | Group Name Attribute              | uid                                   | The LDAP Attribute to use as the Name of Synced Groups                         |
 | Admin Group Name                  | _pocket_id_admins                     | The Group Name to Use for Admin Permissions for LDAP Users                     |
 
-<img src="img/ldap-attrs-example.png" width="700"/>
+<img src="/img/ldap-attrs-example.png" width="700"/>
