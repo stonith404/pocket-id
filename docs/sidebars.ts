@@ -81,11 +81,6 @@ const sidebars: SidebarsConfig = {
       label: "Demo",
       href: "https://pocket-id.eliasschneider.com/",
     },
-    {
-      type: "link",
-      label: "Discord",
-      href: "https://discord.gg/HutpbfB59Q",
-    },
   ],
 };
 
