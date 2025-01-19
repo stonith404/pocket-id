@@ -98,7 +98,7 @@
 		<CheckboxWithLabel
 			id="email-one-time-access"
 			label="Email One Time Access"
-			description="Enables sign in with an email as an alternative. This reduces the security significantly as anyone with access to the user's email can gain entry."
+			description="Allows users to sign in with a link sent to their email. This reduces the security significantly as anyone with access to the user's email can gain entry."
 			bind:checked={$inputs.emailOneTimeAccessEnabled.value}
 		/>
 	</div>
