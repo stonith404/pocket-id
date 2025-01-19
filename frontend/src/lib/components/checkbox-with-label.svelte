@@ -19,7 +19,7 @@
 	} = $props();
 </script>
 
-<div class="items-top mt-5 flex space-x-2">
+<div class="items-top flex space-x-2">
 	<Checkbox
 		{id}
 		{disabled}

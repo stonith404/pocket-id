@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
@@ -8,8 +11,6 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
 	"golang.org/x/time/rate"
-	"net/http"
-	"time"
 )
 
 func NewUserController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, rateLimitMiddleware *middleware.RateLimitMiddleware, userService *service.UserService, appConfigService *service.AppConfigService) {
@@ -201,7 +202,7 @@ func (uc *UserController) updateUser(c *gin.Context, updateOwnUser bool) {
 		userID = c.Param("id")
 	}
 
-	user, err := uc.userService.UpdateUser(userID, input, updateOwnUser)
+	user, err := uc.userService.UpdateUser(userID, input, updateOwnUser, false)
 	if err != nil {
 		c.Error(err)
 		return

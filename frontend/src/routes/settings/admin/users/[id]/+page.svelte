@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import CustomClaimService from '$lib/services/custom-claim-service';
@@ -43,10 +44,13 @@
 	<title>User Details {user.firstName} {user.lastName}</title>
 </svelte:head>
 
-<div>
+<div class="flex items-center justify-between">
 	<a class="text-muted-foreground flex text-sm" href="/settings/admin/users"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
+	{#if !!user.ldapId}
+		<Badge variant="default" class="">LDAP</Badge>
+	{/if}
 </div>
 <Card.Root>
 	<Card.Header>

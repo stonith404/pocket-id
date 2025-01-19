@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/controller"
+	"github.com/stonith404/pocket-id/backend/internal/job"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"golang.org/x/time/rate"
@@ -42,11 +43,14 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)
 	userGroupService := service.NewUserGroupService(db)
+	ldapService := service.NewLdapService(db, appConfigService, userService, userGroupService)
 
 	r.Use(middleware.NewCorsMiddleware().Add())
 	r.Use(middleware.NewErrorHandlerMiddleware().Add())
 	r.Use(middleware.NewRateLimitMiddleware().Add(rate.Every(time.Second), 60))
 	r.Use(middleware.NewJwtAuthMiddleware(jwtService, true).Add(false))
+
+	job.RegisterLdapJobs(ldapService, appConfigService)
 
 	// Initialize middleware
 	jwtAuthMiddleware := middleware.NewJwtAuthMiddleware(jwtService, false)
@@ -57,7 +61,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	controller.NewWebauthnController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), webauthnService, appConfigService)
 	controller.NewOidcController(apiGroup, jwtAuthMiddleware, fileSizeLimitMiddleware, oidcService, jwtService)
 	controller.NewUserController(apiGroup, jwtAuthMiddleware, middleware.NewRateLimitMiddleware(), userService, appConfigService)
-	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService)
+	controller.NewAppConfigController(apiGroup, jwtAuthMiddleware, appConfigService, emailService, ldapService)
 	controller.NewAuditLogController(apiGroup, auditLogService, jwtAuthMiddleware)
 	controller.NewUserGroupController(apiGroup, jwtAuthMiddleware, userGroupService)
 	controller.NewCustomClaimController(apiGroup, jwtAuthMiddleware, customClaimService)

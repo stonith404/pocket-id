@@ -7,8 +7,11 @@
 
 	let {
 		users: initialUsers,
+		selectionDisabled = false,
 		selectedUserIds = $bindable()
-	}: { users: Paginated<User>; selectedUserIds: string[] } = $props();
+	}: { users: Paginated<User>; 
+		selectionDisabled?: boolean;
+		selectedUserIds: string[] } = $props();
 
 	const userService = new UserService();
 
@@ -23,6 +26,7 @@
 		{ label: 'Email', sortColumn: 'email' }
 	]}
 	bind:selectedIds={selectedUserIds}
+	{selectionDisabled}
 >
 	{#snippet rows({ item })}
 		<Table.Cell>{item.firstName} {item.lastName}</Table.Cell>
