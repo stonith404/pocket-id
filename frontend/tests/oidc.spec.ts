@@ -10,8 +10,6 @@ test('Authorize existing client', async ({ page }) => {
 	const urlParams = createUrlParams(oidcClient);
 	await page.goto(`/authorize?${urlParams.toString()}`);
 
-	await page.getByRole('button', { name: 'Sign in' }).click();
-
 	// Ignore DNS resolution error as the callback URL is not reachable
 	await page.waitForURL(oidcClient.callbackUrl).catch((e) => {
 		if (!e.message.includes('net::ERR_NAME_NOT_RESOLVED')) {
@@ -42,6 +40,26 @@ test('Authorize new client', async ({ page }) => {
 	const urlParams = createUrlParams(oidcClient);
 	await page.goto(`/authorize?${urlParams.toString()}`);
 
+	await expect(page.getByTestId('scopes').getByRole('heading', { name: 'Email' })).toBeVisible();
+	await expect(page.getByTestId('scopes').getByRole('heading', { name: 'Profile' })).toBeVisible();
+
+	await page.getByRole('button', { name: 'Sign in' }).click();
+
+	// Ignore DNS resolution error as the callback URL is not reachable
+	await page.waitForURL(oidcClient.callbackUrl).catch((e) => {
+		if (!e.message.includes('net::ERR_NAME_NOT_RESOLVED')) {
+			throw e;
+		}
+	});
+});
+
+test('Authorize new client while not signed in', async ({ page }) => {
+	const oidcClient = oidcClients.immich;
+	const urlParams = createUrlParams(oidcClient);
+	await page.context().clearCookies();
+	await page.goto(`/authorize?${urlParams.toString()}`);
+
+	await (await passkeyUtil.init(page)).addPasskey();
 	await page.getByRole('button', { name: 'Sign in' }).click();
 
 	await expect(page.getByTestId('scopes').getByRole('heading', { name: 'Email' })).toBeVisible();
