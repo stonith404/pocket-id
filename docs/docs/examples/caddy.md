@@ -2,7 +2,7 @@
 id: caddy
 ---
 
-### Caddy
+# Caddy
 
 With [caddy-security](https://github.com/greenpau/caddy-security) you can easily protect your services with Pocket ID.
 

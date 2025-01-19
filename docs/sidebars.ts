@@ -20,6 +20,10 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "setup/ldap",
+        },
+        {
+          type: "doc",
           id: "setup/nginx-reverse-proxy",
         },
         {
