@@ -50,19 +50,27 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "Examples",
+      label: "Guides",
+      link: {
+        type: 'generated-index',
+        title: 'Guides',
+        description: 'Guides to Setup Providers in Pocket ID',
+        slug: '/category/guides',
+        keywords: ['guides'],
+        image: '/img/pocket-id.png',
+      },
       items: [
         {
           type: "doc",
-          id: "examples/caddy",
+          id: "guides/caddy",
         },
         {
           type: "doc",
-          id: "examples/oauth2-proxy",
+          id: "guides/oauth2-proxy",
         },
         {
           type: "doc",
-          id: "examples/jellyfin",
+          id: "guides/jellyfin",
         },
       ],
     },

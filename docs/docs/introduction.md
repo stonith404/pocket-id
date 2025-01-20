@@ -14,6 +14,7 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
 
 ## Get to know Pocket ID
 
-→ [Try the Demo of Pocket ID](https://pocket-id.eliasschneider.com/)
+→ [Try the Demo of Pocket ID](https://pocket-id.eliasschneider.com/)<br/>
+→ [Check out the Guides on Setting up Providers](/pocket-id/guides/)
 
 <img src="https://github.com/user-attachments/assets/96ac549d-b897-404a-8811-f42b16ea58e2" width="700"/>
