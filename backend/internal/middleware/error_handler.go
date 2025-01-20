@@ -83,8 +83,6 @@ func handleValidationError(validationErrors validator.ValidationErrors) string {
 			errorMessage = fmt.Sprintf("%s must be at least %s characters long", fieldName, ve.Param())
 		case "max":
 			errorMessage = fmt.Sprintf("%s must be at most %s characters long", fieldName, ve.Param())
-		case "urlList":
-			errorMessage = fmt.Sprintf("%s must be a list of valid URLs", fieldName)
 		default:
 			errorMessage = fmt.Sprintf("%s is invalid", fieldName)
 		}
