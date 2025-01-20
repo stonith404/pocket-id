@@ -21,7 +21,7 @@ RUN CGO_ENABLED=1 GOOS=linux go build -o /app/backend/pocket-id-backend .
 
 # Stage 3: Production Image
 FROM node:20-alpine
-# Delete default node user
+# Delete default node user
 RUN deluser --remove-home node
 
 RUN apk add --no-cache caddy curl su-exec
