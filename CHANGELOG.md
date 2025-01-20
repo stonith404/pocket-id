@@ -1,3 +1,15 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.25.1...v) (2025-01-20)
+
+
+### Features
+
+* support wildcard callback URLs ([8a1db0c](https://github.com/stonith404/pocket-id/commit/8a1db0cb4a5d4b32b4fdc19d41fff688a7c71a56))
+
+
+### Bug Fixes
+
+* non LDAP users get created with a empty LDAP ID string ([3f02d08](https://github.com/stonith404/pocket-id/commit/3f02d081098ad2caaa60a56eea4705639f80d01f))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.25.0...v) (2025-01-19)
 
 
