@@ -1,15 +1,60 @@
-# Jellyfin SSO Integration Guide
+# Sample configrations for well-known self-hosted services
+
+## [Vikunja](https://vikunja.io/)
+
+1. In Pocket-ID create a new OIDC Client, name it i.e. `Vikunja`
+2. Set the callback url to: `https://<your-vikunja-subdomain>.<your-domain>/auth/openid/pocketid`
+3. In `Vikunja` ensure to map a config file to your container, see [here](https://vikunja.io/docs/config-options/#using-a-config-file-with-docker-compose)
+4. Add or set the following content to the `config.yml` file:
+
+```yml
+auth:
+  openid:
+    enabled: true
+    redirecturl: https://<your-vikunja-subdomain>.<your-domain>/auth/openid/pocketid
+    providers:
+      - name: Pocket-Id
+        authurl: https://<your-pocket-id-subdomain>.<your-domain>
+        clientid: <client id from the created OIDC client>
+        clientsecret: <client secret from the created OIDC client>
+```
+
+## [Hoarder](https://docs.hoarder.app/)
+
+1. In Pocket-ID create a new OIDC Client, name it i.e. `Hoarder`
+2. Set the callback url to: `https://<your-hoarder-subdomain>.<your-domain>/api/auth/callback/custom`
+3. Open your `.env` file from your Hoarder compose and add these lines:
+
+```ini
+  OAUTH_WELLKNOWN_URL = https://<your-pocket-id-subdomain>.<your-domain>/.well-known/openid-configuration
+  OAUTH_CLIENT_SECRET = <client secret from the created OIDC client>
+  OAUTH_CLIENT_ID = <client id from the created OIDC client>
+  OAUTH_PROVIDER_NAME = Pocket-Id
+  NEXTAUTH_URL = https:///<your-hoarder-subdomain>.<your-domain>
+
+```
+
+4. Optional: If you like to disable password authentication and link your existing hoarder account with your pocket-id identity
+
+```ini
+  DISABLE_PASSWORD_AUTH	= true
+  OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING = true
+```
+
+## [Jellyfin](https://jellyfin.org/)
 
 > Due to the current limitations of the Jellyfin SSO plugin, this integration will only work in a browser. When tested, the Jellyfin app did not work and displayed an error, even when custom menu buttons were created.
 
 > To view the original references and a full list of capabilities, please visit the [Jellyfin SSO OpenID Section](https://github.com/9p4/jellyfin-plugin-sso?tab=readme-ov-file#openid).
 
 ### Requirements
+
 - [Jellyfin Server](https://jellyfin.org/downloads/server)
 - [Jellyfin SSO Plugin](https://github.com/9p4/jellyfin-plugin-sso)
 - HTTPS connection to your Jellyfin server
 
 ### OIDC - Pocket ID Setup
+
 To start, we need to create a new SSO resource in our Jellyfin application.
 
 > Replace the `JELLYFINDOMAIN` and `PROVIDER` elements in the URL.
@@ -43,9 +88,11 @@ To start, we need to create a new SSO resource in our Jellyfin application.
 8. Click **Save** and restart Jellyfin.
 
 ### Optional Step - Custom Home Button
+
 Follow the [guide to create a login button on the login page](https://github.com/9p4/jellyfin-plugin-sso?tab=readme-ov-file#creating-a-login-button-on-the-main-page) to add a custom button on your sign-in page. This step is optional, as you could also provide the sign-in URL via a bookmark or other means.
 
 ### Signing into Your Jellyfin Instance
+
 Done! You have successfully set up SSO for your Jellyfin instance using Pocket ID.
 
 > **Note:** Sometimes there may be a brief delay when using the custom menu option. This is related to the Jellyfin plugin and not Pocket ID.
