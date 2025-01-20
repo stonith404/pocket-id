@@ -42,8 +42,6 @@ The backend is built with [Gin](https://gin-gonic.com) and written in Go.
 
 1. Open the `backend` folder
 2. Copy the `.env.example` file to `.env` and change the `APP_ENV` to `development`.
-   You will also need to add a value for `MAXMIND_LICENSE_KEY`.
-   And you'll need working TLS towards your modified `PUBLIC_APP_URL`.
 3. `mkdir data` in the backend folder
 4. Start the backend with `go run cmd/main.go`
 
@@ -55,17 +53,16 @@ The frontend is built with [SvelteKit](https://kit.svelte.dev) and written in Ty
 
 1. Open the `frontend` folder
 2. Copy the `.env.example` file to `.env`
-   Again edit `PUBLIC_APP_URL` to be your domain with working TLS.
 3. Install the dependencies with `npm install`
 4. Start the frontend with `npm run dev`
-
-You're all set!
 
 ### Reverse Proxy
 We use [Caddy](https://caddyserver.com) as a reverse proxy. You can use any other reverse proxy if you want but you have to configure it yourself.
 
 #### Setup
 Run `caddy run --config reverse-proxy/Caddyfile` in the root folder.
+
+You're all set!
 
 ### Testing
 
