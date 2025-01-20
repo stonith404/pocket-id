@@ -12,6 +12,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/oschwald/maxminddb-golang/v2"
@@ -19,7 +20,9 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 )
 
-type GeoLiteService struct{}
+type GeoLiteService struct {
+	mutex sync.Mutex
+}
 
 var localhostIPNets = []*net.IPNet{
 	{IP: net.IPv4(127, 0, 0, 0), Mask: net.CIDRMask(8, 32)}, // 127.0.0.0/8
@@ -69,6 +72,10 @@ func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string
 			}
 		}
 	}
+
+	// Race condition between reading and writing the database.
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	db, err := maxminddb.Open(common.EnvConfig.GeoLiteDBPath)
 	if err != nil {
@@ -161,15 +168,43 @@ func (s *GeoLiteService) extractDatabase(reader io.Reader) error {
 
 		// Check if the file is the GeoLite2-City.mmdb file
 		if header.Typeflag == tar.TypeReg && filepath.Base(header.Name) == "GeoLite2-City.mmdb" {
-			outFile, err := os.Create(common.EnvConfig.GeoLiteDBPath)
+			// extract to a temporary file to avoid having a corrupted db in case of write failure.
+			baseDir := filepath.Dir(common.EnvConfig.GeoLiteDBPath)
+			tmpFile, err := os.CreateTemp(baseDir, "geolite.*.mmdb.tmp")
 			if err != nil {
-				return fmt.Errorf("failed to create target database file: %w", err)
+				return fmt.Errorf("failed to create temporary database file: %w", err)
 			}
-			defer outFile.Close()
+			tempName := tmpFile.Name()
 
 			// Write the file contents directly to the target location
-			if _, err := io.Copy(outFile, tarReader); err != nil {
+			if _, err := io.Copy(tmpFile, tarReader); err != nil {
+				// if fails to write, then cleanup and throw an error
+				tmpFile.Close()
+				os.Remove(tempName)
 				return fmt.Errorf("failed to write database file: %w", err)
+			}
+			tmpFile.Close()
+
+			// ensure the database is not corrupted
+			db, err := maxminddb.Open(tempName)
+			if err != nil {
+				// if fails to write, then cleanup and throw an error
+				os.Remove(tempName)
+				return fmt.Errorf("failed to open downloaded database file: %w", err)
+			}
+			db.Close()
+
+			// ensure we lock the structure before we overwrite the database
+			// to prevent race conditions between reading and writing the mmdb.
+			s.mutex.Lock()
+			// replace the old file with the new file
+			err = os.Rename(tempName, common.EnvConfig.GeoLiteDBPath)
+			s.mutex.Unlock()
+
+			if err != nil {
+				// if cannot overwrite via rename, then cleanup and throw an error
+				os.Remove(tempName)
+				return fmt.Errorf("failed to replace database file: %w", err)
 			}
 			return nil
 		}
