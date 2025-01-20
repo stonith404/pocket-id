@@ -21,6 +21,21 @@ import (
 
 type GeoLiteService struct{}
 
+var localhostIPNets = []*net.IPNet{
+	{IP: net.IPv4(127, 0, 0, 0), Mask: net.CIDRMask(8, 32)}, // 127.0.0.0/8
+	{IP: net.IPv6loopback, Mask: net.CIDRMask(128, 128)},    // ::1/128
+}
+
+var privateLanIPNets = []*net.IPNet{
+	{IP: net.IPv4(10, 0, 0, 0), Mask: net.CIDRMask(8, 32)},     // 10.0.0.0/8
+	{IP: net.IPv4(172, 16, 0, 0), Mask: net.CIDRMask(12, 32)},  // 172.16.0.0/12
+	{IP: net.IPv4(192, 168, 0, 0), Mask: net.CIDRMask(16, 32)}, // 192.168.0.0/16
+}
+
+var tailscaleIPNets = []*net.IPNet{
+	{IP: net.IPv4(100, 64, 0, 0), Mask: net.CIDRMask(10, 32)}, // 100.64.0.0/10
+}
+
 // NewGeoLiteService initializes a new GeoLiteService instance and starts a goroutine to update the GeoLite2 City database.
 func NewGeoLiteService() *GeoLiteService {
 	service := &GeoLiteService{}
@@ -36,10 +51,22 @@ func NewGeoLiteService() *GeoLiteService {
 
 // GetLocationByIP returns the country and city of the given IP address.
 func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string, err error) {
-	// Check if IP is in Tailscale's CGNAT range (100.64.0.0/10)
+	// Check the IP address against known private IP ranges
 	if ip := net.ParseIP(ipAddress); ip != nil {
-		if ip.To4() != nil && ip.To4()[0] == 100 && ip.To4()[1] >= 64 && ip.To4()[1] <= 127 {
-			return "Internal Network", "Tailscale", nil
+		for _, ipNet := range tailscaleIPNets {
+			if ipNet.Contains(ip) {
+				return "Internal Network", "Tailscale", nil
+			}
+		}
+		for _, ipNet := range privateLanIPNets {
+			if ipNet.Contains(ip) {
+				return "Internal Network", "LAN/Docker/k8s", nil
+			}
+		}
+		for _, ipNet := range localhostIPNets {
+			if ipNet.Contains(ip) {
+				return "Internal Network", "localhost", nil
+			}
 		}
 	}
 
