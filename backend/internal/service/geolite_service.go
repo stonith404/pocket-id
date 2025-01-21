@@ -12,6 +12,7 @@ import (
 	"net/netip"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/oschwald/maxminddb-golang/v2"
@@ -19,7 +20,24 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 )
 
-type GeoLiteService struct{}
+type GeoLiteService struct {
+	mutex sync.Mutex
+}
+
+var localhostIPNets = []*net.IPNet{
+	{IP: net.IPv4(127, 0, 0, 0), Mask: net.CIDRMask(8, 32)}, // 127.0.0.0/8
+	{IP: net.IPv6loopback, Mask: net.CIDRMask(128, 128)},    // ::1/128
+}
+
+var privateLanIPNets = []*net.IPNet{
+	{IP: net.IPv4(10, 0, 0, 0), Mask: net.CIDRMask(8, 32)},     // 10.0.0.0/8
+	{IP: net.IPv4(172, 16, 0, 0), Mask: net.CIDRMask(12, 32)},  // 172.16.0.0/12
+	{IP: net.IPv4(192, 168, 0, 0), Mask: net.CIDRMask(16, 32)}, // 192.168.0.0/16
+}
+
+var tailscaleIPNets = []*net.IPNet{
+	{IP: net.IPv4(100, 64, 0, 0), Mask: net.CIDRMask(10, 32)}, // 100.64.0.0/10
+}
 
 // NewGeoLiteService initializes a new GeoLiteService instance and starts a goroutine to update the GeoLite2 City database.
 func NewGeoLiteService() *GeoLiteService {
@@ -36,12 +54,28 @@ func NewGeoLiteService() *GeoLiteService {
 
 // GetLocationByIP returns the country and city of the given IP address.
 func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string, err error) {
-	// Check if IP is in Tailscale's CGNAT range (100.64.0.0/10)
+	// Check the IP address against known private IP ranges
 	if ip := net.ParseIP(ipAddress); ip != nil {
-		if ip.To4() != nil && ip.To4()[0] == 100 && ip.To4()[1] >= 64 && ip.To4()[1] <= 127 {
-			return "Internal Network", "Tailscale", nil
+		for _, ipNet := range tailscaleIPNets {
+			if ipNet.Contains(ip) {
+				return "Internal Network", "Tailscale", nil
+			}
+		}
+		for _, ipNet := range privateLanIPNets {
+			if ipNet.Contains(ip) {
+				return "Internal Network", "LAN/Docker/k8s", nil
+			}
+		}
+		for _, ipNet := range localhostIPNets {
+			if ipNet.Contains(ip) {
+				return "Internal Network", "localhost", nil
+			}
 		}
 	}
+
+	// Race condition between reading and writing the database.
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	db, err := maxminddb.Open(common.EnvConfig.GeoLiteDBPath)
 	if err != nil {
@@ -134,15 +168,43 @@ func (s *GeoLiteService) extractDatabase(reader io.Reader) error {
 
 		// Check if the file is the GeoLite2-City.mmdb file
 		if header.Typeflag == tar.TypeReg && filepath.Base(header.Name) == "GeoLite2-City.mmdb" {
-			outFile, err := os.Create(common.EnvConfig.GeoLiteDBPath)
+			// extract to a temporary file to avoid having a corrupted db in case of write failure.
+			baseDir := filepath.Dir(common.EnvConfig.GeoLiteDBPath)
+			tmpFile, err := os.CreateTemp(baseDir, "geolite.*.mmdb.tmp")
 			if err != nil {
-				return fmt.Errorf("failed to create target database file: %w", err)
+				return fmt.Errorf("failed to create temporary database file: %w", err)
 			}
-			defer outFile.Close()
+			tempName := tmpFile.Name()
 
 			// Write the file contents directly to the target location
-			if _, err := io.Copy(outFile, tarReader); err != nil {
+			if _, err := io.Copy(tmpFile, tarReader); err != nil {
+				// if fails to write, then cleanup and throw an error
+				tmpFile.Close()
+				os.Remove(tempName)
 				return fmt.Errorf("failed to write database file: %w", err)
+			}
+			tmpFile.Close()
+
+			// ensure the database is not corrupted
+			db, err := maxminddb.Open(tempName)
+			if err != nil {
+				// if fails to write, then cleanup and throw an error
+				os.Remove(tempName)
+				return fmt.Errorf("failed to open downloaded database file: %w", err)
+			}
+			db.Close()
+
+			// ensure we lock the structure before we overwrite the database
+			// to prevent race conditions between reading and writing the mmdb.
+			s.mutex.Lock()
+			// replace the old file with the new file
+			err = os.Rename(tempName, common.EnvConfig.GeoLiteDBPath)
+			s.mutex.Unlock()
+
+			if err != nil {
+				// if cannot overwrite via rename, then cleanup and throw an error
+				os.Remove(tempName)
+				return fmt.Errorf("failed to replace database file: %w", err)
 			}
 			return nil
 		}

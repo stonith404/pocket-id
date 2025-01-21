@@ -39,13 +39,14 @@ caddy add-package github.com/greenpau/caddy-security
 
 ```bash
 {
-  # Port to listen on
+  	# Port to listen on
 	http_port 443
 
-  # Configure caddy-security.
+  	# Configure caddy-security.
 	order authenticate before respond
 	security {
 		oauth identity provider generic {
+			delay_start 3
 			realm generic
 			driver generic
 			client_id client-id-from-pocket-id # Replace with your own client ID

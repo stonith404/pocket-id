@@ -64,7 +64,7 @@
 	</Alert.Root>
 {/if}
 
-{#if $appConfigStore.allowOwnAccountEdit}
+<fieldset disabled={!$appConfigStore.allowOwnAccountEdit || !!account.ldapId}>
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Account Details</Card.Title>
@@ -73,7 +73,7 @@
 			<AccountForm {account} callback={updateAccount} />
 		</Card.Content>
 	</Card.Root>
-{/if}
+</fieldset>
 
 <Card.Root>
 	<Card.Header>

@@ -1,3 +1,40 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.25.1...v) (2025-01-20)
+
+
+### Features
+
+* support wildcard callback URLs ([8a1db0c](https://github.com/stonith404/pocket-id/commit/8a1db0cb4a5d4b32b4fdc19d41fff688a7c71a56))
+
+
+### Bug Fixes
+
+* non LDAP users get created with a empty LDAP ID string ([3f02d08](https://github.com/stonith404/pocket-id/commit/3f02d081098ad2caaa60a56eea4705639f80d01f))
+
+## [](https://github.com/stonith404/pocket-id/compare/v0.25.0...v) (2025-01-19)
+
+
+### Bug Fixes
+
+* disable account details inputs if user is imported from LDAP ([a8b9d60](https://github.com/stonith404/pocket-id/commit/a8b9d60a86e80c10d6fba07072b1d32cec400ecb))
+
+## [](https://github.com/stonith404/pocket-id/compare/v0.24.1...v) (2025-01-19)
+
+
+### Features
+
+* add LDAP sync ([#106](https://github.com/stonith404/pocket-id/issues/106)) ([5101b14](https://github.com/stonith404/pocket-id/commit/5101b14eec68a9507e1730994178d0ebe8185876))
+* allow sign in with email ([#100](https://github.com/stonith404/pocket-id/issues/100)) ([06b90ed](https://github.com/stonith404/pocket-id/commit/06b90eddd645cce57813f2536e4a6a8836548f2b))
+* automatically authorize client if signed in ([d5dd118](https://github.com/stonith404/pocket-id/commit/d5dd118a3f4ad6eed9ca496c458201bb10f148a0))
+
+
+### Bug Fixes
+
+* always set secure on cookie ([#130](https://github.com/stonith404/pocket-id/issues/130)) ([fda08ac](https://github.com/stonith404/pocket-id/commit/fda08ac1cd88842e25dc47395ed1288a5cfac4f8))
+* don't panic if LDAP sync fails on startup ([e284e35](https://github.com/stonith404/pocket-id/commit/e284e352e2b95fac1d098de3d404e8531de4b869))
+* improve spacing of checkboxes on application configuration page ([090eca2](https://github.com/stonith404/pocket-id/commit/090eca202d198852e6fbf4e6bebaf3b5ada13944))
+* search input not displayed if response hasn't any items ([05a98eb](https://github.com/stonith404/pocket-id/commit/05a98ebe87d7a88e8b96b144c53250a40d724ec3))
+* session duration ignored in cookie expiration ([bc8f454](https://github.com/stonith404/pocket-id/commit/bc8f454ea173ecc60e06450a1d22e24207f76714))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.24.0...v) (2025-01-13)
 
 

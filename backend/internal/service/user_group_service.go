@@ -62,7 +62,10 @@ func (s *UserGroupService) Create(input dto.UserGroupCreateDto) (group model.Use
 	group = model.UserGroup{
 		FriendlyName: input.FriendlyName,
 		Name:         input.Name,
-		LdapID:       &input.LdapID,
+	}
+
+	if input.LdapID != "" {
+		group.LdapID = &input.LdapID
 	}
 
 	if err := s.db.Preload("Users").Create(&group).Error; err != nil {

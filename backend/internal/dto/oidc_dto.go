@@ -16,7 +16,7 @@ type OidcClientDto struct {
 
 type OidcClientCreateDto struct {
 	Name         string   `json:"name" binding:"required,max=50"`
-	CallbackURLs []string `json:"callbackURLs" binding:"required,urlList"`
+	CallbackURLs []string `json:"callbackURLs" binding:"required"`
 	IsPublic     bool     `json:"isPublic"`
 	PkceEnabled  bool     `json:"pkceEnabled"`
 }

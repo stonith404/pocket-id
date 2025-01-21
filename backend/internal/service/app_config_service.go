@@ -73,7 +73,7 @@ var defaultDbConfig = model.AppConfig{
 		IsInternal:   true,
 		DefaultValue: "svg",
 	},
-    // Email
+	// Email
 	SmtpHost: model.AppConfigVariable{
 		Key:  "smtpHost",
 		Type: "string",
@@ -104,7 +104,7 @@ var defaultDbConfig = model.AppConfig{
 		Type:         "bool",
 		DefaultValue: "false",
 	},
-    EmailLoginNotificationEnabled: model.AppConfigVariable{
+	EmailLoginNotificationEnabled: model.AppConfigVariable{
 		Key:          "emailLoginNotificationEnabled",
 		Type:         "bool",
 		DefaultValue: "false",

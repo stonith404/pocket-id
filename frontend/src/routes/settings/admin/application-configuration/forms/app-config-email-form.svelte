@@ -68,7 +68,7 @@
 
 <form onsubmit={onSubmit}>
 	<h4 class="text-lg font-semibold">SMTP Configuration</h4>
-	<div class="mt-4 grid grid-cols-1 items-start gap-5 md:grid-cols-2">
+	<div class="mt-4 grid grid-cols-1 items-end gap-5 md:grid-cols-2">
 		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
 		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
 		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
@@ -88,7 +88,7 @@
 		/>
 	</div>
 	<h4 class="mt-10 text-lg font-semibold">Enabled Emails</h4>
-	<div class="mt-4 flex flex-col gap-3">
+	<div class="mt-4 flex flex-col gap-5">
 		<CheckboxWithLabel
 			id="email-login-notification"
 			label="Email Login Notification"

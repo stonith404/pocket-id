@@ -66,8 +66,11 @@ func (s *UserService) CreateUser(input dto.UserCreateDto) (model.User, error) {
 		Email:     input.Email,
 		Username:  input.Username,
 		IsAdmin:   input.IsAdmin,
-		LdapID:    &input.LdapID,
 	}
+	if input.LdapID != "" {
+		user.LdapID = &input.LdapID
+	}
+
 	if err := s.db.Create(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			return model.User{}, s.checkDuplicatedFields(user)

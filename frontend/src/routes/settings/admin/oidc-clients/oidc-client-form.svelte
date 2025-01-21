@@ -36,7 +36,7 @@
 
 	const formSchema = z.object({
 		name: z.string().min(2).max(50),
-		callbackURLs: z.array(z.string().url()).nonempty(),
+		callbackURLs: z.array(z.string()).nonempty(),
 		isPublic: z.boolean(),
 		pkceEnabled: z.boolean()
 	});

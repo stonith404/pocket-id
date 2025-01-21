@@ -14,7 +14,7 @@ import (
 	"gorm.io/gorm"
 	"mime/multipart"
 	"os"
-	"slices"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -432,8 +432,16 @@ func (s *OidcService) getCallbackURL(client model.OidcClient, inputCallbackURL s
 	if inputCallbackURL == "" {
 		return client.CallbackURLs[0], nil
 	}
-	if slices.Contains(client.CallbackURLs, inputCallbackURL) {
-		return inputCallbackURL, nil
+
+	for _, callbackPattern := range client.CallbackURLs {
+		regexPattern := strings.ReplaceAll(regexp.QuoteMeta(callbackPattern), `\*`, ".*") + "$"
+		matched, err := regexp.MatchString(regexPattern, inputCallbackURL)
+		if err != nil {
+			return "", err
+		}
+		if matched {
+			return inputCallbackURL, nil
+		}
 	}
 
 	return "", &common.OidcInvalidCallbackURLError{}
