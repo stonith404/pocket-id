@@ -1,4 +1,8 @@
-# Proxy Services through Pocket ID
+---
+id: proxy-services
+---
+
+# Proxy Services
 
 The goal of Pocket ID is to function exclusively as an OIDC provider. As such, we don't have a built-in proxy provider. However, you can use other tools that act as a middleware to protect your services and support OIDC as an authentication provider.
 
@@ -33,13 +37,14 @@ caddy add-package github.com/greenpau/caddy-security
 
 ```bash
 {
-  # Port to listen on
+  	# Port to listen on
 	http_port 443
 
-  # Configure caddy-security.
+  	# Configure caddy-security.
 	order authenticate before respond
 	security {
 		oauth identity provider generic {
+			delay_start 3
 			realm generic
 			driver generic
 			client_id client-id-from-pocket-id # Replace with your own client ID
