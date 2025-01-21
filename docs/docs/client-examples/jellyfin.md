@@ -32,18 +32,18 @@ To start, we need to create a new SSO resource in our Jellyfin application.
 2. Enter the <i>OID Provider Name (we used "test_resource" as our name in the callback URL), Open ID, OID Secret, and mark it as enabled.</i>
 3. The following steps are optional based on your needs. In this guide, we’ll be managing only regular users, not admins.
 
-![img.png](imgs/jelly_fin_img.png)
+![img.png](imgs/jellyfin_img.png)
 
 > To manage user access through groups, follow steps **4, 5, and 6**. Otherwise, leave it blank and skip to step 7.
 
-![img2.png](imgs/jelly_fin_img2.png)
+![img2.png](imgs/jellyfin_img2.png)
 
 4. Under <i>Roles</i>, type the name of the group you want to use. **Note:** This must be the group name, not the label. Double-check in Pocket ID, as an incorrect name will lock users out.
 5. Skip every field until you reach the **Role Claim** field, and type `groups`.
    > This step is crucial if you want to manage users through groups.
 6. Repeat the above step under **Request Additional Scopes**. This will pull the group scope during the sign-in process; otherwise, the previous steps won’t work.
 
-![img3.png](imgs/jelly_fin_img3.png)
+![img3.png](imgs/jellyfin_img3.png)
 
 7. Skip the remaining fields until you reach **Scheme Override**. Enter `https` here. If omitted, it will attempt to use HTTP first, which will break as WebAuthn requires an HTTPS connection.
 8. Click **Save** and restart Jellyfin.
