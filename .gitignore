@@ -39,7 +39,7 @@ pocket-id-backend
 /backend/GeoLite2-City.mmdb
 
 # Production
-/build
+build/
 
 # Generated files
 docs/.docusaurus
