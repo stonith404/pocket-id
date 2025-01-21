@@ -5,7 +5,7 @@ id: semaphore-ui
 # Semaphore UI
 
 1. In Pocket-ID create a new OIDC Client, name it i.e. `Semaphore UI`
-2. Set the callback url to: `https://devops.ofkm.us/api/auth/oidc/pocketid/redirect/`
+2. Set the callback url to: `https://<your-semaphore-ui-url>/api/auth/oidc/pocketid/redirect/`
 3. Add the following to your `config.json` file for Semaphore UI
 
 ```json
