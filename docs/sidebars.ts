@@ -64,6 +64,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/vikunja",
         "client-examples/open-webui",
         "client-examples/semaphore-ui",
+        "client-examples/cloudflare-zero-trust",
       ],
     },
     {
