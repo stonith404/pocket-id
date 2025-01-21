@@ -40,37 +40,37 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "Troubleshooting",
+      label: "Guides",
       items: [
         {
           type: "doc",
-          id: "troubleshooting/account-recovery",
+          id: "guides/proxy-services",
         },
       ],
     },
     {
       type: "category",
-      label: "Guides",
+      label: "Client Examples",
       link: {
-        type: 'generated-index',
-        title: 'Guides',
-        description: 'Guides to Setup Providers in Pocket ID',
-        slug: '/category/guides',
-        keywords: ['guides'],
-        image: '/img/pocket-id.png',
+        type: "generated-index",
+        title: "Client Examples",
+        description:
+          "Examples of how to setup Pocket ID with different clients",
+        slug: "client-examples",
       },
+      items: [
+        "client-examples/hoarder",
+        "client-examples/jellyfin",
+        "client-examples/vikunja",
+      ],
+    },
+    {
+      type: "category",
+      label: "Troubleshooting",
       items: [
         {
           type: "doc",
-          id: "guides/caddy",
-        },
-        {
-          type: "doc",
-          id: "guides/oauth2-proxy",
-        },
-        {
-          type: "doc",
-          id: "guides/jellyfin",
+          id: "troubleshooting/account-recovery",
         },
       ],
     },
