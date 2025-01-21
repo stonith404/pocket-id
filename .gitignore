@@ -38,10 +38,8 @@ data
 pocket-id-backend
 /backend/GeoLite2-City.mmdb
 
-# Production
-build/
-
 # Generated files
+docs/build
 docs/.docusaurus
 docs/.cache-loader
 
