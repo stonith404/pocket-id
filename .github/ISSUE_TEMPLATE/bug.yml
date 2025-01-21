@@ -41,8 +41,8 @@ body:
     validations:
       required: true
     attributes:
-      label: "Extra Information"
-      description: "Specify the version of Pocket ID, and any Reverse Proxy configurations you may have setup."
+      label: "Version and Environment"
+      description: "Please specify the version of Pocket ID, along with any environment-specific configurations, such your reverse proxy, that might be relevant."
       placeholder: "e.g., v0.24.1"
   - type: textarea
     id: log-files
