@@ -62,6 +62,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/hoarder",
         "client-examples/jellyfin",
         "client-examples/vikunja",
+        "client-examples/open-webui",
       ],
     },
     {
