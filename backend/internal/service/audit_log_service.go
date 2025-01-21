@@ -22,7 +22,7 @@ func NewAuditLogService(db *gorm.DB, appConfigService *AppConfigService, emailSe
 
 // Create creates a new audit log entry in the database
 func (s *AuditLogService) Create(event model.AuditLogEvent, ipAddress, userAgent, userID string, data model.AuditLogData) model.AuditLog {
-	country, city, err := s.geoliteService.GetLocationByIP(ipAddress)
+	country, city, isp, asNumber, err := s.geoliteService.GetLocationByIP(ipAddress)
 	if err != nil {
 		log.Printf("Failed to get IP location: %v\n", err)
 	}
@@ -32,6 +32,8 @@ func (s *AuditLogService) Create(event model.AuditLogEvent, ipAddress, userAgent
 		IpAddress: ipAddress,
 		Country:   country,
 		City:      city,
+		ISP:       isp,
+		ASNumber:  asNumber,
 		UserAgent: userAgent,
 		UserID:    userID,
 		Data:      data,
