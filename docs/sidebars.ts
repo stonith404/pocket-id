@@ -63,6 +63,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/jellyfin",
         "client-examples/vikunja",
         "client-examples/open-webui",
+        "client-examples/semaphore-ui",
       ],
     },
     {
