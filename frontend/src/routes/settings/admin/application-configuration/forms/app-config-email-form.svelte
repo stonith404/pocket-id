@@ -55,6 +55,7 @@
 	}
 
 	async function onTestEmail() {
+		onSubmit();
 		isSendingTestEmail = true;
 		await appConfigService
 			.sendTestEmail()
@@ -105,7 +106,7 @@
 
 	<div class="mt-8 flex flex-wrap justify-end gap-3">
 		<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
-			>Send Test Email</Button
+			>Save and Send Test Email</Button
 		>
 		<Button type="submit">Save</Button>
 	</div>
