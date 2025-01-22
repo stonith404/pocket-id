@@ -59,12 +59,12 @@ const sidebars: SidebarsConfig = {
         slug: "client-examples",
       },
       items: [
+        "client-examples/cloudflare-zero-trust",
         "client-examples/hoarder",
         "client-examples/jellyfin",
-        "client-examples/vikunja",
         "client-examples/open-webui",
         "client-examples/semaphore-ui",
-        "client-examples/cloudflare-zero-trust",
+        "client-examples/vikunja",
       ],
     },
     {
