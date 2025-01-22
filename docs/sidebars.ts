@@ -64,6 +64,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/jellyfin",
         "client-examples/netbox",
         "client-examples/open-webui",
+        "client-examples/proxmox",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
       ],
