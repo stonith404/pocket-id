@@ -20,7 +20,7 @@ The following example variables are used, and should be replaced with your actua
 
 1. Open the Proxmox Console and navigate to: `Datacenter - Realms`
 2. Add a new `Open ID Connect Server` Realm
-3. Enter the base URL of your Pocket ID instance for the `Issuer URL`
+3. Enter `https://id.example.com` for the `Issuer URL`
 4. Enter a name for the realm of your choice ie. `PocketID`
 5. Paste the `Client ID` from Pocket ID into the `Client ID` field in Proxmox.
 6. Paste the `Client Secret` from Pocket ID into the `Client Key` field in Proxmox.
