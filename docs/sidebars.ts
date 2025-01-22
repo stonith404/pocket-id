@@ -62,6 +62,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/cloudflare-zero-trust",
         "client-examples/hoarder",
         "client-examples/jellyfin",
+        "client-examples/netbox",
         "client-examples/open-webui",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
