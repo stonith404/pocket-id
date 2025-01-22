@@ -26,5 +26,5 @@ The following example variables are used, and should be replaced with your actua
 6. Paste the `Client Secret` from Pocket ID into the `Client Key` field in Proxmox.
 7. You can check the `Default` box if you want this to be the deafult realm proxmox uses when signing in.
 8. Check the `Autocreate Users` checkbox. (This will automaitcally create users in Proxmox if they dont exsist.)
-9. Select `username` for the `Username Claim` dropdown (This is personal preference and control how the username is shown, ie: username = username@PocketID or email = username@example@PocketID).
+9. Select `username` for the `Username Claim` dropdown (This is personal preference and controls how the username is shown, ie: `username = username@PocketID` or `email = username@example@PocketID`).
 10. Leave the rest as defaults and click `OK` to save the new realm.
