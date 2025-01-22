@@ -65,6 +65,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/netbox",
         "client-examples/open-webui",
         "client-examples/pgadmin",
+        "client-examples/portainer",
         "client-examples/proxmox",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
