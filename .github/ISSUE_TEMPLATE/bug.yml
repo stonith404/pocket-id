@@ -51,3 +51,7 @@ body:
     attributes:
       label: "Log Output"
       description: "Output of log files when the issue occured to help us diagnose the issue."
+  - type: markdown
+    attributes:
+      value: |
+        ### Before submitting, please check if the issue hasn't been raised before.
