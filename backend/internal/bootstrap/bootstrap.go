@@ -6,9 +6,10 @@ import (
 )
 
 func Bootstrap() {
+	initApplicationImages()
+
 	db := newDatabase()
 	appConfigService := service.NewAppConfigService(db)
 
-	initApplicationImages()
 	initRouter(db, appConfigService)
 }
