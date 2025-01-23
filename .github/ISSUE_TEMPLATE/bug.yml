@@ -34,4 +34,24 @@ body:
   - type: markdown
     attributes:
       value: |
-        Before submitting, please check if the issues hasn't been raised before.
+        ### Additional Information
+        Before submitting, please check if the issue hasn't been raised before.
+  - type: textarea
+    id: extra-information
+    validations:
+      required: true
+    attributes:
+      label: "Version and Environment"
+      description: "Please specify the version of Pocket ID, along with any environment-specific configurations, such your reverse proxy, that might be relevant."
+      placeholder: "e.g., v0.24.1"
+  - type: textarea
+    id: log-files
+    validations:
+      required: false
+    attributes:
+      label: "Log Output"
+      description: "Output of log files when the issue occured to help us diagnose the issue."
+  - type: markdown
+    attributes:
+      value: |
+        ### Before submitting, please check if the issue hasn't been raised before.
