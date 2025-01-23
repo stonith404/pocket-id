@@ -59,12 +59,17 @@ const sidebars: SidebarsConfig = {
         slug: "client-examples",
       },
       items: [
+        "client-examples/cloudflare-zero-trust",
+        "client-examples/grist",
         "client-examples/hoarder",
         "client-examples/jellyfin",
-        "client-examples/vikunja",
+        "client-examples/netbox",
         "client-examples/open-webui",
+        "client-examples/pgadmin",
+        "client-examples/portainer",
+        "client-examples/proxmox",
         "client-examples/semaphore-ui",
-        "client-examples/cloudflare-zero-trust",
+        "client-examples/vikunja",
       ],
     },
     {
@@ -82,8 +87,9 @@ const sidebars: SidebarsConfig = {
       label: "Helping Out",
       items: [
         {
-          type: "doc",
-          id: "help-out/contribute",
+          type: "link",
+          label: "Contributing",
+          href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
         },
       ],
     },

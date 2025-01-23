@@ -1,3 +1,16 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.26.0...v) (2025-01-22)
+
+
+### Features
+
+* display private IP ranges correctly in audit log ([#139](https://github.com/stonith404/pocket-id/issues/139)) ([72923bb](https://github.com/stonith404/pocket-id/commit/72923bb86dc5d07d56aea98cf03320667944b553))
+
+
+### Bug Fixes
+
+* add save changes dialog before sending test email ([#165](https://github.com/stonith404/pocket-id/issues/165)) ([d02f475](https://github.com/stonith404/pocket-id/commit/d02f4753f3fbda75cd415ebbfe0702765c38c144))
+* ensure the downloaded GeoLite2 DB is not corrupted & prevent RW race condition ([#138](https://github.com/stonith404/pocket-id/issues/138)) ([f7710f2](https://github.com/stonith404/pocket-id/commit/f7710f298898d322885c1c83680e26faaa0bb800))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.25.1...v) (2025-01-20)
 
 

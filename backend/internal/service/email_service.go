@@ -99,7 +99,7 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	smtpAddress := srv.appConfigService.DbConfig.SmtpHost.Value + ":" + port
 	var client *smtp.Client
 	if srv.appConfigService.DbConfig.SmtpTls.Value == "false" {
-		client, err = smtp.Dial(smtpAddress)
+		client, err = srv.connectToSmtpServer(smtpAddress)
 	} else if port == "465" {
 		client, err = srv.connectToSmtpServerUsingImplicitTLS(
 			smtpAddress,
@@ -115,8 +115,11 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	if err != nil {
 		return fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
-
 	defer client.Close()
+
+	if err := client.Hello(common.EnvConfig.Host); err != nil {
+		return fmt.Errorf("failed to say hello to SMTP server: %w", err)
+	}
 
 	smtpUser := srv.appConfigService.DbConfig.SmtpUser.Value
 	smtpPassword := srv.appConfigService.DbConfig.SmtpPassword.Value
@@ -139,6 +142,15 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	}
 
 	return nil
+}
+
+func (srv *EmailService) connectToSmtpServer(serverAddr string) (*smtp.Client, error) {
+	conn, err := netDialer.Dial("tcp", serverAddr)
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to SMTP server: %w", err)
+	}
+	client, err := smtp.NewClient(conn, srv.appConfigService.DbConfig.SmtpHost.Value)
+	return client, err
 }
 
 func (srv *EmailService) connectToSmtpServerUsingImplicitTLS(serverAddr string, tlsConfig *tls.Config) (*smtp.Client, error) {
