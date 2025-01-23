@@ -87,8 +87,9 @@ const sidebars: SidebarsConfig = {
       label: "Helping Out",
       items: [
         {
-          type: "doc",
-          id: "help-out/contribute",
+          type: "link",
+          label: "Contributing",
+          href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
         },
       ],
     },
