@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private';
+import { ACCESS_TOKEN_COOKIE_NAME } from '$lib/constants';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { AxiosError } from 'axios';
 import jwt from 'jsonwebtoken';
@@ -9,7 +10,7 @@ import jwt from 'jsonwebtoken';
 process.env.INTERNAL_BACKEND_URL = env.INTERNAL_BACKEND_URL ?? 'http://localhost:8080';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const accessToken = event.cookies.get('access_token');
+	const accessToken = event.cookies.get(ACCESS_TOKEN_COOKIE_NAME);
 
 	let isSignedIn: boolean = false;
 	let isAdmin: boolean = false;

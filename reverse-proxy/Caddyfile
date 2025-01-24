@@ -2,9 +2,4 @@
 	reverse_proxy /api/* http://localhost:{$BACKEND_PORT:8080}
 	reverse_proxy /.well-known/* http://localhost:{$BACKEND_PORT:8080}
 	reverse_proxy /* http://localhost:{$PORT:3000}
-
-	log {
-		output file /var/log/caddy/access.log
-		level WARN
-	}
 }

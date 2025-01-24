@@ -1,9 +1,10 @@
+import { ACCESS_TOKEN_COOKIE_NAME } from '$lib/constants';
 import OidcService from '$lib/services/oidc-service';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
 	const clientId = url.searchParams.get('client_id');
-	const oidcService = new OidcService(cookies.get('access_token'));
+	const oidcService = new OidcService(cookies.get(ACCESS_TOKEN_COOKIE_NAME));
 
 	const client = await oidcService.getClient(clientId!);
 
