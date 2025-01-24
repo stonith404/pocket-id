@@ -1,13 +1,15 @@
 package controller
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
 	"github.com/stonith404/pocket-id/backend/internal/service"
 	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"net/http"
-	"strings"
+	"github.com/stonith404/pocket-id/backend/internal/utils/cookie"
 )
 
 func NewOidcController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.JwtAuthMiddleware, fileSizeLimitMiddleware *middleware.FileSizeLimitMiddleware, oidcService *service.OidcService, jwtService *service.JwtService) {
@@ -17,6 +19,9 @@ func NewOidcController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 	group.POST("/oidc/authorize/new-client", jwtAuthMiddleware.Add(false), oc.authorizeNewClientHandler)
 	group.POST("/oidc/token", oc.createTokensHandler)
 	group.GET("/oidc/userinfo", oc.userInfoHandler)
+
+	//End Session (Logout)
+	group.POST("/oidc/end-session", oc.endSessionHandler)
 
 	group.GET("/oidc/clients", jwtAuthMiddleware.Add(true), oc.listClientsHandler)
 	group.POST("/oidc/clients", jwtAuthMiddleware.Add(true), oc.createClientHandler)
@@ -34,6 +39,12 @@ func NewOidcController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 type OidcController struct {
 	oidcService *service.OidcService
 	jwtService  *service.JwtService
+}
+
+func (oc *OidcController) endSessionHandler(c *gin.Context) {
+	//Add logout logic
+	cookie.AddAccessTokenCookie(c, 0, "")
+	c.Status(http.StatusNoContent)
 }
 
 func (oc *OidcController) authorizeHandler(c *gin.Context) {
