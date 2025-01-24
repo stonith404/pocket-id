@@ -8,5 +8,5 @@ import (
 func AddAccessTokenCookie(c *gin.Context, sessionDurationInMinutes string, token string) {
 	sessionDurationInMinutesParsed, _ := strconv.Atoi(sessionDurationInMinutes)
 	maxAge := sessionDurationInMinutesParsed * 60
-	c.SetCookie("access_token", token, maxAge, "/", "", true, true)
+	c.SetCookie("__Host-access_token", token, maxAge, "/", "", true, true)
 }

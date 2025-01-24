@@ -19,7 +19,7 @@ func NewJwtAuthMiddleware(jwtService *service.JwtService, ignoreUnauthenticated 
 func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Extract the token from the cookie or the Authorization header
-		token, err := c.Cookie("access_token")
+		token, err := c.Cookie("__Host-access_token")
 		if err != nil {
 			authorizationHeaderSplitted := strings.Split(c.GetHeader("Authorization"), " ")
 			if len(authorizationHeaderSplitted) == 2 {

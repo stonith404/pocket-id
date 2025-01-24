@@ -1,0 +1,1 @@
+export const ACCESS_TOKEN_COOKIE_NAME = '__Host-access_token';
