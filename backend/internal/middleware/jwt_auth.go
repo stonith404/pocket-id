@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/stonith404/pocket-id/backend/internal/utils/cookie"
 	"strings"
 )
 
@@ -19,7 +20,7 @@ func NewJwtAuthMiddleware(jwtService *service.JwtService, ignoreUnauthenticated 
 func (m *JwtAuthMiddleware) Add(adminOnly bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Extract the token from the cookie or the Authorization header
-		token, err := c.Cookie("__Host-access_token")
+		token, err := c.Cookie(cookie.AccessTokenCookieName)
 		if err != nil {
 			authorizationHeaderSplitted := strings.Split(c.GetHeader("Authorization"), " ")
 			if len(authorizationHeaderSplitted) == 2 {

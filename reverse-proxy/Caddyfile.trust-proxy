@@ -8,9 +8,4 @@
 	reverse_proxy /* http://localhost:{$PORT:3000} {
 		trusted_proxies 0.0.0.0/0
 	}
-
-	log {
-		output file /var/log/caddy/access.log
-		level WARN
-	}
 }
