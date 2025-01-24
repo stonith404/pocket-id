@@ -4,10 +4,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/utils/email"
-	"gorm.io/gorm"
 	htemplate "html/template"
 	"mime/multipart"
 	"mime/quotedprintable"
@@ -16,6 +12,11 @@ import (
 	"net/textproto"
 	ttemplate "text/template"
 	"time"
+
+	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/model"
+	"github.com/stonith404/pocket-id/backend/internal/utils/email"
+	"gorm.io/gorm"
 )
 
 var netDialer = &net.Dialer{
@@ -117,7 +118,7 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	}
 	defer client.Close()
 
-	if err := client.Hello(common.EnvConfig.Host); err != nil {
+	if err := client.Hello(common.EnvConfig.AppURL); err != nil {
 		return fmt.Errorf("failed to say hello to SMTP server: %w", err)
 	}
 
