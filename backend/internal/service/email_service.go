@@ -14,6 +14,7 @@ import (
 	"net"
 	"net/smtp"
 	"net/textproto"
+	"os"
 	ttemplate "text/template"
 	"time"
 )
@@ -117,8 +118,12 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	}
 	defer client.Close()
 
-	if err := client.Hello(common.EnvConfig.Host); err != nil {
-		return fmt.Errorf("failed to say hello to SMTP server: %w", err)
+	// Set the hello message manually as for example Google rejects the default "localhost" value
+	hostname, err := os.Hostname()
+	if err == nil {
+		if err := client.Hello(hostname); err != nil {
+			return fmt.Errorf("failed to say hello to SMTP server: %w", err)
+		}
 	}
 
 	smtpUser := srv.appConfigService.DbConfig.SmtpUser.Value
