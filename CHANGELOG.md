@@ -1,3 +1,12 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.27.0...v) (2025-01-24)
+
+
+### Bug Fixes
+
+* add `__HOST` prefix to cookies ([#175](https://github.com/stonith404/pocket-id/issues/175)) ([164ce6a](https://github.com/stonith404/pocket-id/commit/164ce6a3d7fa8ae5275c94302952cf318e3b3113))
+* send hostname derived from `PUBLIC_APP_URL` with SMTP EHLO command ([397544c](https://github.com/stonith404/pocket-id/commit/397544c0f3f2b49f1f34ae53e6b9daf194d1ae28))
+* use OS hostname for SMTP EHLO message ([47c39f6](https://github.com/stonith404/pocket-id/commit/47c39f6d382c496cb964262adcf76cc8dbb96da3))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.26.0...v) (2025-01-22)
 
 
