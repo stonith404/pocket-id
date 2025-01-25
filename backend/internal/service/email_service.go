@@ -4,10 +4,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/utils/email"
-	"gorm.io/gorm"
 	htemplate "html/template"
 	"mime/multipart"
 	"mime/quotedprintable"
@@ -17,6 +13,11 @@ import (
 	"os"
 	ttemplate "text/template"
 	"time"
+
+	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/stonith404/pocket-id/backend/internal/model"
+	"github.com/stonith404/pocket-id/backend/internal/utils/email"
+	"gorm.io/gorm"
 )
 
 var netDialer = &net.Dialer{
@@ -118,14 +119,6 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	}
 	defer client.Close()
 
-	// Set the hello message manually as for example Google rejects the default "localhost" value
-	hostname, err := os.Hostname()
-	if err == nil {
-		if err := client.Hello(hostname); err != nil {
-			return fmt.Errorf("failed to say hello to SMTP server: %w", err)
-		}
-	}
-
 	smtpUser := srv.appConfigService.DbConfig.SmtpUser.Value
 	smtpPassword := srv.appConfigService.DbConfig.SmtpPassword.Value
 
@@ -149,12 +142,27 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	return nil
 }
 
+func (srv *EmailService) updateHello(client *smtp.Client) error {
+	hostname, err := os.Hostname()
+	if err == nil {
+		if err := client.Hello(hostname); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (srv *EmailService) connectToSmtpServer(serverAddr string) (*smtp.Client, error) {
 	conn, err := netDialer.Dial("tcp", serverAddr)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
 	client, err := smtp.NewClient(conn, srv.appConfigService.DbConfig.SmtpHost.Value)
+
+	if err := srv.updateHello(client); err != nil {
+		return nil, fmt.Errorf("failed to say hello to SMTP server: %w", err)
+	}
+
 	return client, err
 }
 
@@ -174,6 +182,10 @@ func (srv *EmailService) connectToSmtpServerUsingImplicitTLS(serverAddr string, 
 		return nil, fmt.Errorf("failed to create SMTP client: %w", err)
 	}
 
+	if err := srv.updateHello(client); err != nil {
+		return nil, fmt.Errorf("failed to say hello to SMTP server: %w", err)
+	}
+
 	return client, nil
 }
 
@@ -189,6 +201,11 @@ func (srv *EmailService) connectToSmtpServerUsingStartTLS(serverAddr string, tls
 		return nil, fmt.Errorf("failed to create SMTP client: %w", err)
 	}
 
+	if err := srv.updateHello(client); err != nil {
+		return nil, fmt.Errorf("failed to say hello to SMTP server: %w", err)
+	}
+
+	//The below line was being called before the Hello command causing issues
 	if err := client.StartTLS(tlsConfig); err != nil {
 		return nil, fmt.Errorf("failed to start TLS: %w", err)
 	}
