@@ -21,7 +21,7 @@ func NewOidcController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 	group.GET("/oidc/userinfo", oc.userInfoHandler)
 
 	//End Session (Logout)
-	group.POST("/oidc/end-session", oc.endSessionHandler)
+	group.GET("/oidc/end-session", jwtAuthMiddleware.Add(false), oc.endSessionHandler)
 
 	group.GET("/oidc/clients", jwtAuthMiddleware.Add(true), oc.listClientsHandler)
 	group.POST("/oidc/clients", jwtAuthMiddleware.Add(true), oc.createClientHandler)
@@ -42,9 +42,11 @@ type OidcController struct {
 }
 
 func (oc *OidcController) endSessionHandler(c *gin.Context) {
-	//Add logout logic
+	c.Request.Method = "POST"
+	c.Redirect(http.StatusSeeOther, "/webauthn/logout")
 	cookie.AddAccessTokenCookie(c, 0, "")
 	c.Status(http.StatusNoContent)
+	c.Redirect(http.StatusTemporaryRedirect, "/login")
 }
 
 func (oc *OidcController) authorizeHandler(c *gin.Context) {
