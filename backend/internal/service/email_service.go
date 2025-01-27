@@ -90,16 +90,31 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 	)
 	c.Body(body)
 
-	// Set up the TLS configuration
+	// Connect to the SMTP server
+	client, err := srv.getSmtpClient()
+	if err != nil {
+		return fmt.Errorf("failed to connect to SMTP server: %w", err)
+	}
+	defer client.Close()
+
+	// Send the email
+	if err := srv.sendEmailContent(client, toEmail, c); err != nil {
+		return fmt.Errorf("send email content: %w", err)
+	}
+
+	return nil
+}
+
+func (srv *EmailService) getSmtpClient() (client *smtp.Client, err error) {
+	port := srv.appConfigService.DbConfig.SmtpPort.Value
+	smtpAddress := srv.appConfigService.DbConfig.SmtpHost.Value + ":" + port
+
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: srv.appConfigService.DbConfig.SmtpSkipCertVerify.Value == "true",
 		ServerName:         srv.appConfigService.DbConfig.SmtpHost.Value,
 	}
 
 	// Connect to the SMTP server
-	port := srv.appConfigService.DbConfig.SmtpPort.Value
-	smtpAddress := srv.appConfigService.DbConfig.SmtpHost.Value + ":" + port
-	var client *smtp.Client
 	if srv.appConfigService.DbConfig.SmtpTls.Value == "false" {
 		client, err = srv.connectToSmtpServer(smtpAddress)
 	} else if port == "465" {
@@ -113,16 +128,14 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 			tlsConfig,
 		)
 	}
-
 	if err != nil {
-		return fmt.Errorf("failed to connect to SMTP server: %w", err)
+		return nil, fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
-	defer client.Close()
 
+	// Set up the authentication if user or password are set
 	smtpUser := srv.appConfigService.DbConfig.SmtpUser.Value
 	smtpPassword := srv.appConfigService.DbConfig.SmtpPassword.Value
 
-	// Set up the authentication if user or password are set
 	if smtpUser != "" || smtpPassword != "" {
 		auth := smtp.PlainAuth("",
 			srv.appConfigService.DbConfig.SmtpUser.Value,
@@ -130,26 +143,11 @@ func SendEmail[V any](srv *EmailService, toEmail email.Address, template email.T
 			srv.appConfigService.DbConfig.SmtpHost.Value,
 		)
 		if err := client.Auth(auth); err != nil {
-			return fmt.Errorf("failed to authenticate SMTP client: %w", err)
+			return nil, fmt.Errorf("failed to authenticate SMTP client: %w", err)
 		}
 	}
 
-	// Send the email
-	if err := srv.sendEmailContent(client, toEmail, c); err != nil {
-		return fmt.Errorf("send email content: %w", err)
-	}
-
-	return nil
-}
-
-func (srv *EmailService) updateHello(client *smtp.Client) error {
-	hostname, err := os.Hostname()
-	if err == nil {
-		if err := client.Hello(hostname); err != nil {
-			return err
-		}
-	}
-	return nil
+	return client, err
 }
 
 func (srv *EmailService) connectToSmtpServer(serverAddr string) (*smtp.Client, error) {
@@ -158,8 +156,12 @@ func (srv *EmailService) connectToSmtpServer(serverAddr string) (*smtp.Client, e
 		return nil, fmt.Errorf("failed to connect to SMTP server: %w", err)
 	}
 	client, err := smtp.NewClient(conn, srv.appConfigService.DbConfig.SmtpHost.Value)
+	if err != nil {
+		conn.Close()
+		return nil, fmt.Errorf("failed to create SMTP client: %w", err)
+	}
 
-	if err := srv.updateHello(client); err != nil {
+	if err := srv.sendHelloCommand(client); err != nil {
 		return nil, fmt.Errorf("failed to say hello to SMTP server: %w", err)
 	}
 
@@ -182,7 +184,7 @@ func (srv *EmailService) connectToSmtpServerUsingImplicitTLS(serverAddr string, 
 		return nil, fmt.Errorf("failed to create SMTP client: %w", err)
 	}
 
-	if err := srv.updateHello(client); err != nil {
+	if err := srv.sendHelloCommand(client); err != nil {
 		return nil, fmt.Errorf("failed to say hello to SMTP server: %w", err)
 	}
 
@@ -201,15 +203,24 @@ func (srv *EmailService) connectToSmtpServerUsingStartTLS(serverAddr string, tls
 		return nil, fmt.Errorf("failed to create SMTP client: %w", err)
 	}
 
-	if err := srv.updateHello(client); err != nil {
+	if err := srv.sendHelloCommand(client); err != nil {
 		return nil, fmt.Errorf("failed to say hello to SMTP server: %w", err)
 	}
 
-	//The below line was being called before the Hello command causing issues
 	if err := client.StartTLS(tlsConfig); err != nil {
 		return nil, fmt.Errorf("failed to start TLS: %w", err)
 	}
 	return client, nil
+}
+
+func (srv *EmailService) sendHelloCommand(client *smtp.Client) error {
+	hostname, err := os.Hostname()
+	if err == nil {
+		if err := client.Hello(hostname); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (srv *EmailService) sendEmailContent(client *smtp.Client, toEmail email.Address, c *email.Composer) error {

@@ -77,7 +77,7 @@
 		isSendingTestEmail = true;
 		await appConfigService
 			.sendTestEmail()
-			.then(() => toast.success('Test email sent successfully to your Email address.'))
+			.then(() => toast.success('Test email sent successfully to your email address.'))
 			.catch(() =>
 				toast.error('Failed to send test email. Check the server logs for more information.')
 			)
