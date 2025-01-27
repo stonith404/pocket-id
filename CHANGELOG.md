@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.27.1...v) (2025-01-27)
+
+
+### Bug Fixes
+
+* smtp hello for tls connections ([#180](https://github.com/stonith404/pocket-id/issues/180)) ([781ff7a](https://github.com/stonith404/pocket-id/commit/781ff7ae7b84b13892e7a565b7a78f20c52ee2c9))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.27.0...v) (2025-01-24)
 
 
