@@ -48,6 +48,11 @@ const config: Config = {
       },
       items: [
         {
+          label: "v0.27.2",
+          position: "right",
+          to: "https://github.com/stonith404/pocket-id/releases/latest",
+        },
+        {
           href: "https://github.com/stonith404/pocket-id",
           label: "GitHub",
           position: "right",
