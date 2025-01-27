@@ -2,7 +2,7 @@ import { env } from '$env/dynamic/private';
 import { ACCESS_TOKEN_COOKIE_NAME } from '$lib/constants';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { AxiosError } from 'axios';
-import jwt from 'jsonwebtoken';
+import { decodeJwt } from 'jose';
 
 // Workaround so that we can also import this environment variable into client-side code
 // If we would directly import $env/dynamic/private into the api-service.ts file, it would throw an error
@@ -10,18 +10,7 @@ import jwt from 'jsonwebtoken';
 process.env.INTERNAL_BACKEND_URL = env.INTERNAL_BACKEND_URL ?? 'http://localhost:8080';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const accessToken = event.cookies.get(ACCESS_TOKEN_COOKIE_NAME);
-
-	let isSignedIn: boolean = false;
-	let isAdmin: boolean = false;
-
-	if (accessToken) {
-		const jwtPayload = jwt.decode(accessToken, { json: true });
-		if (jwtPayload?.exp && jwtPayload.exp * 1000 > Date.now()) {
-			isSignedIn = true;
-			isAdmin = jwtPayload?.isAdmin || false;
-		}
-	}
+	const { isSignedIn, isAdmin } = verifyJwt(event.cookies.get(ACCESS_TOKEN_COOKIE_NAME));
 
 	if (event.url.pathname.startsWith('/settings') && !event.url.pathname.startsWith('/login')) {
 		if (!isSignedIn) {
@@ -66,3 +55,18 @@ export const handleError: HandleServerError = async ({ error, message, status })
 		status
 	};
 };
+
+function verifyJwt(accessToken: string | undefined) {
+	let isSignedIn = false;
+	let isAdmin = false;
+
+	if (accessToken) {
+		const jwtPayload = decodeJwt<{ isAdmin: boolean }>(accessToken);
+		if (jwtPayload?.exp && jwtPayload.exp * 1000 > Date.now()) {
+			isSignedIn = true;
+			isAdmin = jwtPayload?.isAdmin || false;
+		}
+	}
+
+	return { isSignedIn, isAdmin };
+}
