@@ -69,5 +69,5 @@ We are using [Playwright](https://playwright.dev) for end-to-end testing.
 
 The tests can be run like this:
 1. Start the backend normally
-2. Start the frontend in production mode with `npm run build && node build/index.js`
+2. Start the frontend in production mode with `npm run build && node --env-file=.env build/index.js`
 3. Run the tests with `npm run test`

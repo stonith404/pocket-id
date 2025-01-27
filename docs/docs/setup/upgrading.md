@@ -37,7 +37,7 @@ docker compose up -d
    cd ../frontend
    npm install
    npm run build
-   pm2 start build/index.js --name pocket-id-frontend
+   pm2 start --name pocket-id-frontend --node-args="--env-file .env" build/index.js
 
    # Optional: Start Caddy (You can use any other reverse proxy)
    cd ..
