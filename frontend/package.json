@@ -19,7 +19,7 @@
 		"bits-ui": "^0.22.0",
 		"clsx": "^2.1.1",
 		"crypto": "^1.0.1",
-		"formsnap": "^2.0.0",
+		"formsnap": "^1.0.1",
 		"jose": "^5.9.6",
 		"lucide-svelte": "^0.474.0",
 		"mode-watcher": "^0.5.1",
