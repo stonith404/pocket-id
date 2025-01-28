@@ -66,7 +66,7 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 
   clientModules: [
-    require.resolve('./versionlabel.js'),
+    require.resolve('./src/version-label.ts'),
 ],
 };
 export default config;
