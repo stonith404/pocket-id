@@ -69,24 +69,4 @@ const config: Config = {
     require.resolve('./versionlabel.js'),
 ],
 };
-
-function readVersionFile() {
-  return fetch('https://raw.githubusercontent.com/stonith404/pocket-id/refs/heads/main/.version')
-    .then(response => response.text())
-    .catch(error => `Error reading version file: ${error}`);
-}
-
-// Use the result of readVersionFile in the Navbar item's onClick
-function getVersion() {
-  console.log("runnding")
-  readVersionFile().then(version => {
-    const navbarItem = document.querySelector('.navbar__item[data-id="version"]');
-    if (navbarItem) {
-      navbarItem.innerHTML = version;
-    }
-  }).catch(error => console.error('Error fetching version:', error));
-}
-
-
-
 export default config;
