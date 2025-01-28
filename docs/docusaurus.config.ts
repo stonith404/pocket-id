@@ -47,8 +47,9 @@ const config: Config = {
         src: "img/pocket-id.png",
       },
       items: [
+        // Version gets replaced by the version-label.ts script
         {
-          to: "#version", // Use a hash link to trigger the onClick
+          to: "#version",
           label: " ",
           position: "right",
         },
