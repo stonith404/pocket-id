@@ -77,6 +77,10 @@
 		@apply bg-background text-foreground;
 	}
 
+	button{
+		@apply cursor-pointer;
+	}
+
 	@font-face {
 		font-family: 'Playfair Display';
 		font-weight: 400;
