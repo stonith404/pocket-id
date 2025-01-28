@@ -49,7 +49,7 @@ const config: Config = {
       items: [
         {
           to: "#version", // Use a hash link to trigger the onClick
-          label: "Version",
+          label: " ",
           position: "right",
         },
         {
