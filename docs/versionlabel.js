@@ -9,7 +9,6 @@ if (ExecutionEnvironment.canUseDOM) {
       }
 
     function getVersion() {
-        console.log("runnding")
         readVersionFile().then(version => {
           const navbarItem = document.querySelector('.navbar__item[href="#version"]');
           if (navbarItem) {
