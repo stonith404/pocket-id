@@ -47,6 +47,12 @@ const config: Config = {
         src: "img/pocket-id.png",
       },
       items: [
+        // Version gets replaced by the version-label.ts script
+        {
+          to: "#version",
+          label: " ",
+          position: "right",
+        },
         {
           href: "https://github.com/stonith404/pocket-id",
           label: "GitHub",
@@ -59,6 +65,9 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
-};
 
+  clientModules: [
+    require.resolve('./src/version-label.ts'),
+],
+};
 export default config;
