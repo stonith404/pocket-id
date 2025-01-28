@@ -48,9 +48,9 @@ const config: Config = {
       },
       items: [
         {
-          label: "v0.27.2",
+          to: "#version", // Use a hash link to trigger the onClick
+          label: "Version",
           position: "right",
-          to: "https://github.com/stonith404/pocket-id/releases/latest",
         },
         {
           href: "https://github.com/stonith404/pocket-id",
@@ -64,6 +64,29 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
+
+  clientModules: [
+    require.resolve('./versionlabel.js'),
+],
 };
+
+function readVersionFile() {
+  return fetch('https://raw.githubusercontent.com/stonith404/pocket-id/refs/heads/main/.version')
+    .then(response => response.text())
+    .catch(error => `Error reading version file: ${error}`);
+}
+
+// Use the result of readVersionFile in the Navbar item's onClick
+function getVersion() {
+  console.log("runnding")
+  readVersionFile().then(version => {
+    const navbarItem = document.querySelector('.navbar__item[data-id="version"]');
+    if (navbarItem) {
+      navbarItem.innerHTML = version;
+    }
+  }).catch(error => console.error('Error fetching version:', error));
+}
+
+
 
 export default config;
