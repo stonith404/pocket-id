@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@config '../tailwind.config.ts';
 
 @layer base {
 	:root {
@@ -75,6 +75,10 @@
 
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	button{
+		@apply cursor-pointer;
 	}
 
 	@font-face {

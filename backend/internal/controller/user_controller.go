@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"github.com/stonith404/pocket-id/backend/internal/utils/cookie"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -184,7 +186,10 @@ func (uc *UserController) exchangeOneTimeAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	utils.AddAccessTokenCookie(c, uc.appConfigService.DbConfig.SessionDuration.Value, token)
+	sessionDurationInMinutesParsed, _ := strconv.Atoi(uc.appConfigService.DbConfig.SessionDuration.Value)
+	maxAge := sessionDurationInMinutesParsed * 60
+	cookie.AddAccessTokenCookie(c, maxAge, token)
+
 	c.JSON(http.StatusOK, userDto)
 }
 
@@ -201,7 +206,10 @@ func (uc *UserController) getSetupAccessTokenHandler(c *gin.Context) {
 		return
 	}
 
-	utils.AddAccessTokenCookie(c, uc.appConfigService.DbConfig.SessionDuration.Value, token)
+	sessionDurationInMinutesParsed, _ := strconv.Atoi(uc.appConfigService.DbConfig.SessionDuration.Value)
+	maxAge := sessionDurationInMinutesParsed * 60
+	cookie.AddAccessTokenCookie(c, maxAge, token)
+
 	c.JSON(http.StatusOK, userDto)
 }
 

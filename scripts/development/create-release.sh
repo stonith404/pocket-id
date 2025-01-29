@@ -1,3 +1,9 @@
+# Check if the script is being run from the root of the project
+if [ ! -f .version ] || [ ! -f frontend/package.json ] || [ ! -f CHANGELOG.md ]; then
+    echo "Error: This script must be run from the root of the project."
+    exit 1
+fi
+
 # Read the current version from .version
 VERSION=$(cat .version)
 
@@ -29,6 +35,13 @@ else
     exit 1
 fi
 
+# Confirm release creation
+read -p "This will create a new $RELEASE_TYPE release with version $NEW_VERSION. Do you want to proceed? (y/n) " CONFIRM
+if [[ "$CONFIRM" != "y" ]]; then
+    echo "Release process canceled."
+    exit 1
+fi
+
 # Update the .version file with the new version
 echo $NEW_VERSION >.version
 git add .version
@@ -57,5 +70,31 @@ git tag "v$NEW_VERSION"
 # Push the commit and the tag to the repository
 git push
 git push --tags
+
+# Check if GitHub CLI is installed
+if ! command -v gh &>/dev/null; then
+    echo "GitHub CLI (gh) is not installed. Please install it and authenticate using 'gh auth login'."
+    exit 1
+fi
+
+# Extract the changelog content for the latest release
+echo "Extracting changelog content for version $NEW_VERSION..."
+CHANGELOG=$(awk '/^## / {if (NR > 1) exit} NR > 1 {print}' CHANGELOG.md | awk 'NR > 2 || NF {print}')
+
+if [ -z "$CHANGELOG" ]; then
+    echo "Error: Could not extract changelog for version $NEW_VERSION."
+    exit 1
+fi
+
+# Create the release on GitHub
+echo "Creating GitHub release..."
+gh release create "v$NEW_VERSION" --title "v$NEW_VERSION" --notes "$CHANGELOG"
+
+if [ $? -eq 0 ]; then
+    echo "GitHub release created successfully."
+else
+    echo "Error: Failed to create GitHub release."
+    exit 1
+fi
 
 echo "Release process complete. New version: $NEW_VERSION"

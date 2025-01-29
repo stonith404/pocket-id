@@ -1,3 +1,32 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.27.1...v) (2025-01-27)
+
+
+### Bug Fixes
+
+* smtp hello for tls connections ([#180](https://github.com/stonith404/pocket-id/issues/180)) ([781ff7a](https://github.com/stonith404/pocket-id/commit/781ff7ae7b84b13892e7a565b7a78f20c52ee2c9))
+
+## [](https://github.com/stonith404/pocket-id/compare/v0.27.0...v) (2025-01-24)
+
+
+### Bug Fixes
+
+* add `__HOST` prefix to cookies ([#175](https://github.com/stonith404/pocket-id/issues/175)) ([164ce6a](https://github.com/stonith404/pocket-id/commit/164ce6a3d7fa8ae5275c94302952cf318e3b3113))
+* send hostname derived from `PUBLIC_APP_URL` with SMTP EHLO command ([397544c](https://github.com/stonith404/pocket-id/commit/397544c0f3f2b49f1f34ae53e6b9daf194d1ae28))
+* use OS hostname for SMTP EHLO message ([47c39f6](https://github.com/stonith404/pocket-id/commit/47c39f6d382c496cb964262adcf76cc8dbb96da3))
+
+## [](https://github.com/stonith404/pocket-id/compare/v0.26.0...v) (2025-01-22)
+
+
+### Features
+
+* display private IP ranges correctly in audit log ([#139](https://github.com/stonith404/pocket-id/issues/139)) ([72923bb](https://github.com/stonith404/pocket-id/commit/72923bb86dc5d07d56aea98cf03320667944b553))
+
+
+### Bug Fixes
+
+* add save changes dialog before sending test email ([#165](https://github.com/stonith404/pocket-id/issues/165)) ([d02f475](https://github.com/stonith404/pocket-id/commit/d02f4753f3fbda75cd415ebbfe0702765c38c144))
+* ensure the downloaded GeoLite2 DB is not corrupted & prevent RW race condition ([#138](https://github.com/stonith404/pocket-id/issues/138)) ([f7710f2](https://github.com/stonith404/pocket-id/commit/f7710f298898d322885c1c83680e26faaa0bb800))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.25.1...v) (2025-01-20)
 
 

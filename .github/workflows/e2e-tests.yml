@@ -2,8 +2,17 @@ name: E2E Tests
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+      - ".github/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "**.md"
+      - ".github/**"
+
 jobs:
   build:
     timeout-minutes: 20

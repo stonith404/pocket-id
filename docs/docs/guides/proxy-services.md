@@ -1,4 +1,8 @@
-# Proxy Services through Pocket ID
+---
+id: proxy-services
+---
+
+# Proxy Services
 
 The goal of Pocket ID is to function exclusively as an OIDC provider. As such, we don't have a built-in proxy provider. However, you can use other tools that act as a middleware to protect your services and support OIDC as an authentication provider.
 

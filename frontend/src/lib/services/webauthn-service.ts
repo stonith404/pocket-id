@@ -1,8 +1,8 @@
 import type { Passkey } from '$lib/types/passkey.type';
 import type { User } from '$lib/types/user.type';
-import type { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/types';
 import APIService from './api-service';
 import userStore from '$lib/stores/user-store';
+import type { AuthenticationResponseJSON, RegistrationResponseJSON } from '@simplewebauthn/browser';
 
 class WebAuthnService extends APIService {
 	async getRegistrationOptions() {

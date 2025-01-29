@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
+	import { openConfirmDialog } from '$lib/components/confirm-dialog';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import AppConfigService from '$lib/services/app-config-service';
@@ -20,18 +21,6 @@
 
 	let isSendingTestEmail = $state(false);
 
-	const updatedAppConfig = {
-		smtpHost: appConfig.smtpHost,
-		smtpPort: appConfig.smtpPort,
-		smtpUser: appConfig.smtpUser,
-		smtpPassword: appConfig.smtpPassword,
-		smtpFrom: appConfig.smtpFrom,
-		smtpTls: appConfig.smtpTls,
-		smtpSkipCertVerify: appConfig.smtpSkipCertVerify,
-		emailOneTimeAccessEnabled: appConfig.emailOneTimeAccessEnabled,
-		emailLoginNotificationEnabled: appConfig.emailLoginNotificationEnabled
-	};
-
 	const formSchema = z.object({
 		smtpHost: z.string().min(1),
 		smtpPort: z.number().min(1),
@@ -44,21 +33,51 @@
 		emailLoginNotificationEnabled: z.boolean()
 	});
 
-	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, updatedAppConfig);
+	const { inputs, ...form } = createForm<typeof formSchema>(formSchema, appConfig);
 
 	async function onSubmit() {
 		const data = form.validate();
 		if (!data) return false;
 		await callback(data);
+
+		// Update the app config to don't display the unsaved changes warning
+		Object.entries(data).forEach(([key, value]) => {
+			// @ts-ignore
+			appConfig[key] = value;
+		});
+
 		toast.success('Email configuration updated successfully');
 		return true;
 	}
-
 	async function onTestEmail() {
+		// @ts-ignore
+		const hasChanges = Object.keys($inputs).some((key) => $inputs[key].value !== appConfig[key]);
+
+		if (hasChanges) {
+			openConfirmDialog({
+				title: 'Save changes?',
+				message:
+					'You have to save the changes before sending a test email. Do you want to save now?',
+				confirm: {
+					label: 'Save and send',
+					action: async () => {
+						const saved = await onSubmit();
+						if (saved) {
+							sendTestEmail();
+						}
+					}
+				}
+			});
+		} else {
+			sendTestEmail();
+		}
+	}
+
+	async function sendTestEmail() {
 		isSendingTestEmail = true;
 		await appConfigService
 			.sendTestEmail()
-			.then(() => toast.success('Test email sent successfully to your Email address.'))
+			.then(() => toast.success('Test email sent successfully to your email address.'))
 			.catch(() =>
 				toast.error('Failed to send test email. Check the server logs for more information.')
 			)
@@ -105,7 +124,7 @@
 
 	<div class="mt-8 flex flex-wrap justify-end gap-3">
 		<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
-			>Send Test Email</Button
+			>Send test email</Button
 		>
 		<Button type="submit">Save</Button>
 	</div>

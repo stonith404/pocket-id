@@ -5,8 +5,9 @@ import (
 	"github.com/stonith404/pocket-id/backend/internal/common"
 	"github.com/stonith404/pocket-id/backend/internal/dto"
 	"github.com/stonith404/pocket-id/backend/internal/middleware"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/stonith404/pocket-id/backend/internal/utils/cookie"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -42,12 +43,12 @@ func (wc *WebauthnController) beginRegistrationHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("session_id", options.SessionID, int(options.Timeout.Seconds()), "/", "", true, true)
+	cookie.AddSessionIdCookie(c, int(options.Timeout.Seconds()), options.SessionID)
 	c.JSON(http.StatusOK, options.Response)
 }
 
 func (wc *WebauthnController) verifyRegistrationHandler(c *gin.Context) {
-	sessionID, err := c.Cookie("session_id")
+	sessionID, err := c.Cookie(cookie.SessionIdCookieName)
 	if err != nil {
 		c.Error(&common.MissingSessionIdError{})
 		return
@@ -76,12 +77,12 @@ func (wc *WebauthnController) beginLoginHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("session_id", options.SessionID, int(options.Timeout.Seconds()), "/", "", true, true)
+	cookie.AddSessionIdCookie(c, int(options.Timeout.Seconds()), options.SessionID)
 	c.JSON(http.StatusOK, options.Response)
 }
 
 func (wc *WebauthnController) verifyLoginHandler(c *gin.Context) {
-	sessionID, err := c.Cookie("session_id")
+	sessionID, err := c.Cookie(cookie.SessionIdCookieName)
 	if err != nil {
 		c.Error(&common.MissingSessionIdError{})
 		return
@@ -105,7 +106,10 @@ func (wc *WebauthnController) verifyLoginHandler(c *gin.Context) {
 		return
 	}
 
-	utils.AddAccessTokenCookie(c, wc.appConfigService.DbConfig.SessionDuration.Value, token)
+	sessionDurationInMinutesParsed, _ := strconv.Atoi(wc.appConfigService.DbConfig.SessionDuration.Value)
+	maxAge := sessionDurationInMinutesParsed * 60
+	cookie.AddAccessTokenCookie(c, maxAge, token)
+
 	c.JSON(http.StatusOK, userDto)
 }
 
@@ -165,6 +169,6 @@ func (wc *WebauthnController) updateCredentialHandler(c *gin.Context) {
 }
 
 func (wc *WebauthnController) logoutHandler(c *gin.Context) {
-	utils.AddAccessTokenCookie(c, "0", "")
+	cookie.AddAccessTokenCookie(c, 0, "")
 	c.Status(http.StatusNoContent)
 }

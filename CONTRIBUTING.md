@@ -55,13 +55,13 @@ The frontend is built with [SvelteKit](https://kit.svelte.dev) and written in Ty
 3. Install the dependencies with `npm install`
 4. Start the frontend with `npm run dev`
 
-You're all set!
-
 ### Reverse Proxy
 We use [Caddy](https://caddyserver.com) as a reverse proxy. You can use any other reverse proxy if you want but you have to configure it yourself.
 
 #### Setup
 Run `caddy run --config reverse-proxy/Caddyfile` in the root folder.
+
+You're all set!
 
 ### Testing
 
@@ -69,5 +69,5 @@ We are using [Playwright](https://playwright.dev) for end-to-end testing.
 
 The tests can be run like this:
 1. Start the backend normally
-2. Start the frontend in production mode with `npm run build && node build/index.js`
+2. Start the frontend in production mode with `npm run build && node --env-file=.env build/index.js`
 3. Run the tests with `npm run test`
