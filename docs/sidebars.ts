@@ -61,6 +61,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "client-examples/cloudflare-zero-trust",
         "client-examples/grist",
+        "client-examples/headscale",
         "client-examples/hoarder",
         "client-examples/jellyfin",
         "client-examples/netbox",
