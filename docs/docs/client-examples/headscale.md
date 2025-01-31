@@ -10,6 +10,8 @@ id: headscale
 4. Copy the **Client ID** and **Client Secret**.
 
 ## Configure Headscale
+> Refer to the example [`config.yaml`](https://github.com/juanfont/headscale/blob/main/config-example.yaml) for full OIDC configuration options.
+
 Add the following to `config.yaml`:
 
 ```yaml
@@ -30,5 +32,3 @@ To allow only specific groups, add:
   allowed_groups:
     - <POCKET-ID-GROUP-NAME> #example: headscale 
 ```
-## Additional Resources
-You can find an example `config.yaml` for Headscale on their [Github](https://github.com/juanfont/headscale/blob/main/config-example.yaml).
