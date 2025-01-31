@@ -5,10 +5,7 @@ id: headscale
 
 ## Step 1: Create OIDC Client in Pocket ID
 1. Create a new OIDC Client in Pocket ID (e.g., `Headscale`).
-2. Set the callback URL:  
-   ```
-   https://<your-headscale-domain>/oidc/callback
-   ```
+2. Set the callback URL:  `https://<your-headscale-domain>/oidc/callback`
 3. Enable `PKCE`.
 4. Copy the **Client ID** and **Client Secret**.
 
