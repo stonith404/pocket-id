@@ -63,6 +63,7 @@ const sidebars: SidebarsConfig = {
         "client-examples/grist",
         "client-examples/headscale",
         "client-examples/hoarder",
+        "client-examples/immich",
         "client-examples/jellyfin",
         "client-examples/netbox",
         "client-examples/open-webui",
