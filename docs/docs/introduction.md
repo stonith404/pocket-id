@@ -14,11 +14,11 @@ Additionally, what makes Pocket ID special is that it only supports [passkey](ht
 
 ## Get to know Pocket ID
 
-→ [Try the Demo of Pocket ID](https://pocket-id.eliasschneider.com/)<br/>
+→ [Try the Demo of Pocket ID](https://demo.pocket-id.org)
 
 <img src="https://github.com/user-attachments/assets/96ac549d-b897-404a-8811-f42b16ea58e2" width="700"/>
 
 ## Useful Links
-- [Installation](/pocket-id/setup/installation)
-- [Proxy Services](/pocket-id/guides/proxy-services)
-- [Client Examples](/pocket-id/client-examples)
+- [Installation](/setup/installation)
+- [Proxy Services](/guides/proxy-services)
+- [Client Examples](/client-examples)

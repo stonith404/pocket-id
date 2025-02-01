@@ -100,7 +100,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "link",
       label: "Demo",
-      href: "https://pocket-id.eliasschneider.com/",
+      href: "https://demo.pocket-id.org",
     },
   ],
 };

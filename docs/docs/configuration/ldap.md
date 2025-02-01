@@ -13,7 +13,7 @@ Pocket ID can sync users and groups from an LDAP Source (lldap, OpenLDAP, Active
 
 ### Generic LDAP Setup
 
-1. Follow the installation guide [here](/pocket-id/setup/installation).
+1. Follow the installation guide [here](/setup/installation).
 2. Once you have signed in with the initial admin account, navigate to the Application Configuration section at `https://pocket.id/settings/admin/application-configuration`.
 3. Client Configuration Setup
 

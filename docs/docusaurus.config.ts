@@ -8,8 +8,8 @@ const config: Config = {
     "Pocket ID is a simple OIDC provider that allows users to authenticate with their passkeys to your services.",
   favicon: "img/pocket-id.png",
 
-  url: "https://stonith404.github.io",
-  baseUrl: "/pocket-id/",
+  url: "https://docs.pocket-id.org",
+  baseUrl: "/",
   organizationName: "stonith404",
   projectName: "pocket-id",
 

@@ -18,7 +18,7 @@ Pocket ID requires a [secure context](https://developer.mozilla.org/en-US/docs/W
     curl -o .env https://raw.githubusercontent.com/stonith404/pocket-id/main/.env.example
    ```
 
-2. Edit the `.env` file so that it fits your needs. See the [environment variables](/pocket-id/configuration/environment-variables) section for more information.
+2. Edit the `.env` file so that it fits your needs. See the [environment variables](/configuration/environment-variables) section for more information.
 3. Run `docker compose up -d`
 
 You can now sign in with the admin account on `http://localhost/login/setup`.
