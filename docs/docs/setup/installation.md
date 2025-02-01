@@ -23,6 +23,20 @@ Pocket ID requires a [secure context](https://developer.mozilla.org/en-US/docs/W
 
 You can now sign in with the admin account on `http://localhost/login/setup`.
 
+### Install on Proxmox using Helper Scripts
+
+Run the following script as root in your proxmox shell. 
+
+See [Here](https://community-scripts.github.io/ProxmoxVE/scripts?id=pocketid) for more information.
+
+**Configuration Paths**
+- /opt/pocket-id/backend/.env
+- /opt/pocket-id/frontend/.env
+
+```bash
+bash -c "$(wget -qLO - https://github.com/community-scripts/ProxmoxVE/raw/main/ct/pocketid.sh)"
+```
+
 ### Unraid
 
 Pocket ID is available as a template on the Community Apps store.
