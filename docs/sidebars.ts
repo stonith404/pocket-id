@@ -72,6 +72,8 @@ const sidebars: SidebarsConfig = {
         "client-examples/proxmox",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
+        "client-examples/gitea",
+        "client-examples/memos",
       ],
     },
     {
