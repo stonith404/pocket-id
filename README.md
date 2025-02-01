@@ -2,7 +2,7 @@
 
 Pocket ID is a simple OIDC provider that allows users to authenticate with their passkeys to your services.
 
-→ Try out the [Demo](https://pocket-id.eliasschneider.com)
+→ Try out the [Demo](https://demo.pocket-id.org)
 
 <img src="https://github.com/user-attachments/assets/96ac549d-b897-404a-8811-f42b16ea58e2" width="1200"/>
 
