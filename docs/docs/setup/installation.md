@@ -27,6 +27,10 @@ You can now sign in with the admin account on `http://localhost/login/setup`.
 
 Pocket ID is available as a template on the Community Apps store.
 
+### Deploy on Fly.io
+
+Follow [this](/setup/fly-io.md) guide to deploy Pocket ID on Fly.io.
+
 ### Stand-alone Installation
 
 Required tools:

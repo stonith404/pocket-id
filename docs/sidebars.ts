@@ -16,6 +16,10 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "setup/fly-io",
+        },
+        {
+          type: "doc",
           id: "setup/nginx-reverse-proxy",
         },
         {
