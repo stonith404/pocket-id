@@ -23,7 +23,7 @@ Pocket ID requires a [secure context](https://developer.mozilla.org/en-US/docs/W
 
 You can now sign in with the admin account on `http://localhost/login/setup`.
 
-### Install on Proxmox using Helper Scripts
+### Proxmox
 
 Run the following script as root in your proxmox shell. 
 
