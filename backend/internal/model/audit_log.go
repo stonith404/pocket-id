@@ -13,6 +13,8 @@ type AuditLog struct {
 	IpAddress string        `sortable:"true"`
 	Country   string        `sortable:"true"`
 	City      string        `sortable:"true"`
+	ISP       string        `sortable:"true"`
+	ASNumber  uint          `sortable:"true"`
 	UserAgent string        `sortable:"true"`
 	UserID    string
 	Data      AuditLogData

@@ -3,7 +3,6 @@ package service
 import (
 	"archive/tar"
 	"compress/gzip"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -21,7 +20,9 @@ import (
 )
 
 type GeoLiteService struct {
-	mutex sync.Mutex
+	mutex      sync.Mutex
+	cityDBPath string
+	asnDBPath  string
 }
 
 var localhostIPNets = []*net.IPNet{
@@ -41,11 +42,22 @@ var tailscaleIPNets = []*net.IPNet{
 
 // NewGeoLiteService initializes a new GeoLiteService instance and starts a goroutine to update the GeoLite2 City database.
 func NewGeoLiteService() *GeoLiteService {
-	service := &GeoLiteService{}
+	dbDir := common.EnvConfig.GeoLiteDBPath
+	if filepath.Base(dbDir) == "GeoLite2-City.mmdb" {
+		// backwards compatible with old meaning of the env var
+		dbDir = filepath.Dir(dbDir)
+	}
+	service := &GeoLiteService{
+		cityDBPath: filepath.Join(dbDir, "GeoLite2-City.mmdb"),
+		asnDBPath:  filepath.Join(dbDir, "GeoLite2-ASN.mmdb"),
+	}
 
 	go func() {
-		if err := service.updateDatabase(); err != nil {
+		if err := service.updateDatabase("GeoLite2-City", service.cityDBPath); err != nil {
 			log.Printf("Failed to update GeoLite2 City database: %v\n", err)
+		}
+		if err := service.updateDatabase("GeoLite2-ASN", service.asnDBPath); err != nil {
+			log.Printf("Failed to update GeoLite2 ASN database: %v\n", err)
 		}
 	}()
 
@@ -53,22 +65,22 @@ func NewGeoLiteService() *GeoLiteService {
 }
 
 // GetLocationByIP returns the country and city of the given IP address.
-func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string, err error) {
+func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city, isp string, as_number uint, err error) {
 	// Check the IP address against known private IP ranges
 	if ip := net.ParseIP(ipAddress); ip != nil {
 		for _, ipNet := range tailscaleIPNets {
 			if ipNet.Contains(ip) {
-				return "Internal Network", "Tailscale", nil
+				return "Internal Network", "Tailscale", "", 0, nil
 			}
 		}
 		for _, ipNet := range privateLanIPNets {
 			if ipNet.Contains(ip) {
-				return "Internal Network", "LAN/Docker/k8s", nil
+				return "Internal Network", "LAN/Docker/k8s", "", 0, nil
 			}
 		}
 		for _, ipNet := range localhostIPNets {
 			if ipNet.Contains(ip) {
-				return "Internal Network", "localhost", nil
+				return "Internal Network", "localhost", "", 0, nil
 			}
 		}
 	}
@@ -77,15 +89,15 @@ func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	db, err := maxminddb.Open(common.EnvConfig.GeoLiteDBPath)
+	dbCity, err := maxminddb.Open(s.cityDBPath)
 	if err != nil {
-		return "", "", err
+		return "", "", "", 0, err
 	}
-	defer db.Close()
+	defer dbCity.Close()
 
 	addr := netip.MustParseAddr(ipAddress)
 
-	var record struct {
+	var cityRecord struct {
 		City struct {
 			Names map[string]string `maxminddb:"names"`
 		} `maxminddb:"city"`
@@ -94,26 +106,44 @@ func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string
 		} `maxminddb:"country"`
 	}
 
-	err = db.Lookup(addr).Decode(&record)
+	err = dbCity.Lookup(addr).Decode(&cityRecord)
 	if err != nil {
-		return "", "", err
+		return "", "", "", 0, err
 	}
 
-	return record.Country.Names["en"], record.City.Names["en"], nil
+	// Open the ASN database
+	dbASN, err := maxminddb.Open(s.asnDBPath)
+	if err != nil {
+		return "", "", "", 0, err
+	}
+	defer dbASN.Close()
+
+	var asnRecord struct {
+		Name   string `maxminddb:"autonomous_system_organization"`
+		Number uint   `maxminddb:"autonomous_system_number"`
+	}
+
+	err = dbASN.Lookup(addr).Decode(&asnRecord)
+	if err != nil {
+		return cityRecord.Country.Names["en"], cityRecord.City.Names["en"], "", 0, err
+	}
+
+	return cityRecord.Country.Names["en"], cityRecord.City.Names["en"], asnRecord.Name, asnRecord.Number, nil
 }
 
 // UpdateDatabase checks the age of the database and updates it if it's older than 14 days.
-func (s *GeoLiteService) updateDatabase() error {
-	if s.isDatabaseUpToDate() {
-		log.Println("GeoLite2 City database is up-to-date.")
+func (s *GeoLiteService) updateDatabase(editionID, dbPath string) error {
+	if s.isDatabaseUpToDate(dbPath) {
+		log.Printf("%s database is up-to-date.\n", editionID)
 		return nil
 	}
 
-	log.Println("Updating GeoLite2 City database...")
+	log.Printf("Updating %s database...\n", editionID)
 
 	// Download and extract the database
 	downloadUrl := fmt.Sprintf(
-		"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=%s&suffix=tar.gz",
+		"https://download.maxmind.com/app/geoip_download?edition_id=%s&license_key=%s&suffix=tar.gz",
+		editionID,
 		common.EnvConfig.MaxMindLicenseKey,
 	)
 	// Download the database tar.gz file
@@ -128,17 +158,17 @@ func (s *GeoLiteService) updateDatabase() error {
 	}
 
 	// Extract the database file directly to the target path
-	if err := s.extractDatabase(resp.Body); err != nil {
+	if err := s.extractDatabase(resp.Body, dbPath); err != nil {
 		return fmt.Errorf("failed to extract database: %w", err)
 	}
 
-	log.Println("GeoLite2 City database successfully updated.")
+	log.Printf("%s database successfully updated.\n", editionID)
 	return nil
 }
 
 // isDatabaseUpToDate checks if the database file is older than 14 days.
-func (s *GeoLiteService) isDatabaseUpToDate() bool {
-	info, err := os.Stat(common.EnvConfig.GeoLiteDBPath)
+func (s *GeoLiteService) isDatabaseUpToDate(dbPath string) bool {
+	info, err := os.Stat(dbPath)
 	if err != nil {
 		// If the file doesn't exist, treat it as not up-to-date
 		return false
@@ -147,7 +177,7 @@ func (s *GeoLiteService) isDatabaseUpToDate() bool {
 }
 
 // extractDatabase extracts the database file from the tar.gz archive directly to the target location.
-func (s *GeoLiteService) extractDatabase(reader io.Reader) error {
+func (s *GeoLiteService) extractDatabase(reader io.Reader, dbPath string) error {
 	gzr, err := gzip.NewReader(reader)
 	if err != nil {
 		return fmt.Errorf("failed to create gzip reader: %w", err)
@@ -166,8 +196,7 @@ func (s *GeoLiteService) extractDatabase(reader io.Reader) error {
 			return fmt.Errorf("failed to read tar archive: %w", err)
 		}
 
-		// Check if the file is the GeoLite2-City.mmdb file
-		if header.Typeflag == tar.TypeReg && filepath.Base(header.Name) == "GeoLite2-City.mmdb" {
+		if header.Typeflag == tar.TypeReg && filepath.Base(header.Name) == filepath.Base(dbPath) {
 			// extract to a temporary file to avoid having a corrupted db in case of write failure.
 			baseDir := filepath.Dir(common.EnvConfig.GeoLiteDBPath)
 			tmpFile, err := os.CreateTemp(baseDir, "geolite.*.mmdb.tmp")
@@ -210,5 +239,5 @@ func (s *GeoLiteService) extractDatabase(reader io.Reader) error {
 		}
 	}
 
-	return errors.New("GeoLite2-City.mmdb not found in archive")
+	return fmt.Errorf("%s not found in archive", filepath.Base(dbPath))
 }

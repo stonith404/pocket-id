@@ -28,6 +28,8 @@
 		{ label: 'Time', sortColumn: 'createdAt' },
 		{ label: 'Event', sortColumn: 'event' },
 		{ label: 'Approximate Location', sortColumn: 'city' },
+		{ label: 'ISP', sortColumn: 'isp' },
+		{ label: 'AS Number', sortColumn: 'asNumber' },
 		{ label: 'IP Address', sortColumn: 'ipAddress' },
 		{ label: 'Device', sortColumn: 'device' },
 		{ label: 'Client' }
@@ -42,6 +44,16 @@
 		<Table.Cell
 			>{item.city && item.country ? `${item.city}, ${item.country}` : 'Unknown'}</Table.Cell
 		>
+		<Table.Cell>{item.isp || 'Unknown'}</Table.Cell>
+		<Table.Cell>
+            {#if item.asNumber}
+                <a class="text-muted-foreground" href={`https://bgp.tools/as/${item.asNumber}`} target="_blank" rel="noopener noreferrer">
+                    {item.asNumber}
+                </a>
+            {:else}
+                Unknown
+            {/if}
+		</Table.Cell>
 		<Table.Cell>{item.ipAddress}</Table.Cell>
 		<Table.Cell>{item.device}</Table.Cell>
 		<Table.Cell>{item.data.clientName}</Table.Cell>
