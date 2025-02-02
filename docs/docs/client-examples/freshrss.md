@@ -38,7 +38,7 @@ services:
       OIDC_ENABLED: 1
       OIDC_CLIENT_ID: <POCKET_ID_CLIENT_ID>
       OIDC_CLIENT_SECRET: <POCKET_ID_SECRET>
-      OIDC_PROVIDER_METADATA_URL: https://pocketid.your.domain/.well-known/openid-configuration
+      OIDC_PROVIDER_METADATA_URL: https://id.example.com/.well-known/openid-configuration
       OIDC_SCOPES: openid email profile
       OIDC_X_FORWARDED_HEADERS: X-Forwarded-Proto X-Forwarded-Host
       OIDC_REMOTE_USER_CLAIM: preferred_username
