@@ -25,9 +25,7 @@ You can now sign in with the admin account on `http://localhost/login/setup`.
 
 ### Proxmox
 
-Run the following script as root in your proxmox shell. 
-
-See [Here](https://community-scripts.github.io/ProxmoxVE/scripts?id=pocketid) for more information.
+Run the [helper script](https://community-scripts.github.io/ProxmoxVE/scripts?id=pocketid) as root in your Proxmox shell. 
 
 **Configuration Paths**
 - /opt/pocket-id/backend/.env
