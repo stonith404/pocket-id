@@ -11,7 +11,14 @@ type OidcClientDto struct {
 	CallbackURLs []string `json:"callbackURLs"`
 	IsPublic     bool     `json:"isPublic"`
 	PkceEnabled  bool     `json:"pkceEnabled"`
-	CreatedBy    UserDto  `json:"createdBy"`
+}
+
+type OidcClientWithAllowedUserGroupsDto struct {
+	PublicOidcClientDto
+	CallbackURLs      []string                    `json:"callbackURLs"`
+	IsPublic          bool                        `json:"isPublic"`
+	PkceEnabled       bool                        `json:"pkceEnabled"`
+	AllowedUserGroups []UserGroupDtoWithUserCount `json:"allowedUserGroups"`
 }
 
 type OidcClientCreateDto struct {
@@ -35,10 +42,19 @@ type AuthorizeOidcClientResponseDto struct {
 	CallbackURL string `json:"callbackURL"`
 }
 
+type AuthorizationRequiredDto struct {
+	ClientID string `json:"clientID" binding:"required"`
+	Scope    string `json:"scope" binding:"required"`
+}
+
 type OidcCreateTokensDto struct {
 	GrantType    string `form:"grant_type" binding:"required"`
 	Code         string `form:"code" binding:"required"`
 	ClientID     string `form:"client_id"`
 	ClientSecret string `form:"client_secret"`
 	CodeVerifier string `form:"code_verifier"`
+}
+
+type OidcUpdateAllowedUserGroupsDto struct {
+	UserGroupIDs []string `json:"userGroupIds" binding:"required"`
 }

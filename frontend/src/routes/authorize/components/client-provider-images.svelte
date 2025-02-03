@@ -30,7 +30,7 @@
 
 <div class="flex justify-center gap-3">
 	<div
-		class=" rounded-2xl bg-muted p-3 transition-transform duration-500 ease-in {success || error
+		class=" bg-muted transition-translate rounded-2xl p-3 duration-500 ease-in {success || error
 			? 'translate-x-[108px]'
 			: ''}"
 	>
@@ -38,10 +38,12 @@
 	</div>
 
 	<ConnectArrow
-		class="arrow-fade-out h-w-32 w-32 {success || error ? 'opacity-0' : 'opacity-100'}"
+		class="h-w-32 w-32 transition-opacity duration-500 {success || error
+			? 'opacity-0'
+			: 'opacity-100 delay-300'}"
 	/>
 	<div
-		class="rounded-2xl p-3 [transition:transform_500ms_ease-in,background-color_200ms] {success ||
+		class="rounded-2xl p-3 [transition:translate_500ms_ease-in,background-color_200ms] {success ||
 		error
 			? '-translate-x-[108px]'
 			: ''} {animationDone ? (success ? 'bg-green-200' : 'bg-red-200') : 'bg-muted'}"

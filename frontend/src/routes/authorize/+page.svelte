@@ -23,6 +23,7 @@
 	let success = false;
 	let errorMessage: string | null = null;
 	let authorizationRequired = false;
+	let authorizationConfirmed = false;
 
 	export let data: PageData;
 	let { scope, nonce, client, state, callbackURL, codeChallenge, codeChallengeMethod } = data;
@@ -40,7 +41,17 @@
 			if (!$userStore?.id) {
 				const loginOptions = await webauthnService.getLoginOptions();
 				const authResponse = await startAuthentication(loginOptions);
-				await webauthnService.finishLogin(authResponse);
+				const user = await webauthnService.finishLogin(authResponse);
+				userStore.setUser(user);
+			}
+
+			if (!authorizationConfirmed) {
+				authorizationRequired = await oidService.isAuthorizationRequired(client!.id, scope);
+				if (authorizationRequired) {
+					isLoading = false;
+					authorizationConfirmed = true;
+					return;
+				}
 			}
 
 			await oidService
@@ -49,32 +60,11 @@
 					onSuccess(code, callbackURL);
 				});
 		} catch (e) {
-			if (e instanceof AxiosError && e.response?.status === 403) {
+			if (e instanceof AxiosError && e.response?.data.error === 'Missing authorization') {
 				authorizationRequired = true;
 			} else {
 				errorMessage = getWebauthnErrorMessage(e);
 			}
-			isLoading = false;
-		}
-	}
-
-	async function authorizeNewClient() {
-		isLoading = true;
-		try {
-			await oidService
-				.authorizeNewClient(
-					client!.id,
-					scope,
-					callbackURL,
-					nonce,
-					codeChallenge,
-					codeChallengeMethod
-				)
-				.then(async ({ code, callbackURL }) => {
-					onSuccess(code, callbackURL);
-				});
-		} catch (e) {
-			errorMessage = getWebauthnErrorMessage(e);
 			isLoading = false;
 		}
 	}
@@ -100,14 +90,14 @@
 {:else}
 	<SignInWrapper showEmailOneTimeAccessButton={$appConfigStore.emailOneTimeAccessEnabled}>
 		<ClientProviderImages {client} {success} error={!!errorMessage} />
-		<h1 class="mt-5 font-playfair text-3xl font-bold sm:text-4xl">Sign in to {client.name}</h1>
+		<h1 class="font-playfair mt-5 text-3xl font-bold sm:text-4xl">Sign in to {client.name}</h1>
 		{#if errorMessage}
-			<p class="mb-10 mt-2 text-muted-foreground">
-				{errorMessage}. Please try again.
+			<p class="text-muted-foreground mb-10 mt-2">
+				{errorMessage}.
 			</p>
 		{/if}
 		{#if !authorizationRequired && !errorMessage}
-			<p class="mb-10 mt-2 text-muted-foreground">
+			<p class="text-muted-foreground mb-10 mt-2">
 				Do you want to sign in to <b>{client.name}</b> with your
 				<b>{$appConfigStore.appName}</b> account?
 			</p>
@@ -115,7 +105,7 @@
 			<div transition:slide={{ duration: 300 }}>
 				<Card.Root class="mb-10 mt-6">
 					<Card.Header class="pb-5">
-						<p class="text-start text-muted-foreground">
+						<p class="text-muted-foreground text-start">
 							<b>{client.name}</b> wants to access the following information:
 						</p>
 					</Card.Header>
@@ -146,13 +136,7 @@
 		<div class="flex w-full justify-stretch gap-2">
 			<Button onclick={() => history.back()} class="w-full" variant="secondary">Cancel</Button>
 			{#if !errorMessage}
-				<Button
-					class="w-full"
-					{isLoading}
-					on:click={authorizationRequired ? authorizeNewClient : authorize}
-				>
-					Sign in
-				</Button>
+				<Button class="w-full" {isLoading} on:click={authorize}>Sign in</Button>
 			{:else}
 				<Button class="w-full" on:click={() => (errorMessage = null)}>Try again</Button>
 			{/if}

@@ -38,69 +38,109 @@ func NewOidcService(db *gorm.DB, jwtService *JwtService, appConfigService *AppCo
 }
 
 func (s *OidcService) Authorize(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress, userAgent string) (string, string, error) {
-	var userAuthorizedOIDCClient model.UserAuthorizedOidcClient
-	s.db.Preload("Client").First(&userAuthorizedOIDCClient, "client_id = ? AND user_id = ?", input.ClientID, userID)
-
-	if userAuthorizedOIDCClient.Client.IsPublic && input.CodeChallenge == "" {
-		return "", "", &common.OidcMissingCodeChallengeError{}
-	}
-
-	if userAuthorizedOIDCClient.Scope != input.Scope {
-		return "", "", &common.OidcMissingAuthorizationError{}
-	}
-
-	callbackURL, err := s.getCallbackURL(userAuthorizedOIDCClient.Client, input.CallbackURL)
-	if err != nil {
-		return "", "", err
-	}
-
-	code, err := s.createAuthorizationCode(input.ClientID, userID, input.Scope, input.Nonce, input.CodeChallenge, input.CodeChallengeMethod)
-	if err != nil {
-		return "", "", err
-	}
-
-	s.auditLogService.Create(model.AuditLogEventClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": userAuthorizedOIDCClient.Client.Name})
-
-	return code, callbackURL, nil
-}
-
-func (s *OidcService) AuthorizeNewClient(input dto.AuthorizeOidcClientRequestDto, userID, ipAddress, userAgent string) (string, string, error) {
 	var client model.OidcClient
-	if err := s.db.First(&client, "id = ?", input.ClientID).Error; err != nil {
+	if err := s.db.Preload("AllowedUserGroups").First(&client, "id = ?", input.ClientID).Error; err != nil {
 		return "", "", err
 	}
 
+	// If the client is not public, the code challenge must be provided
 	if client.IsPublic && input.CodeChallenge == "" {
 		return "", "", &common.OidcMissingCodeChallengeError{}
 	}
 
+	// Get the callback URL of the client. Return an error if the provided callback URL is not allowed
 	callbackURL, err := s.getCallbackURL(client, input.CallbackURL)
 	if err != nil {
 		return "", "", err
 	}
 
-	userAuthorizedClient := model.UserAuthorizedOidcClient{
-		UserID:   userID,
-		ClientID: input.ClientID,
-		Scope:    input.Scope,
+	// Check if the user group is allowed to authorize the client
+	var user model.User
+	if err := s.db.Preload("UserGroups").First(&user, "id = ?", userID).Error; err != nil {
+		return "", "", err
 	}
 
-	if err := s.db.Create(&userAuthorizedClient).Error; err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			err = s.db.Model(&userAuthorizedClient).Update("scope", input.Scope).Error
-		} else {
-			return "", "", err
+	if !s.IsUserGroupAllowedToAuthorize(user, client) {
+		return "", "", &common.OidcAccessDeniedError{}
+	}
+
+	// Check if the user has already authorized the client with the given scope
+	hasAuthorizedClient, err := s.HasAuthorizedClient(input.ClientID, userID, input.Scope)
+	if err != nil {
+		return "", "", err
+	}
+
+	// If the user has not authorized the client, create a new authorization in the database
+	if !hasAuthorizedClient {
+		userAuthorizedClient := model.UserAuthorizedOidcClient{
+			UserID:   userID,
+			ClientID: input.ClientID,
+			Scope:    input.Scope,
+		}
+
+		if err := s.db.Create(&userAuthorizedClient).Error; err != nil {
+			if errors.Is(err, gorm.ErrDuplicatedKey) {
+				// The client has already been authorized but with a different scope so we need to update the scope
+				if err := s.db.Model(&userAuthorizedClient).Update("scope", input.Scope).Error; err != nil {
+					return "", "", err
+				}
+			} else {
+				return "", "", err
+			}
 		}
 	}
 
+	// Create the authorization code
 	code, err := s.createAuthorizationCode(input.ClientID, userID, input.Scope, input.Nonce, input.CodeChallenge, input.CodeChallengeMethod)
 	if err != nil {
 		return "", "", err
 	}
 
-	s.auditLogService.Create(model.AuditLogEventNewClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": client.Name})
+	// Log the authorization event
+	if hasAuthorizedClient {
+		s.auditLogService.Create(model.AuditLogEventClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": client.Name})
+	} else {
+		s.auditLogService.Create(model.AuditLogEventNewClientAuthorization, ipAddress, userAgent, userID, model.AuditLogData{"clientName": client.Name})
+
+	}
 
 	return code, callbackURL, nil
+}
+
+// HasAuthorizedClient checks if the user has already authorized the client with the given scope
+func (s *OidcService) HasAuthorizedClient(clientID, userID, scope string) (bool, error) {
+	var userAuthorizedOidcClient model.UserAuthorizedOidcClient
+	if err := s.db.First(&userAuthorizedOidcClient, "client_id = ? AND user_id = ?", clientID, userID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	if userAuthorizedOidcClient.Scope != scope {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+// IsUserGroupAllowedToAuthorize checks if the user group of the user is allowed to authorize the client
+func (s *OidcService) IsUserGroupAllowedToAuthorize(user model.User, client model.OidcClient) bool {
+	if len(client.AllowedUserGroups) == 0 {
+		return true
+	}
+
+	isAllowedToAuthorize := false
+	for _, userGroup := range client.AllowedUserGroups {
+		for _, userGroupUser := range user.UserGroups {
+			if userGroup.ID == userGroupUser.ID {
+				isAllowedToAuthorize = true
+				break
+			}
+		}
+	}
+
+	return isAllowedToAuthorize
 }
 
 func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret, codeVerifier string) (string, string, error) {
@@ -161,7 +201,7 @@ func (s *OidcService) CreateTokens(code, grantType, clientID, clientSecret, code
 
 func (s *OidcService) GetClient(clientID string) (model.OidcClient, error) {
 	var client model.OidcClient
-	if err := s.db.Preload("CreatedBy").First(&client, "id = ?", clientID).Error; err != nil {
+	if err := s.db.Preload("CreatedBy").Preload("AllowedUserGroups").First(&client, "id = ?", clientID).Error; err != nil {
 		return model.OidcClient{}, err
 	}
 	return client, nil
@@ -380,6 +420,33 @@ func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (ma
 	}
 
 	return claims, nil
+}
+
+func (s *OidcService) UpdateAllowedUserGroups(id string, input dto.OidcUpdateAllowedUserGroupsDto) (client model.OidcClient, err error) {
+	client, err = s.GetClient(id)
+	if err != nil {
+		return model.OidcClient{}, err
+	}
+
+	// Fetch the user groups based on UserGroupIDs in input
+	var groups []model.UserGroup
+	if len(input.UserGroupIDs) > 0 {
+		if err := s.db.Where("id IN (?)", input.UserGroupIDs).Find(&groups).Error; err != nil {
+			return model.OidcClient{}, err
+		}
+	}
+
+	// Replace the current user groups with the new set of user groups
+	if err := s.db.Model(&client).Association("AllowedUserGroups").Replace(groups); err != nil {
+		return model.OidcClient{}, err
+	}
+
+	// Save the updated client
+	if err := s.db.Save(&client).Error; err != nil {
+		return model.OidcClient{}, err
+	}
+
+	return client, nil
 }
 
 func (s *OidcService) createAuthorizationCode(clientID string, userID string, scope string, nonce string, codeChallenge string, codeChallengeMethod string) (string, error) {

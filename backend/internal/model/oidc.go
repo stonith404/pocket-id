@@ -44,8 +44,9 @@ type OidcClient struct {
 	IsPublic     bool
 	PkceEnabled  bool
 
-	CreatedByID string
-	CreatedBy   User
+	AllowedUserGroups []UserGroup `gorm:"many2many:oidc_clients_allowed_user_groups;"`
+	CreatedByID       string
+	CreatedBy         User
 }
 
 func (c *OidcClient) AfterFind(_ *gorm.DB) (err error) {
