@@ -5,6 +5,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserGroupService from '$lib/services/user-group-service';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 	import type { UserGroup, UserGroupWithUserCount } from '$lib/types/user-group.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
@@ -68,7 +69,7 @@
 					<DropdownMenu.Item href="/settings/admin/user-groups/{item.id}"
 						><LucidePencil class="mr-2 h-4 w-4" /> Edit</DropdownMenu.Item
 					>
-					{#if !item.ldapId}
+					{#if !item.ldapId || !$appConfigStore.ldapEnabled}
 						<DropdownMenu.Item
 							class="text-red-500 focus:!text-red-700"
 							on:click={() => deleteUserGroup(item)}

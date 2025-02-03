@@ -10,11 +10,12 @@ import (
 )
 
 type UserGroupService struct {
-	db *gorm.DB
+	db               *gorm.DB
+	appConfigService *AppConfigService
 }
 
-func NewUserGroupService(db *gorm.DB) *UserGroupService {
-	return &UserGroupService{db: db}
+func NewUserGroupService(db *gorm.DB, appConfigService *AppConfigService) *UserGroupService {
+	return &UserGroupService{db: db, appConfigService: appConfigService}
 }
 
 func (s *UserGroupService) List(name string, sortedPaginationRequest utils.SortedPaginationRequest) (groups []model.UserGroup, response utils.PaginationResponse, err error) {
@@ -51,7 +52,8 @@ func (s *UserGroupService) Delete(id string) error {
 		return err
 	}
 
-	if group.LdapID != nil {
+	// Disallow deleting the group if it is an LDAP group and LDAP is enabled
+	if group.LdapID != nil && s.appConfigService.DbConfig.LdapEnabled.Value == "true" {
 		return &common.LdapUserGroupUpdateError{}
 	}
 
@@ -83,7 +85,8 @@ func (s *UserGroupService) Update(id string, input dto.UserGroupCreateDto, allow
 		return model.UserGroup{}, err
 	}
 
-	if group.LdapID != nil && !allowLdapUpdate {
+	// Disallow updating the group if it is an LDAP group and LDAP is enabled
+	if !allowLdapUpdate && group.LdapID != nil && s.appConfigService.DbConfig.LdapEnabled.Value == "true" {
 		return model.UserGroup{}, &common.LdapUserGroupUpdateError{}
 	}
 

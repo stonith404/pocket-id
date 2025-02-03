@@ -119,6 +119,7 @@ var defaultDbConfig = model.AppConfig{
 	LdapEnabled: model.AppConfigVariable{
 		Key:          "ldapEnabled",
 		Type:         "bool",
+		IsPublic:     true,
 		DefaultValue: "false",
 	},
 	LdapUrl: model.AppConfigVariable{

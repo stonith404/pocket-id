@@ -2,6 +2,7 @@
 	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { User, UserCreate } from '$lib/types/user.type';
 	import { createForm } from '$lib/utils/form-util';
 	import { z } from 'zod';
@@ -15,7 +16,7 @@
 	} = $props();
 
 	let isLoading = $state(false);
-	let inputDisabled = $derived(!!existingUser?.ldapId);
+	let inputDisabled = $derived(!!existingUser?.ldapId && $appConfigStore.ldapEnabled);
 
 	const user = {
 		firstName: existingUser?.firstName || '',

@@ -64,7 +64,7 @@
 	</Alert.Root>
 {/if}
 
-<fieldset disabled={!$appConfigStore.allowOwnAccountEdit || !!account.ldapId}>
+<fieldset disabled={!$appConfigStore.allowOwnAccountEdit || (!!account.ldapId && $appConfigStore.ldapEnabled)}>
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Account Details</Card.Title>

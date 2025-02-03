@@ -14,6 +14,7 @@
 	import Ellipsis from 'lucide-svelte/icons/ellipsis';
 	import { toast } from 'svelte-sonner';
 	import OneTimeLinkModal from './one-time-link-modal.svelte';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 
 	let { users = $bindable() }: { users: Paginated<User> } = $props();
 	let requestOptions: SearchPaginationSortRequest | undefined = $state();
@@ -95,7 +96,7 @@
 					<DropdownMenu.Item onclick={() => goto(`/settings/admin/users/${item.id}`)}
 						><LucidePencil class="mr-2 h-4 w-4" /> Edit</DropdownMenu.Item
 					>
-					{#if !item.ldapId}
+					{#if !item.ldapId || !$appConfigStore.ldapEnabled}
 						<DropdownMenu.Item
 							class="text-red-500 focus:!text-red-700"
 							onclick={() => deleteUser(item)}

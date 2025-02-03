@@ -42,7 +42,7 @@ func initRouter(db *gorm.DB, appConfigService *service.AppConfigService) {
 	customClaimService := service.NewCustomClaimService(db)
 	oidcService := service.NewOidcService(db, jwtService, appConfigService, auditLogService, customClaimService)
 	testService := service.NewTestService(db, appConfigService)
-	userGroupService := service.NewUserGroupService(db)
+	userGroupService := service.NewUserGroupService(db, appConfigService)
 	ldapService := service.NewLdapService(db, appConfigService, userService, userGroupService)
 
 	rateLimitMiddleware := middleware.NewRateLimitMiddleware()

@@ -17,14 +17,15 @@ import (
 )
 
 type UserService struct {
-	db              *gorm.DB
-	jwtService      *JwtService
-	auditLogService *AuditLogService
-	emailService    *EmailService
+	db               *gorm.DB
+	jwtService       *JwtService
+	auditLogService  *AuditLogService
+	emailService     *EmailService
+	appConfigService *AppConfigService
 }
 
-func NewUserService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService, emailService *EmailService) *UserService {
-	return &UserService{db: db, jwtService: jwtService, auditLogService: auditLogService, emailService: emailService}
+func NewUserService(db *gorm.DB, jwtService *JwtService, auditLogService *AuditLogService, emailService *EmailService, appConfigService *AppConfigService) *UserService {
+	return &UserService{db: db, jwtService: jwtService, auditLogService: auditLogService, emailService: emailService, appConfigService: appConfigService}
 }
 
 func (s *UserService) ListUsers(searchTerm string, sortedPaginationRequest utils.SortedPaginationRequest) ([]model.User, utils.PaginationResponse, error) {
@@ -52,7 +53,8 @@ func (s *UserService) DeleteUser(userID string) error {
 		return err
 	}
 
-	if user.LdapID != nil {
+	// Disallow deleting the user if it is an LDAP user and LDAP is enabled
+	if user.LdapID != nil && s.appConfigService.DbConfig.LdapEnabled.Value == "true" {
 		return &common.LdapUserUpdateError{}
 	}
 
@@ -86,7 +88,8 @@ func (s *UserService) UpdateUser(userID string, updatedUser dto.UserCreateDto, u
 		return model.User{}, err
 	}
 
-	if user.LdapID != nil && !allowLdapUpdate {
+	// Disallow updating the user if it is an LDAP group and LDAP is enabled
+	if !allowLdapUpdate && user.LdapID != nil && s.appConfigService.DbConfig.LdapEnabled.Value == "true" {
 		return model.User{}, &common.LdapUserUpdateError{}
 	}
 

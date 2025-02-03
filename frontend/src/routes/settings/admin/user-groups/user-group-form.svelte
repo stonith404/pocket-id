@@ -1,6 +1,7 @@
 <script lang="ts">
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { UserGroupCreate } from '$lib/types/user-group.type';
 	import { createForm } from '$lib/utils/form-util';
 	import { z } from 'zod';
@@ -14,7 +15,7 @@
 	} = $props();
 
 	let isLoading = $state(false);
-	let inputDisabled = $derived(!!existingUserGroup?.ldapId);
+	let inputDisabled = $derived(!!existingUserGroup?.ldapId && $appConfigStore.ldapEnabled);
 	let hasManualNameEdit = $state(!!existingUserGroup?.friendlyName);
 
 	const userGroup = {

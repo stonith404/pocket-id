@@ -12,6 +12,7 @@
 	import { toast } from 'svelte-sonner';
 	import UserGroupForm from '../user-group-form.svelte';
 	import UserSelection from '../user-selection.svelte';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 
 	let { data } = $props();
 	let userGroup = $state({
@@ -88,11 +89,11 @@
 			<UserSelection
 				{users}
 				bind:selectedUserIds={userGroup.userIds}
-				selectionDisabled={!!userGroup.ldapId}
+				selectionDisabled={!!userGroup.ldapId && $appConfigStore.ldapEnabled}
 			/>
 		{/await}
 		<div class="mt-5 flex justify-end">
-			<Button disabled={!!userGroup.ldapId} on:click={() => updateUserGroupUsers(userGroup.userIds)}
+			<Button disabled={!!userGroup.ldapId && $appConfigStore.ldapEnabled} on:click={() => updateUserGroupUsers(userGroup.userIds)}
 				>Save</Button
 			>
 		</div>
