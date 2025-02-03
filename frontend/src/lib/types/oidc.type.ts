@@ -1,3 +1,5 @@
+import type { UserGroup } from './user-group.type';
+
 export type OidcClient = {
 	id: string;
 	name: string;
@@ -6,6 +8,10 @@ export type OidcClient = {
 	hasLogo: boolean;
 	isPublic: boolean;
 	pkceEnabled: boolean;
+};
+
+export type OidcClientWithAllowedUserGroups = OidcClient & {
+	allowedUserGroups: UserGroup[];
 };
 
 export type OidcClientCreate = Omit<OidcClient, 'id' | 'logoURL' | 'hasLogo'>;

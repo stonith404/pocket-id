@@ -32,10 +32,10 @@
 					try {
 						await userGroupService.remove(userGroup.id);
 						userGroups = await userGroupService.list(requestOptions!);
+						toast.success('User group deleted successfully');
 					} catch (e) {
 						axiosErrorToast(e);
-					}
-					toast.success('User group deleted successfully');
+					}					
 				}
 			}
 		});

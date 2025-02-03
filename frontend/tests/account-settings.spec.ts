@@ -40,7 +40,7 @@ test('Update account details fails with already taken username', async ({ page }
 test('Add passkey to an account', async ({ page }) => {
 	await page.goto('/settings/account');
 
-	await (await passkeyUtil.init(page)).addPasskey('new');
+	await (await passkeyUtil.init(page)).addPasskey('timNew');
 
 	await page.click('button:text("Add Passkey")');
 

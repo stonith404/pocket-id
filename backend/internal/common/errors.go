@@ -176,3 +176,11 @@ func (e *LdapUserGroupUpdateError) Error() string {
 	return "LDAP user groups can't be updated"
 }
 func (e *LdapUserGroupUpdateError) HttpStatusCode() int { return http.StatusForbidden }
+
+type OidcAccessDeniedError struct{}
+
+func (e *OidcAccessDeniedError) Error() string {
+	return "You're not allowed to access this service"
+}
+
+func (e *OidcAccessDeniedError) HttpStatusCode() int { return http.StatusForbidden }

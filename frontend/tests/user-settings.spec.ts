@@ -142,6 +142,8 @@ test('Update user fails with already taken username', async ({ page }) => {
 test('Update user custom claims', async ({ page }) => {
 	await page.goto(`/settings/admin/users/${users.craig.id}`);
 
+	await page.getByRole('button', { name: 'Expand card' }).click();
+
 	// Add two custom claims
 	await page.getByRole('button', { name: 'Add custom claim' }).click();
 

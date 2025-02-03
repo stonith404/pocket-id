@@ -124,7 +124,10 @@ func (s *TestService) SeedDatabase() error {
 				Name:         "Immich",
 				Secret:       "$2a$10$Ak.FP8riD1ssy2AGGbG.gOpnp/rBpymd74j0nxNMtW0GG1Lb4gzxe", // PYjrE9u4v9GVqXKi52eur0eb2Ci4kc0x
 				CallbackURLs: model.CallbackURLs{"http://immich/auth/callback"},
-				CreatedByID:  users[0].ID,
+				CreatedByID:  users[1].ID,
+				AllowedUserGroups: []model.UserGroup{
+					userGroups[1],
+				},
 			},
 		}
 		for _, client := range oidcClients {
@@ -163,27 +166,31 @@ func (s *TestService) SeedDatabase() error {
 			return err
 		}
 
-		publicKey1, err := s.getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwcOo5KV169KR67QEHrcYkeXE3CCxv2BgwnSq4VYTQxyLtdmKxegexa8JdwFKhKXa2BMI9xaN15BoL6wSCRFJhg==")
-		publicKey2, err := s.getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAESq/wR8QbBu3dKnpaw/v0mDxFFDwnJ/L5XHSg2tAmq5x1BpSMmIr3+DxCbybVvGRmWGh8kKhy7SMnK91M6rFHTA==")
+		// To generate a new key pair, run the following command:
+		// openssl genpkey -algorithm EC -pkeyopt ec_paramgen_curve:P-256 | \
+		// openssl pkcs8 -topk8 -nocrypt | tee >(openssl pkey -pubout)
+
+		publicKeyPasskey1, err := s.getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwcOo5KV169KR67QEHrcYkeXE3CCxv2BgwnSq4VYTQxyLtdmKxegexa8JdwFKhKXa2BMI9xaN15BoL6wSCRFJhg==")
+		publicKeyPasskey2, err := s.getCborPublicKey("MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEj4qA0PrZzg8Co1C27nyUbzrp8Ewjr7eOlGI2LfrzmbL5nPhZRAdJ3hEaqrHMSnJBhfMqtQGKwDYpaLIQFAKLhw==")
 		if err != nil {
 			return err
 		}
 		webauthnCredentials := []model.WebauthnCredential{
 			{
 				Name:            "Passkey 1",
-				CredentialID:    []byte("test-credential-1"),
-				PublicKey:       publicKey1,
+				CredentialID:    []byte("test-credential-tim"),
+				PublicKey:       publicKeyPasskey1,
 				AttestationType: "none",
 				Transport:       model.AuthenticatorTransportList{protocol.Internal},
 				UserID:          users[0].ID,
 			},
 			{
 				Name:            "Passkey 2",
-				CredentialID:    []byte("test-credential-2"),
-				PublicKey:       publicKey2,
+				CredentialID:    []byte("test-credential-craig"),
+				PublicKey:       publicKeyPasskey2,
 				AttestationType: "none",
 				Transport:       model.AuthenticatorTransportList{protocol.Internal},
-				UserID:          users[0].ID,
+				UserID:          users[1].ID,
 			},
 		}
 		for _, credential := range webauthnCredentials {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
+	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 	import AppConfigService from '$lib/services/app-config-service';
 	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { AllAppConfig } from '$lib/types/application-configuration';
@@ -55,45 +55,27 @@
 	<title>Application Configuration</title>
 </svelte:head>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title>General</Card.Title>
-	</Card.Header>
-	<Card.Content>
-		<AppConfigGeneralForm {appConfig} callback={updateAppConfig} />
-	</Card.Content>
-</Card.Root>
+<CollapsibleCard id="application-configuration-general" title="General" defaultExpanded>
+	<AppConfigGeneralForm {appConfig} callback={updateAppConfig} />
+</CollapsibleCard>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title>Email</Card.Title>
-		<Card.Description>
-			Enable email notifications to alert users when a login is detected from a new device or
-			location.
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<AppConfigEmailForm {appConfig} callback={updateAppConfig} />
-	</Card.Content>
-</Card.Root>
+<CollapsibleCard
+	id="application-configuration-email"
+	title="Email"
+	description="Enable email notifications to alert users when a login is detected from a new device or
+			location."
+>
+	<AppConfigEmailForm {appConfig} callback={updateAppConfig} />
+</CollapsibleCard>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title>LDAP</Card.Title>
-		<Card.Description>
-			Configure LDAP settings to sync users and groups from an LDAP server.
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<AppConfigLdapForm {appConfig} callback={updateAppConfig} />
-	</Card.Content>
-</Card.Root>
+<CollapsibleCard
+	id="application-configuration-ldap"
+	title="LDAP"
+	description="Configure LDAP settings to sync users and groups from an LDAP server."
+>
+	<AppConfigLdapForm {appConfig} callback={updateAppConfig} />
+</CollapsibleCard>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title>Images</Card.Title>
-	</Card.Header>
-	<Card.Content>
-		<UpdateApplicationImages callback={updateImages} />
-	</Card.Content>
-</Card.Root>
+<CollapsibleCard id="application-configuration-images" title="Images">
+	<UpdateApplicationImages callback={updateImages} />
+</CollapsibleCard>

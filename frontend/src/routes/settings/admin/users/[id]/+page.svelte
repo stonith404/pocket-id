@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -45,7 +46,7 @@
 </svelte:head>
 
 <div class="flex items-center justify-between">
-	<a class="flex text-sm text-muted-foreground" href="/settings/admin/users"
+	<a class="text-muted-foreground flex text-sm" href="/settings/admin/users"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
 	{#if !!user.ldapId}
@@ -61,18 +62,13 @@
 	</Card.Content>
 </Card.Root>
 
-<Card.Root>
-	<Card.Header>
-		<Card.Title>Custom Claims</Card.Title>
-		<Card.Description>
-			Custom claims are key-value pairs that can be used to store additional information about a
-			user. These claims will be included in the ID token if the scope "profile" is requested.
-		</Card.Description>
-	</Card.Header>
-	<Card.Content>
-		<CustomClaimsInput bind:customClaims={user.customClaims} />
-		<div class="mt-5 flex justify-end">
-			<Button onclick={updateCustomClaims} type="submit">Save</Button>
-		</div>
-	</Card.Content>
-</Card.Root>
+<CollapsibleCard
+	id="user-custom-claims"
+	title="Custom Claims"
+	description="Custom claims are key-value pairs that can be used to store additional information about a user. These claims will be included in the ID token if the scope 'profile' is requested."
+>
+	<CustomClaimsInput bind:customClaims={user.customClaims} />
+	<div class="mt-5 flex justify-end">
+		<Button onclick={updateCustomClaims} type="submit">Save</Button>
+	</div>
+</CollapsibleCard>

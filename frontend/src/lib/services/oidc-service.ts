@@ -1,4 +1,9 @@
-import type { AuthorizeResponse, OidcClient, OidcClientCreate } from '$lib/types/oidc.type';
+import type {
+	AuthorizeResponse,
+	OidcClient,
+	OidcClientCreate,
+	OidcClientWithAllowedUserGroups
+} from '$lib/types/oidc.type';
 import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 import APIService from './api-service';
 
@@ -23,24 +28,13 @@ class OidcService extends APIService {
 		return res.data as AuthorizeResponse;
 	}
 
-	async authorizeNewClient(
-		clientId: string,
-		scope: string,
-		callbackURL: string,
-		nonce?: string,
-		codeChallenge?: string,
-		codeChallengeMethod?: string
-	) {
-		const res = await this.api.post('/oidc/authorize/new-client', {
+	async isAuthorizationRequired(clientId: string, scope: string) {
+		const res = await this.api.post('/oidc/authorization-required', {
 			scope,
-			nonce,
-			callbackURL,
-			clientId,
-			codeChallenge,
-			codeChallengeMethod
+			clientId
 		});
 
-		return res.data as AuthorizeResponse;
+		return res.data.authorizationRequired as boolean;
 	}
 
 	async listClients(options?: SearchPaginationSortRequest) {
@@ -59,7 +53,7 @@ class OidcService extends APIService {
 	}
 
 	async getClient(id: string) {
-		return (await this.api.get(`/oidc/clients/${id}`)).data as OidcClient;
+		return (await this.api.get(`/oidc/clients/${id}`)).data as OidcClientWithAllowedUserGroups;
 	}
 
 	async updateClient(id: string, client: OidcClientCreate) {
@@ -87,6 +81,11 @@ class OidcService extends APIService {
 
 	async createClientSecret(id: string) {
 		return (await this.api.post(`/oidc/clients/${id}/secret`)).data.secret as string;
+	}
+
+	async updateAllowedUserGroups(id: string, userGroupIds: string[]) {
+		const res = await this.api.put(`/oidc/clients/${id}/allowed-user-groups`, { userGroupIds });
+		return res.data as OidcClientWithAllowedUserGroups;
 	}
 }
 

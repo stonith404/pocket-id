@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog';
 	import CopyToClipboard from '$lib/components/copy-to-clipboard.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import Label from '$lib/components/ui/label/label.svelte';
 	import OidcService from '$lib/services/oidc-service';
+	import UserGroupService from '$lib/services/user-group-service';
 	import clientSecretStore from '$lib/stores/client-secret-store';
 	import type { OidcClientCreateWithLogo } from '$lib/types/oidc.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
@@ -14,12 +16,17 @@
 	import { toast } from 'svelte-sonner';
 	import { slide } from 'svelte/transition';
 	import OidcForm from '../oidc-client-form.svelte';
+	import UserGroupSelection from '../user-group-selection.svelte';
 
 	let { data } = $props();
-	let client = $state(data);
+	let client = $state({
+		...data,
+		allowedUserGroupIds: data.allowedUserGroups.map((g) => g.id)
+	});
 	let showAllDetails = $state(false);
 
 	const oidcService = new OidcService();
+	const userGroupService = new UserGroupService();
 
 	const setupDetails = $state({
 		'Authorization URL': `https://${$page.url.hostname}/authorize`,
@@ -74,6 +81,17 @@
 		});
 	}
 
+	async function updateUserGroupClients(allowedGroups: string[]) {
+		await oidcService
+			.updateAllowedUserGroups(client.id, allowedGroups)
+			.then(() => {
+				toast.success('Allowed user groups updated successfully');
+			})
+			.catch((e) => {
+				axiosErrorToast(e);
+			});
+	}
+
 	beforeNavigate(() => {
 		clientSecretStore.clear();
 	});
@@ -84,7 +102,7 @@
 </svelte:head>
 
 <div>
-	<a class="flex text-sm text-muted-foreground" href="/settings/admin/oidc-clients"
+	<a class="text-muted-foreground flex text-sm" href="/settings/admin/oidc-clients"
 		><LucideChevronLeft class="h-5 w-5" /> Back</a
 	>
 </div>
@@ -97,7 +115,7 @@
 			<div class="mb-2 flex">
 				<Label class="mb-0 w-44">Client ID</Label>
 				<CopyToClipboard value={client.id}>
-					<span class="text-sm text-muted-foreground" data-testid="client-id"> {client.id}</span>
+					<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
 				</CopyToClipboard>
 			</div>
 			{#if !client.isPublic}
@@ -105,12 +123,12 @@
 					<Label class="w-44">Client secret</Label>
 					{#if $clientSecretStore}
 						<CopyToClipboard value={$clientSecretStore}>
-							<span class="text-sm text-muted-foreground" data-testid="client-secret">
+							<span class="text-muted-foreground text-sm" data-testid="client-secret">
 								{$clientSecretStore}
 							</span>
 						</CopyToClipboard>
 					{:else}
-						<span class="text-sm text-muted-foreground" data-testid="client-secret"
+						<span class="text-muted-foreground text-sm" data-testid="client-secret"
 							>••••••••••••••••••••••••••••••••</span
 						>
 						<Button
@@ -129,7 +147,7 @@
 						<div class="mb-5 flex">
 							<Label class="mb-0 w-44">{key}</Label>
 							<CopyToClipboard {value}>
-								<span class="text-sm text-muted-foreground">{value}</span>
+								<span class="text-muted-foreground text-sm">{value}</span>
 							</CopyToClipboard>
 						</div>
 					{/each}
@@ -151,3 +169,15 @@
 		<OidcForm existingClient={client} callback={updateClient} />
 	</Card.Content>
 </Card.Root>
+<CollapsibleCard
+	id="allowed-user-groups"
+	title="Allowed User Groups"
+	description="Add user groups to this client to restrict access to users in these groups. If no user groups are selected, all users will have access to this client."
+>
+	{#await userGroupService.list() then groups}
+		<UserGroupSelection {groups} bind:selectedGroupIds={client.allowedUserGroupIds} />
+	{/await}
+	<div class="mt-5 flex justify-end">
+		<Button on:click={() => updateUserGroupClients(client.allowedUserGroupIds)}>Save</Button>
+	</div>
+</CollapsibleCard>

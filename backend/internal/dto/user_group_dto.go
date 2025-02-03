@@ -33,7 +33,3 @@ type UserGroupCreateDto struct {
 type UserGroupUpdateUsersDto struct {
 	UserIDs []string `json:"userIds" binding:"required"`
 }
-
-type AssignUserToGroupDto struct {
-	UserID string `json:"userId" binding:"required"`
-}
