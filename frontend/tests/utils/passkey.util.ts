@@ -2,18 +2,21 @@ import type { CDPSession, Page } from '@playwright/test';
 
 // The existing passkeys are already stored in the database
 const passkeys = {
-	existing1: {
-		credentialId: 'test-credential-1',
+	tim: {
+		credentialId: 'test-credential-tim',
+		userHandle: 'f4b89dc2-62fb-46bf-9f5f-c34f4eafe93e',
 		privateKey:
 			'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg3rNKkGApsEA1TpGiphKh6axTq3Vh6wBghLLea/YkIp+hRANCAATBw6jkpXXr0pHrtAQetxiR5cTcILG/YGDCdKrhVhNDHIu12YrF6B7Frwl3AUqEpdrYEwj3Fo3XkGgvrBIJEUmG'
 	},
-	existing2: {
-		credentialId: 'test-credential-2',
+	craig: {
+		credentialId: 'test-credential-craig',
+		userHandle: '1cd19686-f9a6-43f4-a41f-14a0bf5b4036',
 		privateKey:
-			'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg3rNKkGApsEA1TpGiphKh6axTq3Vh6wBghLLea/YkIp+hRANCAATBw6jkpXXr0pHrtAQetxiR5cTcILG/YGDCdKrhVhNDHIu12YrF6B7Frwl3AUqEpdrYEwj3Fo3XkGgvrBIJEUmG'
+			'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgL1UaeWG1KYpN+HcxQvXEJysiQjT9Fn7Zif3i5cY+s+yhRANCAASPioDQ+tnODwKjULbufJRvOunwTCOvt46UYjYt+vOZsvmc+FlEB0neERqqscxKckGF8yq1AYrANiloshAUAouH'
 	},
-	new: {
-		credentialId: 'new-test-credential',
+	timNew: {
+		credentialId: 'new-test-credential-tim',
+		userHandle: 'f4b89dc2-62fb-46bf-9f5f-c34f4eafe93e',
 		privateKey:
 			'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgFl2lIlRyc2G7O9D8WWrw2N8D7NTlhgWcKFY7jYxrfcmhRANCAASmvbCFrXshUvW7avTIysV9UymbhmUwGb7AonUMQPgqK2Jur7PWp9V0AIe5YMuXYH1oxsqY5CoAbdY2YsPmhYoX'
 	}
@@ -48,9 +51,9 @@ async function addVirtualAuthenticator(client: CDPSession): Promise<string> {
 async function addPasskey(
 	authenticatorId: string,
 	client: CDPSession,
-	passkeyName?: keyof typeof passkeys
+	passkeyName: keyof typeof passkeys = 'tim'
 ): Promise<void> {
-	const passkey = passkeys[passkeyName ?? 'existing1'];
+	const passkey = passkeys[passkeyName];
 	await client.send('WebAuthn.addCredential', {
 		authenticatorId,
 		credential: {
@@ -58,9 +61,8 @@ async function addPasskey(
 			isResidentCredential: true,
 			rpId: 'localhost',
 			privateKey: passkey.privateKey,
-			userHandle: btoa('f4b89dc2-62fb-46bf-9f5f-c34f4eafe93e'),
+			userHandle: btoa(passkey.userHandle),
 			signCount: Math.round((new Date().getTime() - 1704444610871) / 1000 / 2)
-			// signCount: 2,
 		}
 	});
 }

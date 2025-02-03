@@ -47,7 +47,7 @@
 </script>
 
 <Card.Root>
-	<Card.Header>
+	<Card.Header class="cursor-pointer" onclick={toggleExpanded}>
 		<div class="flex items-center justify-between">
 			<div>
 				<Card.Title>{title}</Card.Title>
@@ -55,7 +55,7 @@
 					<Card.Description>{description}</Card.Description>
 				{/if}
 			</div>
-			<Button class="ml-10 h-8 p-3" variant="ghost" on:click={toggleExpanded}>
+			<Button class="ml-10 h-8 p-3" variant="ghost" aria-label="Expand card">
 				<LucideChevronDown
 					class={cn(
 						'h-5 w-5 transition-transform duration-200',

@@ -77,6 +77,8 @@ test('Delete user group', async ({ page }) => {
 test('Update user group custom claims', async ({ page }) => {
 	await page.goto(`/settings/admin/user-groups/${userGroups.designers.id}`);
 
+	await page.getByRole('button', { name: 'Expand card' }).click();
+
 	// Add two custom claims
 	await page.getByRole('button', { name: 'Add custom claim' }).click();
 

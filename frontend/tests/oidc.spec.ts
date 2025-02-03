@@ -75,6 +75,24 @@ test('Authorize new client while not signed in', async ({ page }) => {
 	});
 });
 
+test('Authorize new client fails with user group not allowed', async ({ page }) => {
+	const oidcClient = oidcClients.immich;
+	const urlParams = createUrlParams(oidcClient);
+	await page.context().clearCookies();
+	await page.goto(`/authorize?${urlParams.toString()}`);
+
+	await (await passkeyUtil.init(page)).addPasskey('craig');
+	await page.getByRole('button', { name: 'Sign in' }).click();
+
+	await expect(page.getByTestId('scopes').getByRole('heading', { name: 'Email' })).toBeVisible();
+	await expect(page.getByTestId('scopes').getByRole('heading', { name: 'Profile' })).toBeVisible();
+
+	await page.getByRole('button', { name: 'Sign in' }).click();
+
+	await expect(page.getByRole('paragraph').first()).toHaveText("You're not allowed to access this service.");
+});
+
+
 function createUrlParams(oidcClient: { id: string; callbackUrl: string }) {
 	return new URLSearchParams({
 		client_id: oidcClient.id,
