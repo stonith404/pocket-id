@@ -89,7 +89,6 @@ func (s *UserGroupService) Update(id string, input dto.UserGroupCreateDto, allow
 
 	group.Name = input.Name
 	group.FriendlyName = input.FriendlyName
-	group.LdapID = &input.LdapID
 
 	if err := s.db.Preload("Users").Save(&group).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
