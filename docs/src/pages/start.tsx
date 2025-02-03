@@ -24,7 +24,7 @@ const Home: React.FC = () => {
           <img src="https://docs.pocket-id.org/img/pocket-id.png" alt="Pocket ID Logo" className="h-24 w-24 mx-auto mb-6 animate-bounce" />
           <h2 className="text-3xl sm:text-4xl font-extrabold">Secure Your Services</h2>
           <p className="mt-4 text-lg">A simple, open-source OIDC provider leveraging passkeys for secure authentication.</p>
-          <a href="https://docs.pocket-id.org" target="_blank" rel="noopener noreferrer" className="mt-6 inline-block text-black px-6 py-3 rounded-lg font-semibold" style={{ backgroundColor: "hsl(0, 0%, 98%)" }}>
+          <a href="https://docs.pocket-id.org" target="_blank" rel="noopener noreferrer" className="mt-6 inline-block text-black px-6 py-3 rounded-lg font-semibold" style={{ backgroundColor: "hsl(0, 0%, 98%)", color: "hsl(240, 10%, 3.9%)"}}>
             Get Started
           </a>
         </section>
