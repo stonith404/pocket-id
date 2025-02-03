@@ -1,3 +1,19 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.27.2...v) (2025-02-03)
+
+
+### Features
+
+* allow LDAP users and groups to be deleted if LDAP gets disabled ([9ab1787](https://github.com/stonith404/pocket-id/commit/9ab178712aa3cc71546a89226e67b7ba91245251))
+* map allowed groups to OIDC clients ([#202](https://github.com/stonith404/pocket-id/issues/202)) ([13b02a0](https://github.com/stonith404/pocket-id/commit/13b02a072f20ce10e12fd8b897cbf42a908f3291))
+
+
+### Bug Fixes
+
+* **caddy:** trusted_proxies for IPv6 enabled hosts ([#189](https://github.com/stonith404/pocket-id/issues/189)) ([37a835b](https://github.com/stonith404/pocket-id/commit/37a835b44e308622f6862de494738dd2bfb58ef0))
+* missing user service dependency ([61e71ad](https://github.com/stonith404/pocket-id/commit/61e71ad43b8f0f498133d3eb2381382e7bc642b9))
+* non LDAP user group can't be updated after update ([ecd74b7](https://github.com/stonith404/pocket-id/commit/ecd74b794f1ffb7da05bce0046fb8d096b039409))
+* use cursor pointer on clickable elements ([7798580](https://github.com/stonith404/pocket-id/commit/77985800ae9628104e03e7f2e803b7ed9eaaf4e0))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.27.1...v) (2025-01-27)
 
 
