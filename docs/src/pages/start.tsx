@@ -4,18 +4,18 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Home: React.FC = () => {
   return (
-    <div className="text-white h-screen flex flex-col" style={{ backgroundColor: "hsl(240, 10%, 3.9%)" }}>
-      <header className="glass p-4 sm:p-5 m-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center w-full justify-between">
-            <div className="flex items-center">
-              <img src="https://docs.pocket-id.org/img/pocket-id.png" alt="Pocket ID Logo" className="h-12 w-12 mr-4" />
-              <h1 className="text-2xl font-bold">Pocket ID</h1>
+    <div className="text-white h-screen flex flex-col bg-muted/40" >
+      <header className="w-full border-b" style={{ backgroundColor: "hsl(240, 10%, 3.9%)" }}>
+        <div className="max-w-[1640px] mx-auto flex w-full items-center justify-between px-4 md:px-10">
+          {/* <div className="flex items-center w-full justify-between"> */}
+            <div className="flex h-16 items-center">
+              <img src="https://docs.pocket-id.org/img/pocket-id.png" alt="Pocket ID Logo" className="mr-3 h-8 w-8" />
+              <h1 className="text-md font-medium">Pocket ID</h1>
             </div>
             <a href="https://github.com/stonith404/pocket-id" target="_blank" rel="noopener noreferrer" style={{ color: "hsl(0, 0%, 98%)" }} className="text-white text-2xl">
               <i className="fab fa-github" aria-hidden="true"></i>
             </a>
-          </div>
+          {/* </div> */}
         </div>
       </header>
 
