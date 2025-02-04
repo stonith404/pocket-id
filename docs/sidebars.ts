@@ -69,11 +69,13 @@ const sidebars: SidebarsConfig = {
       items: [
         "client-examples/cloudflare-zero-trust",
         "client-examples/freshrss",
+        "client-examples/gitea",
         "client-examples/grist",
         "client-examples/headscale",
         "client-examples/hoarder",
         "client-examples/immich",
         "client-examples/jellyfin",
+        "client-examples/memos",
         "client-examples/netbox",
         "client-examples/open-webui",
         "client-examples/pgadmin",
@@ -81,8 +83,6 @@ const sidebars: SidebarsConfig = {
         "client-examples/proxmox",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
-        "client-examples/gitea",
-        "client-examples/memos",
       ],
     },
     {
