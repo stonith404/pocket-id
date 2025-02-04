@@ -7,7 +7,7 @@ id: user-management
 Creating users in Pocket ID can be handled in two ways:
 
 1. Manually create users via the admin interface.
-2. Sync users from a LDAP source.
+2. Sync users from a [LDAP](/configuration/ldap) source.
 
 Once you have created your users using one of the methods above, follow the steps below to help configure passkeys for the users.
 
