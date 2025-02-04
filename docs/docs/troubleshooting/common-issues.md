@@ -13,7 +13,7 @@ Example:
 PUBLIC_APP_URL=https://id.example.com  
 ```
 
-## Unable to Access the admin UI after login  
+## Unable to Access the admin UI after setup  
 
 To setup the initial passkey for the admin user, navigate to `https://id.example.com/login/setup`.  
 
