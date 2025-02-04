@@ -39,7 +39,7 @@ bash -c "$(wget -qLO - https://github.com/community-scripts/ProxmoxVE/raw/main/c
 
 Pocket ID is available as a template on the Community Apps store.
 
-### Stand-alone Installation
+### Stand-alone Installation (advanced)
 
 Required tools:
 
