@@ -10,7 +10,7 @@ const Home: React.FC = () => {
           <div className="max-w-[1640px] mx-auto flex w-full items-center justify-between px-4 md:px-10">
             <div className="flex h-16 items-center justify">
               <img src="https://docs.pocket-id.org/img/pocket-id.png" alt="Pocket ID Logo" className="mr-3 h-8 w-8" />
-              <h1 className="text-lg font-medium" style={{ margin: 0 }} >Pocket ID</h1>
+              <h2 className="text-sm font-medium" style={{ margin: 0 }} >Pocket ID</h2>
             </div>
             <a href="https://github.com/stonith404/pocket-id" target="_blank" rel="noopener noreferrer" style={{ color: "hsl(0, 0%, 98%)" }} className="text-white text-2xl">
               <i className="fab fa-github" aria-hidden="true"></i>
