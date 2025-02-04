@@ -89,6 +89,10 @@ const sidebars: SidebarsConfig = {
           type: "doc",
           id: "troubleshooting/account-recovery",
         },
+        {
+          type: "doc",
+          id: "troubleshooting/common-issues",
+        },
       ],
     },
     {
