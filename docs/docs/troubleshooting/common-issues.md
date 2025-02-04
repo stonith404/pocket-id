@@ -18,7 +18,7 @@ PUBLIC_APP_URL=https://id.example.com
 
 To setup the initial passkey for the admin user, navigate to `https://id.example.com/login/setup`.
 
-## OIDC Applications not working
+## Invalid callback URL
 
 One of the most common issues with OIDC Clients in missconfigured `Callback URLs`
 
