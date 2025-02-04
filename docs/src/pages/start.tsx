@@ -48,9 +48,9 @@ const Home: React.FC = () => {
         </section>
       </main>
 
-      <footer className="text-center py-4 sm:py-6 glass m-4 px-4">
-        <p>&copy; 2025 Pocket ID. All rights reserved.</p>
-      </footer>
+      <div className="flex flex-col items-center">
+        <p className="py-3 text-xs text-muted-foreground">&copy; 2025 Pocket ID.</p>
+      </div>
     </div>
   );
 };
