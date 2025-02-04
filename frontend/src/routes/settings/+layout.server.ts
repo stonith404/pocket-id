@@ -15,6 +15,9 @@ export const load: LayoutServerLoad = async () => {
 
 	if (!versionInformation || cacheExpired) {
 		versionInformation = await appConfigService.getVersionInformation();
+		if (versionInformation.newestVersion == null) {
+			console.error('Failed to fetch version information. Trying again in 3 hours.');
+		}
 		versionInformationLastUpdated = Date.now();
 	}
 
