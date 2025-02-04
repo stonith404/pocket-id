@@ -23,7 +23,7 @@ With [caddy-security](https://github.com/greenpau/caddy-security) you can easily
 
 #### 1. Create a new OIDC client in Pocket ID.
 
-Create a new OIDC client in Pocket ID by navigating to `https://<your-domain>/settings/admin/oidc-clients`. Now enter `https://<domain-of-proxied-service>/auth/oauth2/generic/authorization-code-callback` as the callback URL. After adding the client, you will obtain the client ID and client secret, which you will need in the next step.
+Create a new OIDC client in Pocket ID by navigating to `https://<your-domain>/settings/admin/oidc-clients`. Now enter `https://<domain-of-proxied-service>/caddy-security/oauth2/generic/authorization-code-callback` as the callback URL. After adding the client, you will obtain the client ID and client secret, which you will need in the next step.
 
 #### 2. Install caddy-security
 
@@ -66,7 +66,7 @@ caddy add-package github.com/greenpau/caddy-security
 		}
 
 		authorization policy mypolicy {
-			set auth url /auth/oauth2/generic
+			set auth url /caddy-security/oauth2/generic
 			allow roles user
 			inject headers with claims
 		}
@@ -75,8 +75,7 @@ caddy add-package github.com/greenpau/caddy-security
 
 https://<domain-of-your-service> {
 	@auth {
-		path /auth/oauth2/generic
-		path /auth/oauth2/generic/authorization-code-callback
+		path /caddy-security/*
     }
 
 	route @auth {
