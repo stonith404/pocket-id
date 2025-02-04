@@ -100,15 +100,9 @@ const sidebars: SidebarsConfig = {
       ],
     },
     {
-      type: "category",
-      label: "Helping Out",
-      items: [
-        {
-          type: "link",
-          label: "Contributing",
-          href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
-        },
-      ],
+      type: "link",
+      label: "Contributing",
+      href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
     },
     {
       type: "link",
