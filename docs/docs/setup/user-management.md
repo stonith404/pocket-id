@@ -28,5 +28,13 @@ Passkeys can be stored in services like `Bitwarden`, `LastPass`, `iCloud` or Eve
 
 ### One Time Access Email
 
+> **This method requires a valid SMTP server setup in Pocket ID**
 
-- Insert steps here
+> **Allowing users to sign in with a link sent to their email reduces the security significantly as anyone with access to the user's email can gain entry.**
+
+1. Navigate to the `Application Configuration` section in the Pocket ID admin dashboard.
+2. Expand the `Email` section and enable the `Email One Time Access` option.
+3. Have the User navigate to Pocket ID for example: `https://id.example.com`
+4. Have the user click on the `Don't have access to your passkey?` link at the bottom of the page.
+5. Have the user enter their email associated with their Pocket ID account and click submit.
+6. This will then send a email to the user with a One Time Access link to setup their passkey.
