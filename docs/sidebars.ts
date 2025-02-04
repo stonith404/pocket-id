@@ -34,6 +34,10 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: "doc",
+          id: "configuration/allowed-groups",
+        },
+        {
+          type: "doc",
           id: "configuration/environment-variables",
         },
         {
