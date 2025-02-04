@@ -50,7 +50,7 @@
 								{label}
 							</a>
 						{/each}
-						{#if $userStore?.isAdmin && !versionInformation.isUpToDate}
+						{#if $userStore?.isAdmin && versionInformation.isUpToDate === false}
 							<a
 								href="https://github.com/stonith404/pocket-id/releases/latest"
 								target="_blank"
