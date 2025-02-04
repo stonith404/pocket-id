@@ -9,13 +9,13 @@ Creating users in Pocket ID can be handled in two ways:
 1. Manually create users via the admin interface.
 2. Sync users from a [LDAP](/configuration/ldap) source.
 
-Once you have created your users using one of the methods above, follow the steps below to help configure passkeys for the users.
+Once users have been created using one of the methods above, follow the steps below to help configure passkeys for the users.
 
 ## Setting Up User Passkeys
 
-You as the admin can not add passkeys for users, the end users will have to configure those on their own. Below are the eays the user can do this.
+> You as the admin can NOT add passkeys for users, the end users will have to configure those on their own.
 
-Passkeys can be stored in services like `Bitwarden`, `LastPass`, `iCloud` or Even just locally on certain devices using platform authenticators.
+> Passkeys can be stored in services like `Bitwarden`, `LastPass`, `iCloud` or Even just locally on certain devices using platform authenticators.
 
 ### One Time Link
 
