@@ -16,6 +16,10 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "setup/user-management",
+        },
+        {
+          type: "doc",
           id: "setup/nginx-reverse-proxy",
         },
         {
