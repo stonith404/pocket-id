@@ -138,7 +138,7 @@ jobs:
           -e APP_ENV=test \
           -e DB_PROVIDER=postgres \
           -e POSTGRES_CONNECTION_STRING=postgresql://postgres:postgres@pocket-id-db:5432/pocket-id \
-          stonith404/pocket-id:test
+          pocket-id/pocket-id:test
 
       - name: Run Playwright tests
         working-directory: ./frontend
