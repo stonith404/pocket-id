@@ -4,21 +4,26 @@ id: common-issues
 
 # Common Issues
 
-# Pocket ID doesn’t load after setup 
+## Unable to Add a Passkey
 
-Make sure the `PUBLIC_APP_URL` is set correctly to the public host users would access it from.
+Ensure that the `PUBLIC_APP_URL` is set correctly to the public URL of the Pocket ID instance.
 
-Example:  
+Example:
+
 ```ini
-PUBLIC_APP_URL=https://id.example.com  
+PUBLIC_APP_URL=https://id.example.com
 ```
 
-## Unable to Access the admin UI after setup  
+## Unable to Access the Admin UI After Setup
 
-To setup the initial passkey for the admin user, navigate to `https://id.example.com/login/setup`.  
+To set up the initial passkey for the admin user, navigate to:
 
-## Invalid callback URL  
+```
+https://id.example.com/login/setup
+```
 
-One of the most common issues with OIDC Clients in missconfigured `Callback URLs`
+## Invalid Callback URL
 
-If the `redirect_uri` URL param starts with `http` but `https` is expected, the client is the issue. If you can’t solve the issue on the client side you can just add a secondary callback URL using `http` as well as the `https` URL.
+One of the most common issues with OIDC clients is a misconfigured `Callback URL`.
+
+If the `redirect_uri` URL parameter starts with `http` but `https` is expected, the client is the issue. If you can’t resolve the issue on the client side, you can add a secondary callback URL using both `http` and `https` versions.
