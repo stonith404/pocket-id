@@ -16,6 +16,10 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "setup/user-management",
+        },
+        {
+          type: "doc",
           id: "setup/nginx-reverse-proxy",
         },
         {
@@ -28,6 +32,10 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Configuration",
       items: [
+        {
+          type: "doc",
+          id: "configuration/allowed-groups",
+        },
         {
           type: "doc",
           id: "configuration/environment-variables",
@@ -50,6 +58,20 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Troubleshooting",
+      items: [
+        {
+          type: "doc",
+          id: "troubleshooting/account-recovery",
+        },
+        {
+          type: "doc",
+          id: "troubleshooting/common-issues",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "Client Examples",
       link: {
         type: "generated-index",
@@ -61,11 +83,13 @@ const sidebars: SidebarsConfig = {
       items: [
         "client-examples/cloudflare-zero-trust",
         "client-examples/freshrss",
+        "client-examples/gitea",
         "client-examples/grist",
         "client-examples/headscale",
         "client-examples/hoarder",
         "client-examples/immich",
         "client-examples/jellyfin",
+        "client-examples/memos",
         "client-examples/netbox",
         "client-examples/open-webui",
         "client-examples/pgadmin",
@@ -73,30 +97,12 @@ const sidebars: SidebarsConfig = {
         "client-examples/proxmox",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
-        "client-examples/gitea",
-        "client-examples/memos",
       ],
     },
     {
-      type: "category",
-      label: "Troubleshooting",
-      items: [
-        {
-          type: "doc",
-          id: "troubleshooting/account-recovery",
-        },
-      ],
-    },
-    {
-      type: "category",
-      label: "Helping Out",
-      items: [
-        {
-          type: "link",
-          label: "Contributing",
-          href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
-        },
-      ],
+      type: "link",
+      label: "Contributing",
+      href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
     },
     {
       type: "link",
