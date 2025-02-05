@@ -52,7 +52,7 @@
 						{/each}
 						{#if $userStore?.isAdmin && versionInformation.isUpToDate === false}
 							<a
-								href="https://github.com/stonith404/pocket-id/releases/latest"
+								href="https://github.com/pocket-id/pocket-id/releases/latest"
 								target="_blank"
 								class="flex items-center gap-2"
 							>
@@ -70,7 +70,7 @@
 			<p class="py-3 text-xs text-muted-foreground">
 				Powered by <a
 					class="text-foreground"
-					href="https://github.com/stonith404/pocket-id"
+					href="https://github.com/pocket-id/pocket-id"
 					target="_blank">Pocket ID</a
 				>
 				({versionInformation.currentVersion})

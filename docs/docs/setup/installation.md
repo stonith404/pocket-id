@@ -13,9 +13,9 @@ Pocket ID requires a [secure context](https://developer.mozilla.org/en-US/docs/W
 1. Download the `docker-compose.yml` and `.env` file:
 
    ```bash
-    curl -O https://raw.githubusercontent.com/stonith404/pocket-id/main/docker-compose.yml
+    curl -O https://raw.githubusercontent.com/pocket-id/pocket-id/main/docker-compose.yml
 
-    curl -o .env https://raw.githubusercontent.com/stonith404/pocket-id/main/.env.example
+    curl -o .env https://raw.githubusercontent.com/pocket-id/pocket-id/main/.env.example
    ```
 
 2. Edit the `.env` file so that it fits your needs. See the [environment variables](/configuration/environment-variables) section for more information.
@@ -59,7 +59,7 @@ Required tools:
 2. Run the following commands:
 
    ```bash
-   git clone https://github.com/stonith404/pocket-id
+   git clone https://github.com/pocket-id/pocket-id
    cd pocket-id
 
    # Checkout the latest version

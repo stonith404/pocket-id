@@ -2,8 +2,9 @@ package datatype
 
 import (
 	"database/sql/driver"
-	"github.com/stonith404/pocket-id/backend/internal/common"
 	"time"
+
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 )
 
 // DateTime custom type for time.Time to store date as unix timestamp for sqlite and as date for postgres

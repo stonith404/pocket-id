@@ -24,7 +24,7 @@ jobs:
       - name: Build and export
         uses: docker/build-push-action@v6
         with:
-          tags: stonith404/pocket-id:test
+          tags: pocket-id/pocket-id:test
           outputs: type=docker,dest=/tmp/docker-image.tar
 
       - name: Upload Docker image artifact
@@ -65,7 +65,7 @@ jobs:
           docker run -d --name pocket-id-sqlite \
           -p 80:80 \
           -e APP_ENV=test \
-          stonith404/pocket-id:test
+          pocket-id/pocket-id:test
 
       - name: Run Playwright tests
         working-directory: ./frontend

@@ -57,7 +57,7 @@ export default class AppConfigService extends APIService {
 
 	async getVersionInformation() {
 		const response = await axios
-			.get('https://api.github.com/repos/stonith404/pocket-id/releases/latest')
+			.get('https://api.github.com/repos/pocket-id/pocket-id/releases/latest')
 			.then((res) => res.data)
 			.catch((e) => {
 				console.error(

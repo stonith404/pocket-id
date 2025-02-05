@@ -5,18 +5,19 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"fmt"
-	"github.com/fxamacker/cbor/v2"
-	"github.com/stonith404/pocket-id/backend/internal/model/types"
-	"github.com/stonith404/pocket-id/backend/resources"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/fxamacker/cbor/v2"
+	"github.com/pocket-id/pocket-id/backend/resources"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
 	"gorm.io/gorm"
 )
 

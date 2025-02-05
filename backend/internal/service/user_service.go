@@ -3,17 +3,18 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/dto"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/model/types"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"github.com/stonith404/pocket-id/backend/internal/utils/email"
-	"gorm.io/gorm"
 	"log"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/dto"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
+	"github.com/pocket-id/pocket-id/backend/internal/utils/email"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"gorm.io/gorm"
 )
 
 type UserService struct {

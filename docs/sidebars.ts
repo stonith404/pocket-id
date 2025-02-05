@@ -102,7 +102,7 @@ const sidebars: SidebarsConfig = {
     {
       type: "link",
       label: "Contributing",
-      href: "https://github.com/stonith404/pocket-id/blob/main/CONTRIBUTING.md",
+      href: "https://github.com/pocket-id/pocket-id/blob/main/CONTRIBUTING.md",
     },
     {
       type: "link",

@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 )
 
 type CorsMiddleware struct{}

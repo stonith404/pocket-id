@@ -2,9 +2,10 @@ package dto
 
 import (
 	"errors"
-	"github.com/stonith404/pocket-id/backend/internal/model/types"
 	"reflect"
 	"time"
+
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
 )
 
 // MapStructList maps a list of source structs to a list of destination structs

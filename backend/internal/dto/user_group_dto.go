@@ -1,7 +1,7 @@
 package dto
 
 import (
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
 )
 
 type UserGroupDtoWithUsers struct {

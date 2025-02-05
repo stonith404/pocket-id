@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/controller"
-	"github.com/stonith404/pocket-id/backend/internal/job"
-	"github.com/stonith404/pocket-id/backend/internal/middleware"
-	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/controller"
+	"github.com/pocket-id/pocket-id/backend/internal/job"
+	"github.com/pocket-id/pocket-id/backend/internal/middleware"
+	"github.com/pocket-id/pocket-id/backend/internal/service"
 	"golang.org/x/time/rate"
 	"gorm.io/gorm"
 )

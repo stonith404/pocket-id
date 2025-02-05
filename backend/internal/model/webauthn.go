@@ -4,9 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
-	"github.com/go-webauthn/webauthn/protocol"
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
 	"time"
+
+	"github.com/go-webauthn/webauthn/protocol"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
 )
 
 type WebauthnSession struct {

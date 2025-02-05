@@ -1,13 +1,14 @@
 package bootstrap
 
 import (
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"github.com/stonith404/pocket-id/backend/resources"
 	"log"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
+	"github.com/pocket-id/pocket-id/backend/resources"
 )
 
 // initApplicationImages copies the images from the images directory to the application-images directory

@@ -2,8 +2,9 @@ package service
 
 import (
 	"fmt"
-	"github.com/stonith404/pocket-id/backend/internal/utils/email"
 	"time"
+
+	"github.com/pocket-id/pocket-id/backend/internal/utils/email"
 )
 
 /**

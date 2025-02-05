@@ -3,7 +3,7 @@ package model
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/stonith404/pocket-id/backend/internal/model/types"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
 )
 
 type User struct {

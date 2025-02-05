@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/go-co-op/gocron/v2"
-	"github.com/stonith404/pocket-id/backend/internal/service"
+	"github.com/pocket-id/pocket-id/backend/internal/service"
 )
 
 type LdapJobs struct {

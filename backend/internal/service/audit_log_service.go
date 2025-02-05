@@ -1,12 +1,13 @@
 package service
 
 import (
-	userAgentParser "github.com/mileusna/useragent"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"github.com/stonith404/pocket-id/backend/internal/utils/email"
-	"gorm.io/gorm"
 	"log"
+
+	userAgentParser "github.com/mileusna/useragent"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
+	"github.com/pocket-id/pocket-id/backend/internal/utils/email"
+	"gorm.io/gorm"
 )
 
 type AuditLogService struct {

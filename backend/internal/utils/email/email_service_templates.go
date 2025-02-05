@@ -2,11 +2,12 @@ package email
 
 import (
 	"fmt"
-	"github.com/stonith404/pocket-id/backend/resources"
 	htemplate "html/template"
 	"io/fs"
 	"path"
 	ttemplate "text/template"
+
+	"github.com/pocket-id/pocket-id/backend/resources"
 )
 
 type Template[V any] struct {

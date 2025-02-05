@@ -1,12 +1,13 @@
 package utils
 
 import (
-	"github.com/stonith404/pocket-id/backend/resources"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pocket-id/pocket-id/backend/resources"
 )
 
 func GetFileExtension(filename string) string {

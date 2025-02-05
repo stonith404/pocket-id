@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
 )
 
 type AuditLogDto struct {

@@ -5,18 +5,19 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/dto"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"mime/multipart"
 	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/dto"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type OidcService struct {

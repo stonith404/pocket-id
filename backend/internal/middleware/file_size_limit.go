@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/common"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 )
 
 type FileSizeLimitMiddleware struct{}

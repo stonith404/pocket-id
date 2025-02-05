@@ -1,9 +1,10 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/service"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pocket-id/pocket-id/backend/internal/service"
 )
 
 func NewTestController(group *gin.RouterGroup, testService *service.TestService) {

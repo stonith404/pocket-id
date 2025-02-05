@@ -17,7 +17,7 @@ import (
 
 	"github.com/oschwald/maxminddb-golang/v2"
 
-	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 )
 
 type GeoLiteService struct {

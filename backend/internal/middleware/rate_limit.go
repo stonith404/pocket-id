@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"github.com/stonith404/pocket-id/backend/internal/common"
 	"sync"
 	"time"
+
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"

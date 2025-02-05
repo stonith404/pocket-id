@@ -1,8 +1,9 @@
 package cookie
 
 import (
-	"github.com/stonith404/pocket-id/backend/internal/common"
 	"strings"
+
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 )
 
 var AccessTokenCookieName = "__Host-access_token"

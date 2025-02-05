@@ -3,13 +3,14 @@ package middleware
 import (
 	"errors"
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
-	"github.com/stonith404/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
 	"gorm.io/gorm"
-	"net/http"
-	"strings"
 )
 
 type ErrorHandlerMiddleware struct{}

@@ -10,7 +10,7 @@ const config: Config = {
 
   url: "https://docs.pocket-id.org",
   baseUrl: "/",
-  organizationName: "stonith404",
+  organizationName: "pocket-id",
   projectName: "pocket-id",
 
   onBrokenLinks: "warn",
@@ -28,7 +28,7 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          editUrl: "https://github.com/stonith404/pocket-id/edit/main/docs",
+          editUrl: "https://github.com/pocket-id/pocket-id/edit/main/docs",
         },
         blog: false,
       } satisfies Preset.Options,
@@ -54,7 +54,7 @@ const config: Config = {
           position: "right",
         },
         {
-          href: "https://github.com/stonith404/pocket-id",
+          href: "https://github.com/pocket-id/pocket-id",
           label: "GitHub",
           position: "right",
         },

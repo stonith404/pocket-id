@@ -1,15 +1,16 @@
 package service
 
 import (
-	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/go-webauthn/webauthn/webauthn"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
-	"gorm.io/gorm"
 	"net/http"
 	"time"
+
+	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/webauthn"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
+	"gorm.io/gorm"
 )
 
 type WebAuthnService struct {

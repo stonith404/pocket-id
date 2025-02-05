@@ -1,13 +1,14 @@
 package job
 
 import (
-	"github.com/go-co-op/gocron/v2"
-	"github.com/google/uuid"
-	"github.com/stonith404/pocket-id/backend/internal/model"
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
-	"gorm.io/gorm"
 	"log"
 	"time"
+
+	"github.com/go-co-op/gocron/v2"
+	"github.com/google/uuid"
+	"github.com/pocket-id/pocket-id/backend/internal/model"
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"gorm.io/gorm"
 )
 
 func RegisterDbCleanupJobs(db *gorm.DB) {

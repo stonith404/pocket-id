@@ -1,6 +1,6 @@
 services:
   pocket-id:
-    image: stonith404/pocket-id  # or ghcr.io/stonith404/pocket-id
+    image: ghcr.io/pocket-id/pocket-id
     restart: unless-stopped
     env_file: .env
     ports:

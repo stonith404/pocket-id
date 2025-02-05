@@ -1,4 +1,4 @@
-module github.com/stonith404/pocket-id/backend
+module github.com/pocket-id/pocket-id/backend
 
 go 1.23.1
 

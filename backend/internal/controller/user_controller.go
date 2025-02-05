@@ -1,17 +1,18 @@
 package controller
 
 import (
-	"github.com/stonith404/pocket-id/backend/internal/utils/cookie"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/pocket-id/pocket-id/backend/internal/utils/cookie"
+
 	"github.com/gin-gonic/gin"
-	"github.com/stonith404/pocket-id/backend/internal/common"
-	"github.com/stonith404/pocket-id/backend/internal/dto"
-	"github.com/stonith404/pocket-id/backend/internal/middleware"
-	"github.com/stonith404/pocket-id/backend/internal/service"
-	"github.com/stonith404/pocket-id/backend/internal/utils"
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/dto"
+	"github.com/pocket-id/pocket-id/backend/internal/middleware"
+	"github.com/pocket-id/pocket-id/backend/internal/service"
+	"github.com/pocket-id/pocket-id/backend/internal/utils"
 	"golang.org/x/time/rate"
 )
 

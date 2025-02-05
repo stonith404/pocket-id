@@ -4,7 +4,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
-	datatype "github.com/stonith404/pocket-id/backend/internal/model/types"
+
+	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
 	"gorm.io/gorm"
 )
 

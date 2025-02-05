@@ -1,10 +1,11 @@
 package model
 
 import (
-	"github.com/google/uuid"
-	model "github.com/stonith404/pocket-id/backend/internal/model/types"
-	"gorm.io/gorm"
 	"time"
+
+	"github.com/google/uuid"
+	model "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"gorm.io/gorm"
 )
 
 // Base contains common columns for all tables.
