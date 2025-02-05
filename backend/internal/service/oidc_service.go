@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"mime/multipart"
@@ -413,7 +414,16 @@ func (s *OidcService) GetUserClaimsForClient(userID string, clientID string) (ma
 		}
 
 		for _, customClaim := range customClaims {
-			claims[customClaim.Key] = customClaim.Value
+			// The value of the custom claim can be a JSON object or a string
+			var jsonValue interface{}
+			json.Unmarshal([]byte(customClaim.Value), &jsonValue)
+			if jsonValue != nil {
+				// It's JSON so we store it as an object
+				claims[customClaim.Key] = jsonValue
+			} else {
+				// Marshalling failed, so we store it as a string
+				claims[customClaim.Key] = customClaim.Value
+			}
 		}
 	}
 	if strings.Contains(scope, "email") {
