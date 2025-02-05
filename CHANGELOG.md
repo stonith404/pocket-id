@@ -1,3 +1,11 @@
+## [](https://github.com/pocket-id/pocket-id/compare/v0.28.1...v) (2025-02-05)
+
+
+### Features
+
+* add JSON support in custom claims ([15cde6a](https://github.com/pocket-id/pocket-id/commit/15cde6ac66bc857ac28df545a37c1f4341977595))
+* add option to disable Caddy in the Docker container ([e864d5d](https://github.com/pocket-id/pocket-id/commit/e864d5dcbff1ef28dc6bf120e4503093a308c5c8))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.28.0...v) (2025-02-04)
 
 
