@@ -1,6 +1,6 @@
 import { version as currentVersion } from '$app/environment';
 import type { AllAppConfig, AppConfigRawResponse } from '$lib/types/application-configuration';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import APIService from './api-service';
 
 export default class AppConfigService extends APIService {
@@ -56,12 +56,23 @@ export default class AppConfigService extends APIService {
 	}
 
 	async getVersionInformation() {
-		const response = (
-			await axios.get('https://api.github.com/repos/stonith404/pocket-id/releases/latest')
-		).data;
+		const response = await axios
+			.get('https://api.github.com/repos/stonith404/pocket-id/releases/latest')
+			.then((res) => res.data)
+			.catch((e) => {
+				console.error(
+					'Failed to fetch version information',
+					e instanceof AxiosError && e.response ? e.response.data.message : e
+				);
+				return null;
+			});
 
-		const newestVersion = response.tag_name.replace('v', '');
-		const isUpToDate = newestVersion === currentVersion;
+		let newestVersion: string | null = null;
+		let isUpToDate: boolean | null = null;
+		if (response) {
+			newestVersion = response.tag_name.replace('v', '');
+			isUpToDate = newestVersion === currentVersion;
+		}
 
 		return {
 			isUpToDate,

@@ -1,3 +1,10 @@
+## [](https://github.com/stonith404/pocket-id/compare/v0.28.0...v) (2025-02-04)
+
+
+### Bug Fixes
+
+* don't return error page if version info fetching failed ([d06257e](https://github.com/stonith404/pocket-id/commit/d06257ec9b5e46e25e40c174b4bef02dca0a1ea3))
+
 ## [](https://github.com/stonith404/pocket-id/compare/v0.27.2...v) (2025-02-03)
 
 
