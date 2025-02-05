@@ -58,6 +58,20 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Troubleshooting",
+      items: [
+        {
+          type: "doc",
+          id: "troubleshooting/account-recovery",
+        },
+        {
+          type: "doc",
+          id: "troubleshooting/common-issues",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "Client Examples",
       link: {
         type: "generated-index",
@@ -83,20 +97,6 @@ const sidebars: SidebarsConfig = {
         "client-examples/proxmox",
         "client-examples/semaphore-ui",
         "client-examples/vikunja",
-      ],
-    },
-    {
-      type: "category",
-      label: "Troubleshooting",
-      items: [
-        {
-          type: "doc",
-          id: "troubleshooting/account-recovery",
-        },
-        {
-          type: "doc",
-          id: "troubleshooting/common-issues",
-        },
       ],
     },
     {
