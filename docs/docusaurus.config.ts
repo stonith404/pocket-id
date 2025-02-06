@@ -26,7 +26,7 @@ const config: Config = {
       "classic",
       {
         docs: {
-          routeBasePath: "/",
+          routeBasePath: "/docs",
           sidebarPath: "./sidebars.ts",
           editUrl: "https://github.com/pocket-id/pocket-id/edit/main/docs",
         },
