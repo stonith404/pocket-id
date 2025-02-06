@@ -61,7 +61,7 @@ const Home: React.FC = () => {
         </section>
 
         <section className="mt-15">
-          <h2 className="text-2xl sm:text-3xl font-bold">Features</h2>
+          <h2 className="!text-3xl font-bold">Features</h2>
           <div className="flex flex-col gap-5">
             <FeatureBox
               title="Passwordless Authentication"
