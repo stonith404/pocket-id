@@ -109,7 +109,7 @@
 		<FormInput
 			label="User Search Filter"
 			description="The Search filter to use to search/sync users."
-			placeholder="uuid"
+			placeholder="(objectClass=person)"
 			bind:input={$inputs.ldapUserSearchFilter}
 		/>
 		<FormInput
@@ -130,7 +130,7 @@
 		<FormInput
 			label="User Unique Identifier Attribute"
 			description="The value of this attribute should never change."
-			placeholder="(objectClass=person)"
+			placeholder="uuid"
 			bind:input={$inputs.ldapAttributeUserUniqueIdentifier}
 		/>
 		<FormInput
