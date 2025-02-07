@@ -35,6 +35,8 @@ type AppConfig struct {
 	LdapBindDn                         AppConfigVariable
 	LdapBindPassword                   AppConfigVariable
 	LdapBase                           AppConfigVariable
+	LdapUserSearchFilter               AppConfigVariable
+	LdapUserGroupSearchFilter          AppConfigVariable
 	LdapSkipCertVerify                 AppConfigVariable
 	LdapAttributeUserUniqueIdentifier  AppConfigVariable
 	LdapAttributeUserUsername          AppConfigVariable

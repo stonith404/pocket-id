@@ -44,6 +44,8 @@
 		ldapBindDn: z.string().min(1),
 		ldapBindPassword: z.string().min(1),
 		ldapBase: z.string().min(1),
+		ldapUserSearchFilter: z.string().min(1),
+		ldapUserGroupSearchFilter: z.string().min(1),
 		ldapSkipCertVerify: z.boolean(),
 		ldapAttributeUserUniqueIdentifier: z.string().min(1),
 		ldapAttributeUserUsername: z.string().min(1),
@@ -102,6 +104,18 @@
 		/>
 		<FormInput label="LDAP Bind Password" type="password" bind:input={$inputs.ldapBindPassword} />
 		<FormInput label="LDAP Base DN" placeholder="dc=example,dc=com" bind:input={$inputs.ldapBase} />
+		<FormInput
+			label="User Search Filter"
+			description="The Search filter to use to search/sync users."
+			placeholder="uuid"
+			bind:input={$inputs.ldapUserSearchFilter}
+		/>
+		<FormInput
+			label="Groups Search Filter"
+			description="The Search filter to use to search/sync groups."
+			placeholder="(objectClass=groupOfUniqueNames)"
+			bind:input={$inputs.ldapUserGroupSearchFilter}
+		/>
 		<CheckboxWithLabel
 			id="skip-cert-verify"
 			label="Skip Certificate Verification"
@@ -114,7 +128,7 @@
 		<FormInput
 			label="User Unique Identifier Attribute"
 			description="The value of this attribute should never change."
-			placeholder="uuid"
+			placeholder="(objectClass=person)"
 			bind:input={$inputs.ldapAttributeUserUniqueIdentifier}
 		/>
 		<FormInput

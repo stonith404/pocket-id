@@ -70,7 +70,8 @@ func (s *LdapService) SyncGroups() error {
 	baseDN := s.appConfigService.DbConfig.LdapBase.Value
 	nameAttribute := s.appConfigService.DbConfig.LdapAttributeGroupName.Value
 	uniqueIdentifierAttribute := s.appConfigService.DbConfig.LdapAttributeGroupUniqueIdentifier.Value
-	filter := "(objectClass=groupOfUniqueNames)"
+	// filter := "(objectClass=groupOfUniqueNames)"
+	filter := s.appConfigService.DbConfig.LdapUserGroupSearchFilter.Value
 
 	searchAttrs := []string{
 		nameAttribute,
@@ -177,7 +178,8 @@ func (s *LdapService) SyncUsers() error {
 	lastNameAttribute := s.appConfigService.DbConfig.LdapAttributeUserLastName.Value
 	adminGroupAttribute := s.appConfigService.DbConfig.LdapAttributeAdminGroup.Value
 
-	filter := "(objectClass=person)"
+	// filter := "(objectClass=person)"
+	filter := s.appConfigService.DbConfig.LdapUserSearchFilter.Value
 
 	searchAttrs := []string{
 		"memberOf",
