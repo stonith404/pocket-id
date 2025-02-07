@@ -28,6 +28,8 @@
 		ldapBindDn: appConfig.ldapBindDn,
 		ldapBindPassword: appConfig.ldapBindPassword,
 		ldapBase: appConfig.ldapBase,
+		ldapUserSearchFilter: appConfig.ldapUserSearchFilter,
+		ldapUserGroupSearchFilter: appConfig.ldapUserGroupSearchFilter,
 		ldapSkipCertVerify: appConfig.ldapSkipCertVerify,
 		ldapAttributeUserUniqueIdentifier: appConfig.ldapAttributeUserUniqueIdentifier,
 		ldapAttributeUserUsername: appConfig.ldapAttributeUserUsername,
