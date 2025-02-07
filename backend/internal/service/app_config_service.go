@@ -139,11 +139,11 @@ var defaultDbConfig = model.AppConfig{
 		Type: "string",
 	},
 	LdapUserSearchFilter: model.AppConfigVariable{
-		Key:  "ldapBase",
+		Key:  "ldapUserSearchFilter",
 		Type: "string",
 	},
 	LdapUserGroupSearchFilter: model.AppConfigVariable{
-		Key:  "ldapBase",
+		Key:  "ldapUserGroupSearchFilter",
 		Type: "string",
 	},
 	LdapSkipCertVerify: model.AppConfigVariable{

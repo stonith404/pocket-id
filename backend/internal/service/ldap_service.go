@@ -71,7 +71,9 @@ func (s *LdapService) SyncGroups() error {
 	nameAttribute := s.appConfigService.DbConfig.LdapAttributeGroupName.Value
 	uniqueIdentifierAttribute := s.appConfigService.DbConfig.LdapAttributeGroupUniqueIdentifier.Value
 	// filter := "(objectClass=groupOfUniqueNames)"
+
 	filter := s.appConfigService.DbConfig.LdapUserGroupSearchFilter.Value
+	fmt.Println("Group Filter: ", filter)
 
 	searchAttrs := []string{
 		nameAttribute,
@@ -180,6 +182,7 @@ func (s *LdapService) SyncUsers() error {
 
 	// filter := "(objectClass=person)"
 	filter := s.appConfigService.DbConfig.LdapUserSearchFilter.Value
+	fmt.Println("User Filter: ", filter)
 
 	searchAttrs := []string{
 		"memberOf",
