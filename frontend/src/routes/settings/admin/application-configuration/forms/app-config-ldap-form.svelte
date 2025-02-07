@@ -115,7 +115,7 @@
 		<FormInput
 			label="Groups Search Filter"
 			description="The Search filter to use to search/sync groups."
-			placeholder="(objectClass=groupOfUniqueNames)"
+			placeholder="(objectClass=groupOfNames)"
 			bind:input={$inputs.ldapUserGroupSearchFilter}
 		/>
 		<CheckboxWithLabel
