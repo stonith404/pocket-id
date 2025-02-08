@@ -64,6 +64,16 @@
 	</Alert.Root>
 {/if}
 
+{#if passkeys.length == 1}
+	<Alert.Root variant="warning">
+		<LucideAlertTriangle class="size-4" />
+		<Alert.Title>Single Passkey Configured</Alert.Title>
+		<Alert.Description
+			>It is recomended to add more than one passkey to avoid loosing access to your account.</Alert.Description
+		>
+	</Alert.Root>
+{/if}
+
 <fieldset disabled={!$appConfigStore.allowOwnAccountEdit || (!!account.ldapId && $appConfigStore.ldapEnabled)}>
 	<Card.Root>
 		<Card.Header>
