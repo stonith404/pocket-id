@@ -66,17 +66,17 @@
 
 {#if passkeys.length == 1}
 	<Alert.Root variant="warning">
-		
-		<LucideAlertTriangle class="size-4" />
+		<slot name="controls">
+			<button class="p-1" on:click={() => console.log('-dismiss')}>
+				<X />
+			</button>
+		</slot>
+		<!-- <LucideAlertTriangle class="size-4" /> -->
 		<Alert.Title>Single Passkey Configured</Alert.Title>
 		<Alert.Description
 			>It is recommended to add more than one passkey to avoid loosing access to your account.</Alert.Description
 		>
-		<slot name="controls">
-		<button class="p-1" on:click={() => console.log('-dismiss')}>
-			<X />
-        </button>
-    </slot>
+
 	</Alert.Root>
 {/if}
 
