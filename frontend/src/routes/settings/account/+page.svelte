@@ -9,7 +9,7 @@
 	import type { UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast, getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startRegistration } from '@simplewebauthn/browser';
-	import { LucideAlertTriangle } from 'lucide-svelte';
+	import { LucideAlertTriangle, X } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import AccountForm from './account-form.svelte';
 	import PasskeyList from './passkey-list.svelte';
@@ -66,11 +66,17 @@
 
 {#if passkeys.length == 1}
 	<Alert.Root variant="warning">
+		
 		<LucideAlertTriangle class="size-4" />
 		<Alert.Title>Single Passkey Configured</Alert.Title>
 		<Alert.Description
 			>It is recommended to add more than one passkey to avoid loosing access to your account.</Alert.Description
 		>
+		<slot name="controls">
+		<button class="p-1" on:click={() => console.log('-dismiss')}>
+			<X />
+        </button>
+    </slot>
 	</Alert.Root>
 {/if}
 
