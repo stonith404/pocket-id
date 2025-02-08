@@ -58,6 +58,8 @@ test('Update LDAP configuration', async ({ page }) => {
 	await page.getByLabel('LDAP Bind DN').fill('cn=admin,dc=example,dc=com');
 	await page.getByLabel('LDAP Bind Password').fill('password');
 	await page.getByLabel('LDAP Base DN').fill('dc=example,dc=com');
+	await page.getByLabel('User Search Filter').fill('(objectClass=person)');
+	await page.getByLabel('Groups Search Filter').fill('(objectClass=groupOfUniqueNames)');
 	await page.getByLabel('User Unique Identifier Attribute').fill('uuid');
 	await page.getByLabel('Username Attribute').fill('uid');
 	await page.getByLabel('User Mail Attribute').fill('mail');
@@ -78,6 +80,8 @@ test('Update LDAP configuration', async ({ page }) => {
 	await expect(page.getByLabel('LDAP Bind DN')).toHaveValue('cn=admin,dc=example,dc=com');
 	await expect(page.getByLabel('LDAP Bind Password')).toHaveValue('password');
 	await expect(page.getByLabel('LDAP Base DN')).toHaveValue('dc=example,dc=com');
+	await page.getByLabel('User Search Filter').fill('(objectClass=person)');
+	await page.getByLabel('Groups Search Filter').fill('(objectClass=groupOfUniqueNames)');
 	await expect(page.getByLabel('User Unique Identifier Attribute')).toHaveValue('uuid');
 	await expect(page.getByLabel('Username Attribute')).toHaveValue('uid');
 	await expect(page.getByLabel('User Mail Attribute')).toHaveValue('mail');

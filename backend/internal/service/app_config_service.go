@@ -138,6 +138,16 @@ var defaultDbConfig = model.AppConfig{
 		Key:  "ldapBase",
 		Type: "string",
 	},
+	LdapUserSearchFilter: model.AppConfigVariable{
+		Key:          "ldapUserSearchFilter",
+		Type:         "string",
+		DefaultValue: "(objectClass=person)",
+	},
+	LdapUserGroupSearchFilter: model.AppConfigVariable{
+		Key:          "ldapUserGroupSearchFilter",
+		Type:         "string",
+		DefaultValue: "(objectClass=groupOfNames)",
+	},
 	LdapSkipCertVerify: model.AppConfigVariable{
 		Key:          "ldapSkipCertVerify",
 		Type:         "bool",

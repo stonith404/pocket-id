@@ -23,6 +23,8 @@ export type AllAppConfig = AppConfig & {
 	ldapBindDn: string;
 	ldapBindPassword: string;
 	ldapBase: string;
+	ldapUserSearchFilter: string;
+	ldapUserGroupSearchFilter: string;
 	ldapSkipCertVerify: boolean;
 	ldapAttributeUserUniqueIdentifier: string;
 	ldapAttributeUserUsername: string;
