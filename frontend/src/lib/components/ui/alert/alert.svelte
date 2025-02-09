@@ -13,7 +13,6 @@
 </script>
 
 <div class={cn(alertVariants({ variant }), className)} {...$$restProps} role="alert">
-    <span class="absolute top-2 right-2"> <!-- Space for x button --> </span>
 	<slot name="controls" />
 	<slot />
 </div>

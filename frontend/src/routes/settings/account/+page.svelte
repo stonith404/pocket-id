@@ -5,6 +5,7 @@
 	import UserService from '$lib/services/user-service';
 	import WebAuthnService from '$lib/services/webauthn-service';
 	import appConfigStore from '$lib/stores/application-configuration-store';
+	import { passkeyWarningVisibility } from '$lib/stores/passkey-warning-store';
 	import type { Passkey } from '$lib/types/passkey.type';
 	import type { UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast, getWebauthnErrorMessage } from '$lib/utils/error-util';
@@ -48,6 +49,10 @@
 			toast.error(getWebauthnErrorMessage(e));
 		}
 	}
+
+	async function dismissWarning() {
+		passkeyWarningVisibility.toggleVisibility()
+	}
 </script>
 
 <svelte:head>
@@ -65,9 +70,10 @@
 {/if}
 
 {#if passkeys.length == 1}
+{#if $passkeyWarningVisibility}
 	<Alert.Root variant="warning">
 		<slot name="controls">
-			<button class="p-1" on:click={() => console.log('-dismiss')}>
+			<button class="size-4" on:click={dismissWarning}>
 				<X />
 			</button>
 		</slot>
@@ -78,6 +84,7 @@
 		>
 
 	</Alert.Root>
+{/if}
 {/if}
 
 <fieldset disabled={!$appConfigStore.allowOwnAccountEdit || (!!account.ldapId && $appConfigStore.ldapEnabled)}>
