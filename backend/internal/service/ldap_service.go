@@ -106,7 +106,9 @@ func (s *LdapService) SyncGroups() error {
 			singleMember := strings.Split(strings.Split(member, "=")[1], ",")[0]
 
 			var databaseUser model.User
-			s.db.Where("username = ?", singleMember).First(&databaseUser)
+			// s.db.Where("username = ?", singleMember).First(&databaseUser)
+			s.db.Where("username = ?", singleMember).Where("ldap_id IS NOT NULL").First(&databaseUser)
+
 			membersUserId = append(membersUserId, databaseUser.ID)
 		}
 
