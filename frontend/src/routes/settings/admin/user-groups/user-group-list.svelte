@@ -50,7 +50,10 @@
 	columns={[
 		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
 		{ label: 'Name', sortColumn: 'name' },
-		{ label: 'Source', sortColumn: 'groupSource' },
+		{
+			label: $appConfigStore.ldapEnabled ? 'Source' : '',
+			sortColumn: $appConfigStore.ldapEnabled ? 'groupSource' : ''
+		},
 		{ label: 'User Count', sortColumn: 'userCount' },
 		{ label: 'Actions', hidden: true }
 	]}

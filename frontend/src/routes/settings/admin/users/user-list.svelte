@@ -66,8 +66,8 @@
 			sortColumn: 'username'
 		},
 		{
-			label: 'Source',
-			sortColumn: 'userSource'
+			label: $appConfigStore.ldapEnabled ? 'Source' : '',
+			sortColumn: $appConfigStore.ldapEnabled ? 'userSource' : ''
 		},
 		{
 			label: 'Role',
