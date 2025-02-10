@@ -66,6 +66,10 @@
 			sortColumn: 'username'
 		},
 		{
+			label: 'Source',
+			sortColumn: 'userSource'
+		},
+		{
 			label: 'Role',
 			sortColumn: 'isAdmin'
 		},
@@ -80,6 +84,9 @@
 		<Table.Cell>{item.lastName}</Table.Cell>
 		<Table.Cell>{item.email}</Table.Cell>
 		<Table.Cell>{item.username}</Table.Cell>
+		<Table.Cell class="hidden lg:table-cell">
+			<Badge variant="outline">{item.ldapId ? 'LDAP' : 'Local'}</Badge>
+		</Table.Cell>
 		<Table.Cell class="hidden lg:table-cell">
 			<Badge variant="outline">{item.isAdmin ? 'Admin' : 'User'}</Badge>
 		</Table.Cell>
