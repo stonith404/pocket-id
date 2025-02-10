@@ -58,9 +58,11 @@
 	{#snippet rows({ item })}
 		<Table.Cell>{item.friendlyName}</Table.Cell>
 		<Table.Cell>{item.name}</Table.Cell>
-		<Table.Cell class="hidden lg:table-cell">
-			<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge>
-		</Table.Cell>
+		{#if $appConfigStore.ldapEnabled}
+			<Table.Cell class="hidden lg:table-cell">
+				<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge>
+			</Table.Cell>
+		{/if}
 		<Table.Cell>{item.userCount}</Table.Cell>
 		<Table.Cell class="flex justify-end">
 			<DropdownMenu.Root>
