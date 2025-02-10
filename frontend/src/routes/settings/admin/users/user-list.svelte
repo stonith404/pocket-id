@@ -23,6 +23,24 @@
 
 	const userService = new UserService();
 
+	const isLdapEnabled = $appConfigStore.ldapEnabled;
+	const userTableColumns = [
+		{ label: 'First name', sortColumn: 'firstName' },
+		{ label: 'Last name', sortColumn: 'lastName' },
+		{ label: 'Email', sortColumn: 'email' },
+		{ label: 'Username', sortColumn: 'username' },
+		{ label: 'Role', sortColumn: 'isAdmin' },
+		{ label: 'Actions', hidden: true }
+	]
+
+	if (isLdapEnabled) {
+		// Add the Source column in ad index 4 if ldap is enabled
+		userTableColumns.splice(4, 0, {
+			label: 'Source',
+			sortColumn: 'userSource'
+		});
+	}
+
 	async function deleteUser(user: User) {
 		openConfirmDialog({
 			title: `Delete ${user.firstName} ${user.lastName}`,
@@ -48,36 +66,7 @@
 	items={users}
 	{requestOptions}
 	onRefresh={async (options) => (users = await userService.list(options))}
-	columns={[
-		{
-			label: 'First name',
-			sortColumn: 'firstName'
-		},
-		{
-			label: 'Last name',
-			sortColumn: 'lastName'
-		},
-		{
-			label: 'Email',
-			sortColumn: 'email'
-		},
-		{
-			label: 'Username',
-			sortColumn: 'username'
-		},
-		{
-			label: $appConfigStore.ldapEnabled ? 'Source' : '',
-			sortColumn: $appConfigStore.ldapEnabled ? 'userSource' : ''
-		},
-		{
-			label: 'Role',
-			sortColumn: 'isAdmin'
-		},
-		{
-			label: 'Actions',
-			hidden: true
-		}
-	]}
+	columns={userTableColumns}
 >
 	{#snippet rows({ item })}
 		<Table.Cell>{item.firstName}</Table.Cell>

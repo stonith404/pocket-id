@@ -22,6 +22,22 @@
 
 	const userGroupService = new UserGroupService();
 
+	const isLdapEnabled = $appConfigStore.ldapEnabled;
+	const groupTableColumns = [
+		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
+		{ label: 'Name', sortColumn: 'name' },
+		{ label: 'User Count', sortColumn: 'userCount' },
+		{ label: 'Actions', hidden: true }
+	]
+
+	if (isLdapEnabled) {
+		// Add the Source column in ad index 4 if ldap is enabled
+		groupTableColumns.splice(4, 0, {
+			label: 'Source',
+			sortColumn: 'groupSource'
+		});
+	}
+
 	async function deleteUserGroup(userGroup: UserGroup) {
 		openConfirmDialog({
 			title: `Delete ${userGroup.name}`,
@@ -47,16 +63,7 @@
 	items={userGroups}
 	onRefresh={async (o) => (userGroups = await userGroupService.list(o))}
 	{requestOptions}
-	columns={[
-		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
-		{ label: 'Name', sortColumn: 'name' },
-		{
-			label: $appConfigStore.ldapEnabled ? 'Source' : '',
-			sortColumn: $appConfigStore.ldapEnabled ? 'groupSource' : ''
-		},
-		{ label: 'User Count', sortColumn: 'userCount' },
-		{ label: 'Actions', hidden: true }
-	]}
+	columns={groupTableColumns}
 >
 	{#snippet rows({ item })}
 		<Table.Cell>{item.friendlyName}</Table.Cell>
