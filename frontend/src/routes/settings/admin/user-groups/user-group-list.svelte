@@ -2,6 +2,7 @@
 	import AdvancedTable from '$lib/components/advanced-table.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog/';
 	import { Button } from '$lib/components/ui/button';
+	import { Badge } from '$lib/components/ui/badge/index';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserGroupService from '$lib/services/user-group-service';
@@ -49,6 +50,7 @@
 	columns={[
 		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
 		{ label: 'Name', sortColumn: 'name' },
+		{ label: 'Source', sortColumn: 'groupSource' },
 		{ label: 'User Count', sortColumn: 'userCount' },
 		{ label: 'Actions', hidden: true }
 	]}
@@ -56,6 +58,9 @@
 	{#snippet rows({ item })}
 		<Table.Cell>{item.friendlyName}</Table.Cell>
 		<Table.Cell>{item.name}</Table.Cell>
+		<Table.Cell class="hidden lg:table-cell">
+			<Badge variant="outline">{item.ldapId ? 'LDAP' : 'Local'}</Badge>
+		</Table.Cell>
 		<Table.Cell>{item.userCount}</Table.Cell>
 		<Table.Cell class="flex justify-end">
 			<DropdownMenu.Root>
