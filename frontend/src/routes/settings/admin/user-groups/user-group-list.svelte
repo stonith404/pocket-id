@@ -59,7 +59,7 @@
 		<Table.Cell>{item.friendlyName}</Table.Cell>
 		<Table.Cell>{item.name}</Table.Cell>
 		<Table.Cell class="hidden lg:table-cell">
-			<Badge variant="outline">{item.ldapId ? 'LDAP' : 'Local'}</Badge>
+			<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge>
 		</Table.Cell>
 		<Table.Cell>{item.userCount}</Table.Cell>
 		<Table.Cell class="flex justify-end">
