@@ -7,6 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserService from '$lib/services/user-service';
+	import appConfigStore from '$lib/stores/application-configuration-store';
 	import type { Paginated, SearchPaginationSortRequest } from '$lib/types/pagination.type';
 	import type { User } from '$lib/types/user.type';
 	import { axiosErrorToast } from '$lib/utils/error-util';
@@ -14,7 +15,6 @@
 	import Ellipsis from 'lucide-svelte/icons/ellipsis';
 	import { toast } from 'svelte-sonner';
 	import OneTimeLinkModal from './one-time-link-modal.svelte';
-	import appConfigStore from '$lib/stores/application-configuration-store';
 
 	let { users = $bindable() }: { users: Paginated<User> } = $props();
 	let requestOptions: SearchPaginationSortRequest | undefined = $state();
@@ -49,30 +49,13 @@
 	{requestOptions}
 	onRefresh={async (options) => (users = await userService.list(options))}
 	columns={[
-		{
-			label: 'First name',
-			sortColumn: 'firstName'
-		},
-		{
-			label: 'Last name',
-			sortColumn: 'lastName'
-		},
-		{
-			label: 'Email',
-			sortColumn: 'email'
-		},
-		{
-			label: 'Username',
-			sortColumn: 'username'
-		},
-		{
-			label: 'Role',
-			sortColumn: 'isAdmin'
-		},
-		{
-			label: 'Actions',
-			hidden: true
-		}
+		{ label: 'First name', sortColumn: 'firstName' },
+		{ label: 'Last name', sortColumn: 'lastName' },
+		{ label: 'Email', sortColumn: 'email' },
+		{ label: 'Username', sortColumn: 'username' },
+		{ label: 'Role', sortColumn: 'isAdmin' },
+		...($appConfigStore.ldapEnabled ? [{ label: 'Source' }] : []),
+		{ label: 'Actions', hidden: true }
 	]}
 >
 	{#snippet rows({ item })}
@@ -80,9 +63,15 @@
 		<Table.Cell>{item.lastName}</Table.Cell>
 		<Table.Cell>{item.email}</Table.Cell>
 		<Table.Cell>{item.username}</Table.Cell>
-		<Table.Cell class="hidden lg:table-cell">
+		<Table.Cell>
 			<Badge variant="outline">{item.isAdmin ? 'Admin' : 'User'}</Badge>
 		</Table.Cell>
+		{#if $appConfigStore.ldapEnabled}
+			<Table.Cell>
+				<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge
+				>
+			</Table.Cell>
+		{/if}
 		<Table.Cell>
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}>
