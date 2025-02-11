@@ -1,0 +1,10 @@
+{{- if not .Values.ingress.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pocket-id-config
+data:
+  {{- range $key := keys .Values.config }}
+  {{ $key | snakecase | upper }}: {{ get .Values.config $key }}
+  {{- end }}
+{{- end }}
