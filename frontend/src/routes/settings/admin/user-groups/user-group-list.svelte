@@ -1,8 +1,8 @@
 <script lang="ts">
 	import AdvancedTable from '$lib/components/advanced-table.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog/';
-	import { Button } from '$lib/components/ui/button';
 	import { Badge } from '$lib/components/ui/badge/index';
+	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
 	import UserGroupService from '$lib/services/user-group-service';
@@ -22,22 +22,6 @@
 
 	const userGroupService = new UserGroupService();
 
-	const isLdapEnabled = $appConfigStore.ldapEnabled;
-	const groupTableColumns = [
-		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
-		{ label: 'Name', sortColumn: 'name' },
-		{ label: 'User Count', sortColumn: 'userCount' },
-		{ label: 'Actions', hidden: true }
-	]
-
-	if (isLdapEnabled) {
-		// Add the Source column in ad index 4 if ldap is enabled
-		groupTableColumns.splice(4, 0, {
-			label: 'Source',
-			sortColumn: 'groupSource'
-		});
-	}
-
 	async function deleteUserGroup(userGroup: UserGroup) {
 		openConfirmDialog({
 			title: `Delete ${userGroup.name}`,
@@ -52,7 +36,7 @@
 						toast.success('User group deleted successfully');
 					} catch (e) {
 						axiosErrorToast(e);
-					}					
+					}
 				}
 			}
 		});
@@ -63,17 +47,24 @@
 	items={userGroups}
 	onRefresh={async (o) => (userGroups = await userGroupService.list(o))}
 	{requestOptions}
-	columns={groupTableColumns}
+	columns={[
+		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
+		{ label: 'Name', sortColumn: 'name' },
+		{ label: 'User Count', sortColumn: 'userCount' },
+		...($appConfigStore.ldapEnabled ? [{ label: 'Source' }] : []),
+		{ label: 'Actions', hidden: true }
+	]}
 >
 	{#snippet rows({ item })}
 		<Table.Cell>{item.friendlyName}</Table.Cell>
 		<Table.Cell>{item.name}</Table.Cell>
+		<Table.Cell>{item.userCount}</Table.Cell>
 		{#if $appConfigStore.ldapEnabled}
-			<Table.Cell class="hidden lg:table-cell">
-				<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge>
+			<Table.Cell>
+				<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge
+				>
 			</Table.Cell>
 		{/if}
-		<Table.Cell>{item.userCount}</Table.Cell>
 		<Table.Cell class="flex justify-end">
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
