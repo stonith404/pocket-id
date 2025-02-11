@@ -28,6 +28,8 @@ type AppConfigUpdateDto struct {
 	LdapBindDn                         string `json:"ldapBindDn"`
 	LdapBindPassword                   string `json:"ldapBindPassword"`
 	LdapBase                           string `json:"ldapBase"`
+	LdapUserSearchFilter               string `json:"ldapUserSearchFilter"`
+	LdapUserGroupSearchFilter          string `json:"ldapUserGroupSearchFilter"`
 	LdapSkipCertVerify                 string `json:"ldapSkipCertVerify"`
 	LdapAttributeUserUniqueIdentifier  string `json:"ldapAttributeUserUniqueIdentifier"`
 	LdapAttributeUserUsername          string `json:"ldapAttributeUserUsername"`

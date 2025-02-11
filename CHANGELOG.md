@@ -1,3 +1,11 @@
+## [](https://github.com/pocket-id/pocket-id/compare/v0.29.0...v) (2025-02-08)
+
+
+### Features
+
+* add custom ldap search filters ([#216](https://github.com/pocket-id/pocket-id/issues/216)) ([626f87d](https://github.com/pocket-id/pocket-id/commit/626f87d59211f4129098b91dc1d020edb4aca692))
+* update host configuration to allow external access ([#218](https://github.com/pocket-id/pocket-id/issues/218)) ([bea1158](https://github.com/pocket-id/pocket-id/commit/bea115866fd8e4b15d3281c422d2fb72312758b1))
+
 ## [](https://github.com/pocket-id/pocket-id/compare/v0.28.1...v) (2025-02-05)
 
 

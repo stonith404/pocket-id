@@ -28,6 +28,8 @@
 		ldapBindDn: appConfig.ldapBindDn,
 		ldapBindPassword: appConfig.ldapBindPassword,
 		ldapBase: appConfig.ldapBase,
+		ldapUserSearchFilter: appConfig.ldapUserSearchFilter,
+		ldapUserGroupSearchFilter: appConfig.ldapUserGroupSearchFilter,
 		ldapSkipCertVerify: appConfig.ldapSkipCertVerify,
 		ldapAttributeUserUniqueIdentifier: appConfig.ldapAttributeUserUniqueIdentifier,
 		ldapAttributeUserUsername: appConfig.ldapAttributeUserUsername,
@@ -44,6 +46,8 @@
 		ldapBindDn: z.string().min(1),
 		ldapBindPassword: z.string().min(1),
 		ldapBase: z.string().min(1),
+		ldapUserSearchFilter: z.string().min(1),
+		ldapUserGroupSearchFilter: z.string().min(1),
 		ldapSkipCertVerify: z.boolean(),
 		ldapAttributeUserUniqueIdentifier: z.string().min(1),
 		ldapAttributeUserUsername: z.string().min(1),
@@ -102,6 +106,18 @@
 		/>
 		<FormInput label="LDAP Bind Password" type="password" bind:input={$inputs.ldapBindPassword} />
 		<FormInput label="LDAP Base DN" placeholder="dc=example,dc=com" bind:input={$inputs.ldapBase} />
+		<FormInput
+			label="User Search Filter"
+			description="The Search filter to use to search/sync users."
+			placeholder="(objectClass=person)"
+			bind:input={$inputs.ldapUserSearchFilter}
+		/>
+		<FormInput
+			label="Groups Search Filter"
+			description="The Search filter to use to search/sync groups."
+			placeholder="(objectClass=groupOfNames)"
+			bind:input={$inputs.ldapUserGroupSearchFilter}
+		/>
 		<CheckboxWithLabel
 			id="skip-cert-verify"
 			label="Skip Certificate Verification"

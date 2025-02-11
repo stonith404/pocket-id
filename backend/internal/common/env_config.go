@@ -35,7 +35,7 @@ var EnvConfig = &EnvConfigSchema{
 	UploadPath:               "data/uploads",
 	AppURL:                   "http://localhost",
 	Port:                     "8080",
-	Host:                     "localhost",
+	Host:                     "0.0.0.0",
 	MaxMindLicenseKey:        "",
 	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
 }

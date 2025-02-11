@@ -70,7 +70,7 @@ func (s *LdapService) SyncGroups() error {
 	baseDN := s.appConfigService.DbConfig.LdapBase.Value
 	nameAttribute := s.appConfigService.DbConfig.LdapAttributeGroupName.Value
 	uniqueIdentifierAttribute := s.appConfigService.DbConfig.LdapAttributeGroupUniqueIdentifier.Value
-	filter := "(objectClass=groupOfUniqueNames)"
+	filter := s.appConfigService.DbConfig.LdapUserGroupSearchFilter.Value
 
 	searchAttrs := []string{
 		nameAttribute,
@@ -106,7 +106,8 @@ func (s *LdapService) SyncGroups() error {
 			singleMember := strings.Split(strings.Split(member, "=")[1], ",")[0]
 
 			var databaseUser model.User
-			s.db.Where("username = ?", singleMember).First(&databaseUser)
+			s.db.Where("username = ?", singleMember).Where("ldap_id IS NOT NULL").First(&databaseUser)
+
 			membersUserId = append(membersUserId, databaseUser.ID)
 		}
 
@@ -176,8 +177,7 @@ func (s *LdapService) SyncUsers() error {
 	firstNameAttribute := s.appConfigService.DbConfig.LdapAttributeUserFirstName.Value
 	lastNameAttribute := s.appConfigService.DbConfig.LdapAttributeUserLastName.Value
 	adminGroupAttribute := s.appConfigService.DbConfig.LdapAttributeAdminGroup.Value
-
-	filter := "(objectClass=person)"
+	filter := s.appConfigService.DbConfig.LdapUserSearchFilter.Value
 
 	searchAttrs := []string{
 		"memberOf",
