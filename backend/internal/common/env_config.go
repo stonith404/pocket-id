@@ -37,7 +37,7 @@ var EnvConfig = &EnvConfigSchema{
 	Port:                     "8080",
 	Host:                     "0.0.0.0",
 	MaxMindLicenseKey:        "",
-	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
+	GeoLiteDBPath:            "data",
 }
 
 func init() {
