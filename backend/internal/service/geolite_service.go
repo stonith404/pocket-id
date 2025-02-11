@@ -21,7 +21,8 @@ import (
 )
 
 type GeoLiteService struct {
-	mutex sync.Mutex
+	disableUpdater bool
+	mutex          sync.Mutex
 }
 
 var localhostIPNets = []*net.IPNet{
@@ -42,6 +43,12 @@ var tailscaleIPNets = []*net.IPNet{
 // NewGeoLiteService initializes a new GeoLiteService instance and starts a goroutine to update the GeoLite2 City database.
 func NewGeoLiteService() *GeoLiteService {
 	service := &GeoLiteService{}
+
+	if common.EnvConfig.MaxMindLicenseKey == "" && common.EnvConfig.GeoLiteDBUrl == common.MaxMindGeoLiteCityUrl {
+		// Warn the user, and disable the updater.
+		log.Println("MAXMIND_LICENSE_KEY environment variable is empty. The GeoLite2 City database won't be updated.")
+		service.disableUpdater = true
+	}
 
 	go func() {
 		if err := service.updateDatabase(); err != nil {
@@ -104,18 +111,19 @@ func (s *GeoLiteService) GetLocationByIP(ipAddress string) (country, city string
 
 // UpdateDatabase checks the age of the database and updates it if it's older than 14 days.
 func (s *GeoLiteService) updateDatabase() error {
+	if s.disableUpdater {
+		// Avoid updating the GeoLite2 City database.
+		return nil
+	}
+
 	if s.isDatabaseUpToDate() {
 		log.Println("GeoLite2 City database is up-to-date.")
 		return nil
 	}
 
 	log.Println("Updating GeoLite2 City database...")
+	downloadUrl := fmt.Sprintf(common.EnvConfig.GeoLiteDBUrl, common.EnvConfig.MaxMindLicenseKey)
 
-	// Download and extract the database
-	downloadUrl := fmt.Sprintf(
-		"https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=%s&suffix=tar.gz",
-		common.EnvConfig.MaxMindLicenseKey,
-	)
 	// Download the database tar.gz file
 	resp, err := http.Get(downloadUrl)
 	if err != nil {
