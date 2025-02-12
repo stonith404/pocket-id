@@ -5,12 +5,11 @@
 	import UserService from '$lib/services/user-service';
 	import WebAuthnService from '$lib/services/webauthn-service';
 	import appConfigStore from '$lib/stores/application-configuration-store';
-	import { passkeyWarningVisibility } from '$lib/stores/passkey-warning-store';
 	import type { Passkey } from '$lib/types/passkey.type';
 	import type { UserCreate } from '$lib/types/user.type';
 	import { axiosErrorToast, getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startRegistration } from '@simplewebauthn/browser';
-	import { LucideAlertTriangle, X } from 'lucide-svelte';
+	import { LucideAlertTriangle } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import AccountForm from './account-form.svelte';
 	import PasskeyList from './passkey-list.svelte';
@@ -49,10 +48,6 @@
 			toast.error(getWebauthnErrorMessage(e));
 		}
 	}
-
-	async function dismissWarning() {
-		passkeyWarningVisibility.toggleVisibility()
-	}
 </script>
 
 <svelte:head>
@@ -67,27 +62,20 @@
 			>Please add a passkey to prevent losing access to your account.</Alert.Description
 		>
 	</Alert.Root>
-{/if}
-
-{#if passkeys.length == 1}
-{#if $passkeyWarningVisibility}
-	<Alert.Root variant="warning">
-		<slot name="controls">
-			<button class="size-4" on:click={dismissWarning}>
-				<X />
-			</button>
-		</slot>
-		<!-- <LucideAlertTriangle class="size-4" /> -->
+{:else if passkeys.length == 1}
+	<Alert.Root variant="warning" dismissibleId="single-passkey">
+		<LucideAlertTriangle class="size-4" />
 		<Alert.Title>Single Passkey Configured</Alert.Title>
 		<Alert.Description
 			>It is recommended to add more than one passkey to avoid loosing access to your account.</Alert.Description
 		>
-
 	</Alert.Root>
 {/if}
-{/if}
 
-<fieldset disabled={!$appConfigStore.allowOwnAccountEdit || (!!account.ldapId && $appConfigStore.ldapEnabled)}>
+<fieldset
+	disabled={!$appConfigStore.allowOwnAccountEdit ||
+		(!!account.ldapId && $appConfigStore.ldapEnabled)}
+>
 	<Card.Root>
 		<Card.Header>
 			<Card.Title>Account Details</Card.Title>
