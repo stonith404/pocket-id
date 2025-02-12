@@ -11,7 +11,7 @@ permissions:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  VERSION: ${{ github.release.name }}
+  VERSION: ${{ github.event.release.name }}
 
 jobs:
   build:
