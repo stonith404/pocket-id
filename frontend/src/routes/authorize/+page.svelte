@@ -8,7 +8,6 @@
 	import userStore from '$lib/stores/user-store';
 	import { getWebauthnErrorMessage } from '$lib/utils/error-util';
 	import { startAuthentication } from '@simplewebauthn/browser';
-	import { AxiosError } from 'axios';
 	import { LucideMail, LucideUser, LucideUsers } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
@@ -60,11 +59,7 @@
 					onSuccess(code, callbackURL);
 				});
 		} catch (e) {
-			if (e instanceof AxiosError && e.response?.data.error === 'Missing authorization') {
-				authorizationRequired = true;
-			} else {
-				errorMessage = getWebauthnErrorMessage(e);
-			}
+			errorMessage = getWebauthnErrorMessage(e);
 			isLoading = false;
 		}
 	}

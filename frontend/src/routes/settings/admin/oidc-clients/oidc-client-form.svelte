@@ -30,6 +30,7 @@
 	const client: OidcClientCreate = {
 		name: existingClient?.name || '',
 		callbackURLs: existingClient?.callbackURLs || [''],
+		logoutCallbackURLs: existingClient?.logoutCallbackURLs || [''],
 		isPublic: existingClient?.isPublic || false,
 		pkceEnabled: existingClient?.isPublic == true || existingClient?.pkceEnabled || false
 	};
@@ -37,6 +38,7 @@
 	const formSchema = z.object({
 		name: z.string().min(2).max(50),
 		callbackURLs: z.array(z.string()).nonempty(),
+		logoutCallbackURLs: z.array(z.string()),
 		isPublic: z.boolean(),
 		pkceEnabled: z.boolean()
 	});
@@ -78,10 +80,18 @@
 <form onsubmit={onSubmit}>
 	<div class="grid grid-cols-2 gap-x-3 gap-y-7 sm:flex-row">
 		<FormInput label="Name" class="w-full" bind:input={$inputs.name} />
+		<div></div>
 		<OidcCallbackUrlInput
+			label="Callback URLs"
 			class="w-full"
 			bind:callbackURLs={$inputs.callbackURLs.value}
 			bind:error={$inputs.callbackURLs.error}
+		/>
+		<OidcCallbackUrlInput
+			label="Logout Callback URLs"
+			class="w-full"
+			bind:callbackURLs={$inputs.logoutCallbackURLs.value}
+			bind:error={$inputs.logoutCallbackURLs.error}
 		/>
 		<CheckboxWithLabel
 			id="public-client"

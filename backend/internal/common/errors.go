@@ -31,6 +31,13 @@ type TokenInvalidOrExpiredError struct{}
 func (e *TokenInvalidOrExpiredError) Error() string       { return "token is invalid or expired" }
 func (e *TokenInvalidOrExpiredError) HttpStatusCode() int { return 400 }
 
+type TokenInvalidError struct{}
+
+func (e *TokenInvalidError) Error() string {
+	return "Token is invalid"
+}
+func (e *TokenInvalidError) HttpStatusCode() int { return 400 }
+
 type OidcMissingAuthorizationError struct{}
 
 func (e *OidcMissingAuthorizationError) Error() string       { return "missing authorization" }
@@ -182,5 +189,18 @@ type OidcAccessDeniedError struct{}
 func (e *OidcAccessDeniedError) Error() string {
 	return "You're not allowed to access this service"
 }
-
 func (e *OidcAccessDeniedError) HttpStatusCode() int { return http.StatusForbidden }
+
+type OidcClientIdNotMatchingError struct{}
+
+func (e *OidcClientIdNotMatchingError) Error() string {
+	return "Client id in request doesn't match client id in token"
+}
+func (e *OidcClientIdNotMatchingError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type OidcNoCallbackURLError struct{}
+
+func (e *OidcNoCallbackURLError) Error() string {
+	return "No callback URL provided"
+}
+func (e *OidcNoCallbackURLError) HttpStatusCode() int { return http.StatusBadRequest }

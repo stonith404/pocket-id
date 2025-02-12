@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/fxamacker/cbor/v2"
-	"github.com/pocket-id/pocket-id/backend/resources"
 	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"github.com/pocket-id/pocket-id/backend/resources"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/pocket-id/pocket-id/backend/internal/common"
@@ -114,7 +114,7 @@ func (s *TestService) SeedDatabase() error {
 				},
 				Name:         "Nextcloud",
 				Secret:       "$2a$10$9dypwot8nGuCjT6wQWWpJOckZfRprhe2EkwpKizxS/fpVHrOLEJHC", // w2mUeZISmEvIDMEDvpY0PnxQIpj1m3zY
-				CallbackURLs: model.CallbackURLs{"http://nextcloud/auth/callback"},
+				CallbackURLs: model.UrlList{"http://nextcloud/auth/callback"},
 				ImageType:    utils.StringPointer("png"),
 				CreatedByID:  users[0].ID,
 			},
@@ -124,7 +124,7 @@ func (s *TestService) SeedDatabase() error {
 				},
 				Name:         "Immich",
 				Secret:       "$2a$10$Ak.FP8riD1ssy2AGGbG.gOpnp/rBpymd74j0nxNMtW0GG1Lb4gzxe", // PYjrE9u4v9GVqXKi52eur0eb2Ci4kc0x
-				CallbackURLs: model.CallbackURLs{"http://immich/auth/callback"},
+				CallbackURLs: model.UrlList{"http://immich/auth/callback"},
 				CreatedByID:  users[1].ID,
 				AllowedUserGroups: []model.UserGroup{
 					userGroups[1],

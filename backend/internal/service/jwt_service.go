@@ -194,6 +194,23 @@ func (s *JwtService) VerifyOauthAccessToken(tokenString string) (*jwt.Registered
 	return claims, nil
 }
 
+func (s *JwtService) VerifyIdToken(tokenString string) (*jwt.RegisteredClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return s.publicKey, nil
+	}, jwt.WithIssuer(common.EnvConfig.AppURL))
+
+	if err != nil && !errors.Is(err, jwt.ErrTokenExpired) {
+		return nil, errors.New("couldn't handle this token")
+	}
+
+	claims, isValid := token.Claims.(*jwt.RegisteredClaims)
+	if !isValid {
+		return nil, errors.New("can't parse claims")
+	}
+
+	return claims, nil
+}
+
 // GetJWK returns the JSON Web Key (JWK) for the public key.
 func (s *JwtService) GetJWK() (JWK, error) {
 	if s.publicKey == nil {

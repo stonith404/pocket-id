@@ -7,10 +7,12 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
+		label,
 		callbackURLs = $bindable(),
 		error = $bindable(null),
 		...restProps
 	}: HTMLAttributes<HTMLDivElement> & {
+		label: string;
 		callbackURLs: string[];
 		error?: string | null;
 		children?: Snippet;
@@ -20,7 +22,7 @@
 </script>
 
 <div {...restProps}>
-	<FormInput label="Callback URLs">
+	<FormInput {label}>
 		<div class="flex flex-col gap-y-2">
 			{#each callbackURLs as _, i}
 				<div class="flex gap-x-2">
