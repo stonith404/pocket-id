@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/big"
 	"net/url"
+	"regexp"
+	"strings"
 	"unicode"
 )
 
@@ -61,4 +63,13 @@ func CamelCaseToSnakeCase(s string) string {
 		result = append(result, unicode.ToLower(r))
 	}
 	return string(result)
+}
+
+func CamelCaseToScreamingSnakeCase(s string) string {
+	// Insert underscores before uppercase letters (except the first one)
+	re := regexp.MustCompile(`([a-z0-9])([A-Z])`)
+	snake := re.ReplaceAllString(s, `${1}_${2}`)
+
+	// Convert to uppercase
+	return strings.ToUpper(snake)
 }
