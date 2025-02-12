@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  filter:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      changes: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            helm:
+              - 'chart/**'
+  helm:
+    if: contains(fromJSON(needs.filter.outputs.changes), 'helm')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint
+        run: helm lint chart
+      - name: Lint
+        run: helm lint chart
+      - name: Run helm-docs
+        uses: losisin/helm-docs-github-action@v1
+        with:
+          fail-on-diff: true

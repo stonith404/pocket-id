@@ -1,11 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "pocket-id.fullname" . }}
   labels:
     {{- include "pocket-id.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "pocket-id.selectorLabels" . | nindent 6 }}
@@ -32,7 +32,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default (print "v" .Chart.AppVersion) }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -41,14 +41,14 @@ spec:
           envFrom:
           {{- if .Values.existingConfigMap }}
             - configMapRef:
-              name: {{ .Values.existingConfigMap }}
+                name: {{ .Values.existingConfigMap }}
           {{ else }}
             - configMapRef:
-              name: pocket-id-config
+                name: {{ include "pocket-id.fullname" . }}-config
           {{- end }}
           {{- if .Values.existingSecret }}
             - secretRef:
-              name: {{ .Values.existingSecret }}
+                name: {{ .Values.existingSecret }}
           {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
@@ -56,14 +56,21 @@ spec:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
           volumeMounts:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-      {{- with .Values.volumes }}
+            - name: {{ include "pocket-id.fullname" . }}-data
+              mountPath: /app/backend/data
+            {{- with .Values.volumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
       volumes:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- if and .Values.persistence.enabled .Values.persistence.existingClaim (not .Values.enterprise.enabled) }}
+        - name: {{ include "pocket-id.fullname" . }}-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
+        {{- end }}
+        {{- with .Values.volumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -76,3 +83,27 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- if and .Values.persistence.enabled (or (not .Values.persistence.existingClaim) .Values.enterprise.enabled) }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ include "pocket-id.fullname" . }}-data
+        {{- if .Values.persistence.annotations }}
+        annotations:
+        {{- range $key, $value := .Values.persistence.annotations }}
+          {{ $key }}: "{{ $value }}"
+        {{- end }}
+        {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote}}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size | quote }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- end }}

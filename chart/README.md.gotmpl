@@ -1,0 +1,29 @@
+{{ define "chart.versionBadge" -}}
+{{- $releaseEndpoint := urlquery "https://api.github.com/repos/pocket-id/pocket-id/releases/latest" }}
+{{- $releaseNameQuery := urlquery "$.name" }}
+![Version](https://img.shields.io/badge/dynamic/json?url={{ $releaseEndpoint }}&query={{ $releaseNameQuery }}&label=Version)
+{{- end }}
+
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+
+{{ template "chart.badgesSection" . }}
+
+{{ template "chart.description" . }}
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.sourcesSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+### Todo
+
+- [ ] Add database provider charts as dependencies
+- [ ] Seperate front and backend to seperate deployments
+
+{{ template "helm-docs.versionFooter" . }}

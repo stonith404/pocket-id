@@ -56,9 +56,11 @@ The frontend is built with [SvelteKit](https://kit.svelte.dev) and written in Ty
 4. Start the frontend with `npm run dev`
 
 ### Reverse Proxy
+
 We use [Caddy](https://caddyserver.com) as a reverse proxy. You can use any other reverse proxy if you want but you have to configure it yourself.
 
 #### Setup
+
 Run `caddy run --config reverse-proxy/Caddyfile` in the root folder.
 
 You're all set!
@@ -68,6 +70,13 @@ You're all set!
 We are using [Playwright](https://playwright.dev) for end-to-end testing.
 
 The tests can be run like this:
+
 1. Start the backend normally
 2. Start the frontend in production mode with `npm run build && node --env-file=.env build/index.js`
 3. Run the tests with `npm run test`
+
+### Helm chart
+
+The [README.md](./chart/README.md) is generated using helm-docs. If you have made changes to the values or the template, you will need to regenerate it using the helm-docs binary.
+Please see the [installation](https://github.com/norwoodj/helm-docs/tree/master?tab=readme-ov-file#installation) section within their repo for instructions.
+Once installed you just need to run `helm-docs` in the root of the repo to update the Helm README.md.
