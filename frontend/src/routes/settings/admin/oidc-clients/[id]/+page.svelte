@@ -33,6 +33,7 @@
 		'OIDC Discovery URL': `https://${$page.url.hostname}/.well-known/openid-configuration`,
 		'Token URL': `https://${$page.url.hostname}/api/oidc/token`,
 		'Userinfo URL': `https://${$page.url.hostname}/api/oidc/userinfo`,
+		'Logout URL': `https://${$page.url.hostname}/api/oidc/end-session`,
 		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`,
 		PKCE: client.pkceEnabled ? 'Enabled' : 'Disabled'
 	});
