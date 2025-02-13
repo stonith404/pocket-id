@@ -27,6 +27,7 @@ type EnvConfigSchema struct {
 	MaxMindLicenseKey        string     `env:"MAXMIND_LICENSE_KEY"`
 	GeoLiteDBPath            string     `env:"GEOLITE_DB_PATH"`
 	GeoLiteDBUrl             string     `env:"GEOLITE_DB_URL"`
+	UiConfigDisabled         bool       `env:"PUBLIC_UI_CONFIG_DISABLED"`
 }
 
 var EnvConfig = &EnvConfigSchema{
@@ -41,6 +42,7 @@ var EnvConfig = &EnvConfigSchema{
 	MaxMindLicenseKey:        "",
 	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
 	GeoLiteDBUrl:             MaxMindGeoLiteCityUrl,
+	UiConfigDisabled:         false,
 }
 
 func init() {

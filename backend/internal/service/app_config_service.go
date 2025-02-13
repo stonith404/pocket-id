@@ -188,12 +188,15 @@ var defaultDbConfig = model.AppConfig{
 }
 
 func (s *AppConfigService) UpdateAppConfig(input dto.AppConfigUpdateDto) ([]model.AppConfigVariable, error) {
-	var savedConfigVariables []model.AppConfigVariable
+	if common.EnvConfig.UiConfigDisabled {
+		return nil, &common.UiConfigDisabledError{}
+	}
 
 	tx := s.db.Begin()
 	rt := reflect.ValueOf(input).Type()
 	rv := reflect.ValueOf(input)
 
+	var savedConfigVariables []model.AppConfigVariable
 	for i := 0; i < rt.NumField(); i++ {
 		field := rt.Field(i)
 		key := field.Tag.Get("json")
@@ -254,9 +257,13 @@ func (s *AppConfigService) ListAppConfig(showAll bool) ([]model.AppConfigVariabl
 		return nil, err
 	}
 
-	// Set the value to the default value if it is empty
 	for i := range configuration {
-		if configuration[i].Value == "" && configuration[i].DefaultValue != "" {
+		if common.EnvConfig.UiConfigDisabled {
+			// Set the value to the environment variable if the UI config is disabled
+			configuration[i].Value = s.getConfigVariableFromEnvironmentVariable(configuration[i].Key, configuration[i].DefaultValue)
+
+		} else if configuration[i].Value == "" && configuration[i].DefaultValue != "" {
+			// Set the value to the default value if it is empty
 			configuration[i].Value = configuration[i].DefaultValue
 		}
 	}
@@ -355,12 +362,25 @@ func (s *AppConfigService) LoadDbConfigFromDb() error {
 			return err
 		}
 
-		if storedConfigVar.Value == "" && storedConfigVar.DefaultValue != "" {
+		if common.EnvConfig.UiConfigDisabled {
+			storedConfigVar.Value = s.getConfigVariableFromEnvironmentVariable(currentConfigVar.Key, storedConfigVar.DefaultValue)
+		} else if storedConfigVar.Value == "" && storedConfigVar.DefaultValue != "" {
 			storedConfigVar.Value = storedConfigVar.DefaultValue
 		}
 
 		dbConfigField.Set(reflect.ValueOf(storedConfigVar))
+
 	}
 
 	return nil
+}
+
+func (s *AppConfigService) getConfigVariableFromEnvironmentVariable(key, fallbackValue string) string {
+	environmentVariableName := utils.CamelCaseToScreamingSnakeCase(key)
+
+	if value, exists := os.LookupEnv(environmentVariableName); exists {
+		return value
+	}
+
+	return fallbackValue
 }

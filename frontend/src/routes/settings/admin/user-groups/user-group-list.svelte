@@ -1,6 +1,7 @@
 <script lang="ts">
 	import AdvancedTable from '$lib/components/advanced-table.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog/';
+	import { Badge } from '$lib/components/ui/badge/index';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
@@ -35,7 +36,7 @@
 						toast.success('User group deleted successfully');
 					} catch (e) {
 						axiosErrorToast(e);
-					}					
+					}
 				}
 			}
 		});
@@ -50,6 +51,7 @@
 		{ label: 'Friendly Name', sortColumn: 'friendlyName' },
 		{ label: 'Name', sortColumn: 'name' },
 		{ label: 'User Count', sortColumn: 'userCount' },
+		...($appConfigStore.ldapEnabled ? [{ label: 'Source' }] : []),
 		{ label: 'Actions', hidden: true }
 	]}
 >
@@ -57,6 +59,12 @@
 		<Table.Cell>{item.friendlyName}</Table.Cell>
 		<Table.Cell>{item.name}</Table.Cell>
 		<Table.Cell>{item.userCount}</Table.Cell>
+		{#if $appConfigStore.ldapEnabled}
+			<Table.Cell>
+				<Badge variant={item.ldapId ? 'default' : 'outline'}>{item.ldapId ? 'LDAP' : 'Local'}</Badge
+				>
+			</Table.Cell>
+		{/if}
 		<Table.Cell class="flex justify-end">
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger asChild let:builder>
