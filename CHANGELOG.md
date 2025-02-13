@@ -1,3 +1,10 @@
+## [](https://github.com/pocket-id/pocket-id/compare/v0.31.0...v) (2025-02-13)
+
+
+### Features
+
+* add ability to set custom Geolite DB URL ([2071d00](https://github.com/pocket-id/pocket-id/commit/2071d002fc5c3b5ff7a3fca6a5c99f5517196853))
+
 ## [](https://github.com/pocket-id/pocket-id/compare/v0.30.0...v) (2025-02-12)
 
 
