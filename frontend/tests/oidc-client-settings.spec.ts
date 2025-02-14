@@ -37,7 +37,7 @@ test('Edit OIDC client', async ({ page }) => {
 	await page.goto(`/settings/admin/oidc-clients/${oidcClient.id}`);
 
 	await page.getByLabel('Name').fill('Nextcloud updated');
-	await page.getByTestId('callback-url-1').fill('http://nextcloud-updated/auth/callback');
+	await page.getByTestId('callback-url-1').first().fill('http://nextcloud-updated/auth/callback');
 	await page.getByLabel('logo').setInputFiles('tests/assets/nextcloud-logo.png');
 	await page.getByRole('button', { name: 'Save' }).click();
 

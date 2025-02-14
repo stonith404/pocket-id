@@ -7,12 +7,16 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
+		label,
 		callbackURLs = $bindable(),
 		error = $bindable(null),
+		allowEmpty = false,
 		...restProps
 	}: HTMLAttributes<HTMLDivElement> & {
+		label: string;
 		callbackURLs: string[];
 		error?: string | null;
+		allowEmpty?: boolean;
 		children?: Snippet;
 	} = $props();
 
@@ -20,12 +24,12 @@
 </script>
 
 <div {...restProps}>
-	<FormInput label="Callback URLs">
+	<FormInput {label}>
 		<div class="flex flex-col gap-y-2">
 			{#each callbackURLs as _, i}
 				<div class="flex gap-x-2">
 					<Input data-testid={`callback-url-${i + 1}`} bind:value={callbackURLs[i]} />
-					{#if callbackURLs.length > 1}
+					{#if callbackURLs.length > 1 || allowEmpty}
 						<Button
 							variant="outline"
 							size="sm"
@@ -49,7 +53,7 @@
 			on:click={() => (callbackURLs = [...callbackURLs, ''])}
 		>
 			<LucidePlus class="mr-1 h-4 w-4" />
-			Add another
+			{callbackURLs.length === 0 ? 'Add' : 'Add another'}
 		</Button>
 	{/if}
 </div>

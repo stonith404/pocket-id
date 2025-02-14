@@ -10,7 +10,7 @@
 		OidcClientCreateWithLogo
 	} from '$lib/types/oidc.type';
 	import { createForm } from '$lib/utils/form-util';
-	import { set, z } from 'zod';
+	import { z } from 'zod';
 	import OidcCallbackUrlInput from './oidc-callback-url-input.svelte';
 
 	let {
@@ -30,6 +30,7 @@
 	const client: OidcClientCreate = {
 		name: existingClient?.name || '',
 		callbackURLs: existingClient?.callbackURLs || [''],
+		logoutCallbackURLs: existingClient?.logoutCallbackURLs || [],
 		isPublic: existingClient?.isPublic || false,
 		pkceEnabled: existingClient?.isPublic == true || existingClient?.pkceEnabled || false
 	};
@@ -37,6 +38,7 @@
 	const formSchema = z.object({
 		name: z.string().min(2).max(50),
 		callbackURLs: z.array(z.string()).nonempty(),
+		logoutCallbackURLs: z.array(z.string()),
 		isPublic: z.boolean(),
 		pkceEnabled: z.boolean()
 	});
@@ -78,10 +80,19 @@
 <form onsubmit={onSubmit}>
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-7 sm:flex-row">
 		<FormInput label="Name" class="w-full" bind:input={$inputs.name} />
+		<div></div>
 		<OidcCallbackUrlInput
+			label="Callback URLs"
 			class="w-full"
 			bind:callbackURLs={$inputs.callbackURLs.value}
 			bind:error={$inputs.callbackURLs.error}
+		/>
+		<OidcCallbackUrlInput
+			label="Logout Callback URLs"
+			class="w-full"
+			allowEmpty
+			bind:callbackURLs={$inputs.logoutCallbackURLs.value}
+			bind:error={$inputs.logoutCallbackURLs.error}
 		/>
 		<CheckboxWithLabel
 			id="public-client"
@@ -104,7 +115,7 @@
 		<Label for="logo">Logo</Label>
 		<div class="mt-2 flex items-end gap-3">
 			{#if logoDataURL}
-				<div class="h-32 w-32 rounded-2xl bg-muted p-3">
+				<div class="bg-muted h-32 w-32 rounded-2xl p-3">
 					<img
 						class="m-auto max-h-full max-w-full object-contain"
 						src={logoDataURL}
