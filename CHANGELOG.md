@@ -1,3 +1,24 @@
+## [](https://github.com/pocket-id/pocket-id/compare/v0.31.0...v) (2025-02-13)
+
+
+### Features
+
+* add ability to set custom Geolite DB URL ([2071d00](https://github.com/pocket-id/pocket-id/commit/2071d002fc5c3b5ff7a3fca6a5c99f5517196853))
+
+## [](https://github.com/pocket-id/pocket-id/compare/v0.30.0...v) (2025-02-12)
+
+
+### Features
+
+* add ability to override the UI configuration with environment variables ([4e85842](https://github.com/pocket-id/pocket-id/commit/4e858420e9d9713e19f3b35c45c882403717f72f))
+* add warning for only having one passkey configured ([#220](https://github.com/pocket-id/pocket-id/issues/220)) ([39e403d](https://github.com/pocket-id/pocket-id/commit/39e403d00f3870f9e960427653a1d9697da27a6f))
+* display source in user and group table ([#225](https://github.com/pocket-id/pocket-id/issues/225)) ([9ed2adb](https://github.com/pocket-id/pocket-id/commit/9ed2adb0f8da13725fd9a4ef6a7798c377d13513))
+
+
+### Bug Fixes
+
+* user linking in ldap group sync ([#222](https://github.com/pocket-id/pocket-id/issues/222)) ([2d78349](https://github.com/pocket-id/pocket-id/commit/2d78349b381d7ca10f47d3c03cef685a576b1b49))
+
 ## [](https://github.com/pocket-id/pocket-id/compare/v0.29.0...v) (2025-02-08)
 
 

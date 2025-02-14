@@ -204,3 +204,10 @@ func (e *OidcNoCallbackURLError) Error() string {
 	return "No callback URL provided"
 }
 func (e *OidcNoCallbackURLError) HttpStatusCode() int { return http.StatusBadRequest }
+
+type UiConfigDisabledError struct{}
+
+func (e *UiConfigDisabledError) Error() string {
+	return "The configuration can't be changed since the UI configuration is disabled"
+}
+func (e *UiConfigDisabledError) HttpStatusCode() int { return http.StatusForbidden }

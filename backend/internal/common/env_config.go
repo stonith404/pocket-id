@@ -10,8 +10,9 @@ import (
 type DbProvider string
 
 const (
-	DbProviderSqlite   DbProvider = "sqlite"
-	DbProviderPostgres DbProvider = "postgres"
+	DbProviderSqlite      DbProvider = "sqlite"
+	DbProviderPostgres    DbProvider = "postgres"
+	MaxMindGeoLiteCityUrl string     = "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=%s&suffix=tar.gz"
 )
 
 type EnvConfigSchema struct {
@@ -25,6 +26,8 @@ type EnvConfigSchema struct {
 	Host                     string     `env:"HOST"`
 	MaxMindLicenseKey        string     `env:"MAXMIND_LICENSE_KEY"`
 	GeoLiteDBPath            string     `env:"GEOLITE_DB_PATH"`
+	GeoLiteDBUrl             string     `env:"GEOLITE_DB_URL"`
+	UiConfigDisabled         bool       `env:"PUBLIC_UI_CONFIG_DISABLED"`
 }
 
 var EnvConfig = &EnvConfigSchema{
@@ -38,6 +41,8 @@ var EnvConfig = &EnvConfigSchema{
 	Host:                     "0.0.0.0",
 	MaxMindLicenseKey:        "",
 	GeoLiteDBPath:            "data/GeoLite2-City.mmdb",
+	GeoLiteDBUrl:             MaxMindGeoLiteCityUrl,
+	UiConfigDisabled:         false,
 }
 
 func init() {
