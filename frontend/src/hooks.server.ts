@@ -12,7 +12,11 @@ process.env.INTERNAL_BACKEND_URL = env.INTERNAL_BACKEND_URL ?? 'http://localhost
 export const handle: Handle = async ({ event, resolve }) => {
 	const { isSignedIn, isAdmin } = verifyJwt(event.cookies.get(ACCESS_TOKEN_COOKIE_NAME));
 
-	if (event.url.pathname.startsWith('/settings') && !event.url.pathname.startsWith('/login')) {
+	const isUnauthenticatedOnlyPath = event.url.pathname.startsWith('/login');
+	const isPublicPath = ['/authorize', '/health'].includes(event.url.pathname);
+	const isAdminPath = event.url.pathname.startsWith('/settings/admin');
+
+	if (!isUnauthenticatedOnlyPath && !isPublicPath) {
 		if (!isSignedIn) {
 			return new Response(null, {
 				status: 302,
@@ -21,14 +25,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	if (event.url.pathname.startsWith('/login') && isSignedIn) {
+	if (isUnauthenticatedOnlyPath && isSignedIn) {
 		return new Response(null, {
 			status: 302,
 			headers: { location: '/settings' }
 		});
 	}
 
-	if (event.url.pathname.startsWith('/settings/admin') && !isAdmin) {
+	if (isAdminPath && !isAdmin) {
 		return new Response(null, {
 			status: 302,
 			headers: { location: '/settings' }
