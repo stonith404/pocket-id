@@ -112,7 +112,7 @@
 	</Card.Header>
 	<Card.Content>
 		<div class="flex flex-col">
-			<div class="mb-2 flex">
+			<div class="mb-2 flex items-center">
 				<Label class="mb-0 w-44">Client ID</Label>
 				<CopyToClipboard value={client.id}>
 					<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
@@ -144,7 +144,7 @@
 			{#if showAllDetails}
 				<div transition:slide>
 					{#each Object.entries(setupDetails) as [key, value]}
-						<div class="mb-5 flex">
+						<div class="mb-5 flex items-center">
 							<Label class="mb-0 w-44">{key}</Label>
 							<CopyToClipboard {value}>
 								<span class="text-muted-foreground text-sm">{value}</span>
