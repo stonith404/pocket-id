@@ -38,5 +38,7 @@ func (tc *TestController) resetAndSeedHandler(c *gin.Context) {
 		return
 	}
 
+	tc.TestService.SetJWTKeys()
+
 	c.Status(http.StatusNoContent)
 }
