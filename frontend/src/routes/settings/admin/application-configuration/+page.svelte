@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
 	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 	import AppConfigService from '$lib/services/app-config-service';
 	import appConfigStore from '$lib/stores/application-configuration-store';
@@ -14,7 +13,6 @@
 	let { data } = $props();
 	let appConfig = $state(data.appConfig);
 
-	const uiConfigDisabled = env.PUBLIC_UI_CONFIG_DISABLED === 'true';
 	const appConfigService = new AppConfigService();
 
 	async function updateAppConfig(updatedAppConfig: Partial<AllAppConfig>) {
@@ -57,28 +55,26 @@
 	<title>Application Configuration</title>
 </svelte:head>
 
-<fieldset class="flex flex-col gap-5" disabled={uiConfigDisabled}>
-	<CollapsibleCard id="application-configuration-general" title="General" defaultExpanded>
-		<AppConfigGeneralForm {appConfig} callback={updateAppConfig} />
-	</CollapsibleCard>
+<CollapsibleCard id="application-configuration-general" title="General" defaultExpanded>
+	<AppConfigGeneralForm {appConfig} callback={updateAppConfig} />
+</CollapsibleCard>
 
-	<CollapsibleCard
-		id="application-configuration-email"
-		title="Email"
-		description="Enable email notifications to alert users when a login is detected from a new device or
+<CollapsibleCard
+	id="application-configuration-email"
+	title="Email"
+	description="Enable email notifications to alert users when a login is detected from a new device or
 			location."
-	>
-		<AppConfigEmailForm {appConfig} callback={updateAppConfig} />
-	</CollapsibleCard>
+>
+	<AppConfigEmailForm {appConfig} callback={updateAppConfig} />
+</CollapsibleCard>
 
-	<CollapsibleCard
-		id="application-configuration-ldap"
-		title="LDAP"
-		description="Configure LDAP settings to sync users and groups from an LDAP server."
-	>
-		<AppConfigLdapForm {appConfig} callback={updateAppConfig} />
-	</CollapsibleCard>
-</fieldset>
+<CollapsibleCard
+	id="application-configuration-ldap"
+	title="LDAP"
+	description="Configure LDAP settings to sync users and groups from an LDAP server."
+>
+	<AppConfigLdapForm {appConfig} callback={updateAppConfig} />
+</CollapsibleCard>
 
 <CollapsibleCard id="application-configuration-images" title="Images">
 	<UpdateApplicationImages callback={updateImages} />

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog';
 	import FormInput from '$lib/components/form-input.svelte';
@@ -18,6 +19,7 @@
 	} = $props();
 
 	const appConfigService = new AppConfigService();
+	const uiConfigDisabled = env.PUBLIC_UI_CONFIG_DISABLED === 'true';
 
 	let isSendingTestEmail = $state(false);
 
@@ -86,46 +88,47 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<h4 class="text-lg font-semibold">SMTP Configuration</h4>
-	<div class="mt-4 grid grid-cols-1 items-end gap-5 md:grid-cols-2">
-		<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
-		<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
-		<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
-		<FormInput label="SMTP Password" type="password" bind:input={$inputs.smtpPassword} />
-		<FormInput label="SMTP From" bind:input={$inputs.smtpFrom} />
-		<CheckboxWithLabel
-			id="tls"
-			label="TLS"
-			description="Enable TLS for the SMTP connection."
-			bind:checked={$inputs.smtpTls.value}
-		/>
-		<CheckboxWithLabel
-			id="skip-cert-verify"
-			label="Skip Certificate Verification"
-			description="This can be useful for self-signed certificates."
-			bind:checked={$inputs.smtpSkipCertVerify.value}
-		/>
-	</div>
-	<h4 class="mt-10 text-lg font-semibold">Enabled Emails</h4>
-	<div class="mt-4 flex flex-col gap-5">
-		<CheckboxWithLabel
-			id="email-login-notification"
-			label="Email Login Notification"
-			description="Send an email to the user when they log in from a new device."
-			bind:checked={$inputs.emailLoginNotificationEnabled.value}
-		/>
-		<CheckboxWithLabel
-			id="email-one-time-access"
-			label="Email One Time Access"
-			description="Allows users to sign in with a link sent to their email. This reduces the security significantly as anyone with access to the user's email can gain entry."
-			bind:checked={$inputs.emailOneTimeAccessEnabled.value}
-		/>
-	</div>
-
+	<fieldset disabled={uiConfigDisabled}>
+		<h4 class="text-lg font-semibold">SMTP Configuration</h4>
+		<div class="mt-4 grid grid-cols-1 items-end gap-5 md:grid-cols-2">
+			<FormInput label="SMTP Host" bind:input={$inputs.smtpHost} />
+			<FormInput label="SMTP Port" type="number" bind:input={$inputs.smtpPort} />
+			<FormInput label="SMTP User" bind:input={$inputs.smtpUser} />
+			<FormInput label="SMTP Password" type="password" bind:input={$inputs.smtpPassword} />
+			<FormInput label="SMTP From" bind:input={$inputs.smtpFrom} />
+			<CheckboxWithLabel
+				id="tls"
+				label="TLS"
+				description="Enable TLS for the SMTP connection."
+				bind:checked={$inputs.smtpTls.value}
+			/>
+			<CheckboxWithLabel
+				id="skip-cert-verify"
+				label="Skip Certificate Verification"
+				description="This can be useful for self-signed certificates."
+				bind:checked={$inputs.smtpSkipCertVerify.value}
+			/>
+		</div>
+		<h4 class="mt-10 text-lg font-semibold">Enabled Emails</h4>
+		<div class="mt-4 flex flex-col gap-5">
+			<CheckboxWithLabel
+				id="email-login-notification"
+				label="Email Login Notification"
+				description="Send an email to the user when they log in from a new device."
+				bind:checked={$inputs.emailLoginNotificationEnabled.value}
+			/>
+			<CheckboxWithLabel
+				id="email-one-time-access"
+				label="Email One Time Access"
+				description="Allows users to sign in with a link sent to their email. This reduces the security significantly as anyone with access to the user's email can gain entry."
+				bind:checked={$inputs.emailOneTimeAccessEnabled.value}
+			/>
+		</div>
+	</fieldset>
 	<div class="mt-8 flex flex-wrap justify-end gap-3">
 		<Button isLoading={isSendingTestEmail} variant="secondary" onclick={onTestEmail}
 			>Send test email</Button
 		>
-		<Button type="submit">Save</Button>
+		<Button type="submit" disabled={uiConfigDisabled}>Save</Button>
 	</div>
 </form>
