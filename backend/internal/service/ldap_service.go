@@ -70,12 +70,13 @@ func (s *LdapService) SyncGroups() error {
 	baseDN := s.appConfigService.DbConfig.LdapBase.Value
 	nameAttribute := s.appConfigService.DbConfig.LdapAttributeGroupName.Value
 	uniqueIdentifierAttribute := s.appConfigService.DbConfig.LdapAttributeGroupUniqueIdentifier.Value
+	groupMemberOfAttribute := s.appConfigService.DbConfig.LdapAttributeGroupMember.Value
 	filter := s.appConfigService.DbConfig.LdapUserGroupSearchFilter.Value
 
 	searchAttrs := []string{
 		nameAttribute,
 		uniqueIdentifierAttribute,
-		"member",
+		groupMemberOfAttribute,
 	}
 
 	searchReq := ldap.NewSearchRequest(baseDN, ldap.ScopeWholeSubtree, 0, 0, 0, false, filter, searchAttrs, []ldap.Control{})
@@ -99,7 +100,7 @@ func (s *LdapService) SyncGroups() error {
 		s.db.Where("ldap_id = ?", ldapId).First(&databaseGroup)
 
 		// Get group members and add to the correct Group
-		groupMembers := value.GetAttributeValues("member")
+		groupMembers := value.GetAttributeValues(groupMemberOfAttribute)
 		for _, member := range groupMembers {
 			// Normal output of this would be CN=username,ou=people,dc=example,dc=com
 			// Splitting at the "=" and "," then just grabbing the username for that string

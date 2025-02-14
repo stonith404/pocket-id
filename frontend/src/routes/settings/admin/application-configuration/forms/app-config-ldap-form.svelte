@@ -38,6 +38,7 @@
 		ldapAttributeUserEmail: appConfig.ldapAttributeUserEmail,
 		ldapAttributeUserFirstName: appConfig.ldapAttributeUserFirstName,
 		ldapAttributeUserLastName: appConfig.ldapAttributeUserLastName,
+		ldapAttributeGroupMember: appConfig.ldapAttributeGroupMember,
 		ldapAttributeGroupUniqueIdentifier: appConfig.ldapAttributeGroupUniqueIdentifier,
 		ldapAttributeGroupName: appConfig.ldapAttributeGroupName,
 		ldapAttributeAdminGroup: appConfig.ldapAttributeAdminGroup
@@ -56,6 +57,7 @@
 		ldapAttributeUserEmail: z.string().min(1),
 		ldapAttributeUserFirstName: z.string().min(1),
 		ldapAttributeUserLastName: z.string().min(1),
+		ldapAttributeGroupMember: z.string(),
 		ldapAttributeGroupUniqueIdentifier: z.string().min(1),
 		ldapAttributeGroupName: z.string().min(1),
 		ldapAttributeAdminGroup: z.string()
@@ -98,8 +100,8 @@
 </script>
 
 <form onsubmit={onSubmit}>
+	<h4 class="text-lg font-semibold">Client Configuration</h4>
 	<fieldset disabled={uiConfigDisabled}>
-		<h4 class="text-lg font-semibold">Client Configuration</h4>
 		<div class="mt-4 grid grid-cols-1 items-start gap-5 md:grid-cols-2">
 			<FormInput
 				label="LDAP URL"
@@ -165,6 +167,12 @@
 				bind:input={$inputs.ldapAttributeUserLastName}
 			/>
 			<FormInput
+				label="Group Members Attribute"
+				description="The attribute to use for querying members of a group."
+				placeholder="member"
+				bind:input={$inputs.ldapAttributeGroupMember}
+			/>
+			<FormInput
 				label="Group Unique Identifier Attribute"
 				description="The value of this attribute should never change."
 				placeholder="uuid"
@@ -183,6 +191,7 @@
 			/>
 		</div>
 	</fieldset>
+
 	<div class="mt-8 flex flex-wrap justify-end gap-3">
 		{#if ldapEnabled}
 			<Button variant="secondary" onclick={onDisable} disabled={uiConfigDisabled}>Disable</Button>

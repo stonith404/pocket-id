@@ -173,6 +173,11 @@ var defaultDbConfig = model.AppConfig{
 		Key:  "ldapAttributeUserLastName",
 		Type: "string",
 	},
+	LdapAttributeGroupMember: model.AppConfigVariable{
+		Key:          "ldapAttributeGroupMember",
+		Type:         "string",
+		DefaultValue: "member",
+	},
 	LdapAttributeGroupUniqueIdentifier: model.AppConfigVariable{
 		Key:  "ldapAttributeGroupUniqueIdentifier",
 		Type: "string",

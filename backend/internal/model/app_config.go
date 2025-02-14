@@ -43,6 +43,7 @@ type AppConfig struct {
 	LdapAttributeUserEmail             AppConfigVariable
 	LdapAttributeUserFirstName         AppConfigVariable
 	LdapAttributeUserLastName          AppConfigVariable
+	LdapAttributeGroupMember           AppConfigVariable
 	LdapAttributeGroupUniqueIdentifier AppConfigVariable
 	LdapAttributeGroupName             AppConfigVariable
 	LdapAttributeAdminGroup            AppConfigVariable
