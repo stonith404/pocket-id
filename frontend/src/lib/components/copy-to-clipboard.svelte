@@ -27,15 +27,13 @@
 	}
 </script>
 
-<button onclick={onClick}>
-	<Tooltip.Root closeOnPointerDown={false} {onOpenChange} {open}>
-		<Tooltip.Trigger>{@render children()}</Tooltip.Trigger>
-		<Tooltip.Content onclick={copyToClipboard}>
-			{#if copied}
-				<span class="flex items-center"><LucideCheck class="mr-1 h-4 w-4" /> Copied</span>
-			{:else}
-				<span>Click to copy</span>
-			{/if}
-		</Tooltip.Content>
-	</Tooltip.Root>
-</button>
+<Tooltip.Root closeOnPointerDown={false} {onOpenChange} {open}>
+	<Tooltip.Trigger class="text-start" onclick={onClick}>{@render children()}</Tooltip.Trigger>
+	<Tooltip.Content onclick={copyToClipboard}>
+		{#if copied}
+			<span class="flex items-center"><LucideCheck class="mr-1 h-4 w-4" /> Copied</span>
+		{:else}
+			<span>Click to copy</span>
+		{/if}
+	</Tooltip.Content>
+</Tooltip.Root>

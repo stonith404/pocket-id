@@ -76,7 +76,7 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="grid grid-cols-2 gap-x-3 gap-y-7 sm:flex-row">
+	<div class="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-7 sm:flex-row">
 		<FormInput label="Name" class="w-full" bind:input={$inputs.name} />
 		<OidcCallbackUrlInput
 			class="w-full"
