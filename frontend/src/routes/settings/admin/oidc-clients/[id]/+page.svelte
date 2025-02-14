@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog';
 	import CopyToClipboard from '$lib/components/copy-to-clipboard.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -17,6 +16,7 @@
 	import { slide } from 'svelte/transition';
 	import OidcForm from '../oidc-client-form.svelte';
 	import UserGroupSelection from '../user-group-selection.svelte';
+	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 
 	let { data } = $props();
 	let client = $state({

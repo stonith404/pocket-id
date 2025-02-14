@@ -10,7 +10,7 @@
 		OidcClientCreateWithLogo
 	} from '$lib/types/oidc.type';
 	import { createForm } from '$lib/utils/form-util';
-	import { set, z } from 'zod';
+	import { z } from 'zod';
 	import OidcCallbackUrlInput from './oidc-callback-url-input.svelte';
 
 	let {
@@ -30,7 +30,7 @@
 	const client: OidcClientCreate = {
 		name: existingClient?.name || '',
 		callbackURLs: existingClient?.callbackURLs || [''],
-		logoutCallbackURLs: existingClient?.logoutCallbackURLs || [''],
+		logoutCallbackURLs: existingClient?.logoutCallbackURLs || [],
 		isPublic: existingClient?.isPublic || false,
 		pkceEnabled: existingClient?.isPublic == true || existingClient?.pkceEnabled || false
 	};
@@ -90,6 +90,7 @@
 		<OidcCallbackUrlInput
 			label="Logout Callback URLs"
 			class="w-full"
+			allowEmpty
 			bind:callbackURLs={$inputs.logoutCallbackURLs.value}
 			bind:error={$inputs.logoutCallbackURLs.error}
 		/>
@@ -114,7 +115,7 @@
 		<Label for="logo">Logo</Label>
 		<div class="mt-2 flex items-end gap-3">
 			{#if logoDataURL}
-				<div class="h-32 w-32 rounded-2xl bg-muted p-3">
+				<div class="bg-muted h-32 w-32 rounded-2xl p-3">
 					<img
 						class="m-auto max-h-full max-w-full object-contain"
 						src={logoDataURL}
