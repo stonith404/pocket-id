@@ -4,6 +4,7 @@ import (
 	"crypto/ecdsa"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"log"
 	"os"
@@ -11,8 +12,8 @@ import (
 	"time"
 
 	"github.com/fxamacker/cbor/v2"
-	"github.com/pocket-id/pocket-id/backend/resources"
 	datatype "github.com/pocket-id/pocket-id/backend/internal/model/types"
+	"github.com/pocket-id/pocket-id/backend/resources"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/pocket-id/pocket-id/backend/internal/common"
@@ -23,11 +24,12 @@ import (
 
 type TestService struct {
 	db               *gorm.DB
+	jwtService       *JwtService
 	appConfigService *AppConfigService
 }
 
-func NewTestService(db *gorm.DB, appConfigService *AppConfigService) *TestService {
-	return &TestService{db: db, appConfigService: appConfigService}
+func NewTestService(db *gorm.DB, appConfigService *AppConfigService, jwtService *JwtService) *TestService {
+	return &TestService{db: db, appConfigService: appConfigService, jwtService: jwtService}
 }
 
 func (s *TestService) SeedDatabase() error {
@@ -112,11 +114,12 @@ func (s *TestService) SeedDatabase() error {
 				Base: model.Base{
 					ID: "3654a746-35d4-4321-ac61-0bdcff2b4055",
 				},
-				Name:         "Nextcloud",
-				Secret:       "$2a$10$9dypwot8nGuCjT6wQWWpJOckZfRprhe2EkwpKizxS/fpVHrOLEJHC", // w2mUeZISmEvIDMEDvpY0PnxQIpj1m3zY
-				CallbackURLs: model.CallbackURLs{"http://nextcloud/auth/callback"},
-				ImageType:    utils.StringPointer("png"),
-				CreatedByID:  users[0].ID,
+				Name:               "Nextcloud",
+				Secret:             "$2a$10$9dypwot8nGuCjT6wQWWpJOckZfRprhe2EkwpKizxS/fpVHrOLEJHC", // w2mUeZISmEvIDMEDvpY0PnxQIpj1m3zY
+				CallbackURLs:       model.UrlList{"http://nextcloud/auth/callback"},
+				LogoutCallbackURLs: model.UrlList{"http://nextcloud/auth/logout/callback"},
+				ImageType:          utils.StringPointer("png"),
+				CreatedByID:        users[0].ID,
 			},
 			{
 				Base: model.Base{
@@ -124,7 +127,7 @@ func (s *TestService) SeedDatabase() error {
 				},
 				Name:         "Immich",
 				Secret:       "$2a$10$Ak.FP8riD1ssy2AGGbG.gOpnp/rBpymd74j0nxNMtW0GG1Lb4gzxe", // PYjrE9u4v9GVqXKi52eur0eb2Ci4kc0x
-				CallbackURLs: model.CallbackURLs{"http://immich/auth/callback"},
+				CallbackURLs: model.UrlList{"http://immich/auth/callback"},
 				CreatedByID:  users[1].ID,
 				AllowedUserGroups: []model.UserGroup{
 					userGroups[1],
@@ -286,6 +289,43 @@ func (s *TestService) ResetAppConfig() error {
 
 	// Reload the app config from the database after resetting the values
 	return s.appConfigService.LoadDbConfigFromDb()
+}
+
+func (s *TestService) SetJWTKeys() {
+	privateKeyString := `-----BEGIN RSA PRIVATE KEY-----
+MIIEpQIBAAKCAQEAyaeEL0VKoPBXIAaWXsUgmu05lAvEIIdJn0FX9lHh4JE5UY9B
+83C5sCNdhs9iSWzpeP11EVjWp8i3Yv2CF7c7u50BXnVBGtxpZpFC+585UXacoJ0c
+hUmarL9GRFJcM1nPHBTFu68aRrn1rIKNHUkNaaxFo0NFGl/4EDDTO8HwawTjwkPo
+QlRzeByhlvGPVvwgB3Fn93B8QJ/cZhXKxJvjjrC/8Pk76heC/ntEMru71Ix77BoC
+3j2TuyiN7m9RNBW8BU5q6lKoIdvIeZfTFLzi37iufyfvMrJTixp9zhNB1NxlLCeO
+Zl2MXegtiGqd2H3cbAyqoOiv9ihUWTfXj7SxJwIDAQABAoIBAQCa8wNZJ08+9y6b
+RzSIQcTaBuq1XY0oyYvCuX0ToruDyVNX3lJ48udb9vDIw9XsQans9CTeXXsjldGE
+WPN7sapOcUg6ArMyJqc+zuO/YQu0EwYrTE48BOC7WIZvvTFnq9y+4R9HJjd0nTOv
+iOlR1W5fAqbH2srgh1mfZ0UIp+9K6ymoinPXVGEXUAuuoMuTEZW/tnA2HT9WEllT
+2FyMbmXrFzutAQqk9GRmnQh2OQZLxnQWyShVqJEhYBtm6JUUH1YJbyTVzMLgdBM8
+ukgjTVtRDHaW51ubRSVdGBVT2m1RRtTsYAiZCpM5bwt88aSUS9yDOUiVH+irDg/3
+IHEuL7IxAoGBAP2MpXPXtOwinajUQ9hKLDAtpq4axGvY+aGP5dNEMsuPo5ggOfUP
+b4sqr73kaNFO3EbxQOQVoFjehhi4dQxt1/kAala9HZ5N7s26G2+eUWFF8jy7gWSN
+qusNqGrG4g8D3WOyqZFb/x/m6SE0Jcg7zvIYbnAOq1Fexeik0Fc/DNzLAoGBAMua
+d4XIfu4ydtU5AIaf1ZNXywgLg+LWxK8ELNqH/Y2vLAeIiTrOVp+hw9z+zHPD5cnu
+6mix783PCOYNLTylrwtAz3fxSz14lsDFQM3ntzVF/6BniTTkKddctcPyqnTvamah
+0hD2dzXBS/0mTBYIIMYTNbs0Yj87FTdJZw/+qa2VAoGBAKbzQkp54W6PCIMPabD0
+fg4nMRZ5F5bv4seIKcunn068QPs9VQxQ4qCfNeLykDYqGA86cgD9YHzD4UZLxv6t
+IUWbCWod0m/XXwPlpIUlmO5VEUD+MiAUzFNDxf6xAE7ku5UXImJNUjseX6l2Xd5v
+yz9L6QQuFI5aujQKugiIwp5rAoGATtUVGCCkPNgfOLmkYXu7dxxUCV5kB01+xAEK
+2OY0n0pG8vfDophH4/D/ZC7nvJ8J9uDhs/3JStexq1lIvaWtG99RNTChIEDzpdn6
+GH9yaVcb/eB4uJjrNm64FhF8PGCCwxA+xMCZMaARKwhMB2/IOMkxUbWboL3gnhJ2
+rDO/QO0CgYEA2Grt6uXHm61ji3xSdkBWNtUnj19vS1+7rFJp5SoYztVQVThf/W52
+BAiXKBdYZDRVoItC/VS2NvAOjeJjhYO/xQ/q3hK7MdtuXfEPpLnyXKkmWo3lrJ26
+wbeF6l05LexCkI7ShsOuSt+dsyaTJTszuKDIA6YOfWvfo3aVZmlWRaI=
+-----END RSA PRIVATE KEY-----
+`
+
+	block, _ := pem.Decode([]byte(privateKeyString))
+	privateKey, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	s.jwtService.PrivateKey = privateKey
+	s.jwtService.PublicKey = &privateKey.PublicKey
 }
 
 // getCborPublicKey decodes a Base64 encoded public key and returns the CBOR encoded COSE key

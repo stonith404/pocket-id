@@ -1,3 +1,24 @@
+## [](https://github.com/pocket-id/pocket-id/compare/v0.32.0...v) (2025-02-14)
+
+
+### Features
+
+* add end session endpoint ([#232](https://github.com/pocket-id/pocket-id/issues/232)) ([7550333](https://github.com/pocket-id/pocket-id/commit/7550333fe2ff6424f3168f63c5179d76767532fd))
+
+
+### Bug Fixes
+
+* alignment of OIDC client details ([c3980d3](https://github.com/pocket-id/pocket-id/commit/c3980d3d28a7158a4dc9369af41f185b891e485e))
+* layout of OIDC client details page on mobile ([3de1301](https://github.com/pocket-id/pocket-id/commit/3de1301fa84b3ab4fff4242d827c7794d44910f2))
+* show  "Sync Now" and "Test Email" button even if UI config is disabled ([4d0fff8](https://github.com/pocket-id/pocket-id/commit/4d0fff821e2245050ce631b4465969510466dfae))
+
+## [](https://github.com/pocket-id/pocket-id/compare/v0.31.0...v) (2025-02-13)
+
+
+### Features
+
+* add ability to set custom Geolite DB URL ([2071d00](https://github.com/pocket-id/pocket-id/commit/2071d002fc5c3b5ff7a3fca6a5c99f5517196853))
+
 ## [](https://github.com/pocket-id/pocket-id/compare/v0.30.0...v) (2025-02-12)
 
 

@@ -5,6 +5,7 @@ export type OidcClient = {
 	name: string;
 	logoURL: string;
 	callbackURLs: [string, ...string[]];
+	logoutCallbackURLs: string[];
 	hasLogo: boolean;
 	isPublic: boolean;
 	pkceEnabled: boolean;

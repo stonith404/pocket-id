@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import CheckboxWithLabel from '$lib/components/checkbox-with-label.svelte';
 	import FormInput from '$lib/components/form-input.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -15,6 +16,7 @@
 		callback: (appConfig: Partial<AllAppConfig>) => Promise<void>;
 	} = $props();
 
+	const uiConfigDisabled = env.PUBLIC_UI_CONFIG_DISABLED === 'true';
 	let isLoading = $state(false);
 
 	const updatedAppConfig = {
@@ -42,28 +44,30 @@
 </script>
 
 <form onsubmit={onSubmit}>
-	<div class="flex flex-col gap-5">
-		<FormInput label="Application Name" bind:input={$inputs.appName} />
-		<FormInput
-			label="Session Duration"
-			type="number"
-			description="The duration of a session in minutes before the user has to sign in again."
-			bind:input={$inputs.sessionDuration}
-		/>
-		<CheckboxWithLabel
-			id="self-account-editing"
-			label="Enable Self-Account Editing"
-			description="Whether the users should be able to edit their own account details."
-			bind:checked={$inputs.allowOwnAccountEdit.value}
-		/>
-		<CheckboxWithLabel
-			id="emails-verified"
-			label="Emails Verified"
-			description="Whether the user's email should be marked as verified for the OIDC clients."
-			bind:checked={$inputs.emailsVerified.value}
-		/>
-	</div>
-	<div class="mt-5 flex justify-end">
-		<Button {isLoading} type="submit">Save</Button>
-	</div>
+	<fieldset class="flex flex-col gap-5" disabled={uiConfigDisabled}>
+		<div class="flex flex-col gap-5">
+			<FormInput label="Application Name" bind:input={$inputs.appName} />
+			<FormInput
+				label="Session Duration"
+				type="number"
+				description="The duration of a session in minutes before the user has to sign in again."
+				bind:input={$inputs.sessionDuration}
+			/>
+			<CheckboxWithLabel
+				id="self-account-editing"
+				label="Enable Self-Account Editing"
+				description="Whether the users should be able to edit their own account details."
+				bind:checked={$inputs.allowOwnAccountEdit.value}
+			/>
+			<CheckboxWithLabel
+				id="emails-verified"
+				label="Emails Verified"
+				description="Whether the user's email should be marked as verified for the OIDC clients."
+				bind:checked={$inputs.emailsVerified.value}
+			/>
+		</div>
+		<div class="mt-5 flex justify-end">
+			<Button {isLoading} type="submit">Save</Button>
+		</div>
+	</fieldset>
 </form>

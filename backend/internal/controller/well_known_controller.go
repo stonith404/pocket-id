@@ -35,6 +35,7 @@ func (wkc *WellKnownController) openIDConfigurationHandler(c *gin.Context) {
 		"authorization_endpoint":                appUrl + "/authorize",
 		"token_endpoint":                        appUrl + "/api/oidc/token",
 		"userinfo_endpoint":                     appUrl + "/api/oidc/userinfo",
+		"end_session_endpoint":                  appUrl + "/api/oidc/end-session",
 		"jwks_uri":                              appUrl + "/.well-known/jwks.json",
 		"scopes_supported":                      []string{"openid", "profile", "email"},
 		"claims_supported":                      []string{"sub", "given_name", "family_name", "name", "email", "email_verified", "preferred_username"},

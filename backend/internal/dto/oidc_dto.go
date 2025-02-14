@@ -8,24 +8,27 @@ type PublicOidcClientDto struct {
 
 type OidcClientDto struct {
 	PublicOidcClientDto
-	CallbackURLs []string `json:"callbackURLs"`
-	IsPublic     bool     `json:"isPublic"`
-	PkceEnabled  bool     `json:"pkceEnabled"`
+	CallbackURLs       []string `json:"callbackURLs"`
+	LogoutCallbackURLs []string `json:"logoutCallbackURLs"`
+	IsPublic           bool     `json:"isPublic"`
+	PkceEnabled        bool     `json:"pkceEnabled"`
 }
 
 type OidcClientWithAllowedUserGroupsDto struct {
 	PublicOidcClientDto
-	CallbackURLs      []string                    `json:"callbackURLs"`
-	IsPublic          bool                        `json:"isPublic"`
-	PkceEnabled       bool                        `json:"pkceEnabled"`
-	AllowedUserGroups []UserGroupDtoWithUserCount `json:"allowedUserGroups"`
+	CallbackURLs       []string                    `json:"callbackURLs"`
+	LogoutCallbackURLs []string                    `json:"logoutCallbackURLs"`
+	IsPublic           bool                        `json:"isPublic"`
+	PkceEnabled        bool                        `json:"pkceEnabled"`
+	AllowedUserGroups  []UserGroupDtoWithUserCount `json:"allowedUserGroups"`
 }
 
 type OidcClientCreateDto struct {
-	Name         string   `json:"name" binding:"required,max=50"`
-	CallbackURLs []string `json:"callbackURLs" binding:"required"`
-	IsPublic     bool     `json:"isPublic"`
-	PkceEnabled  bool     `json:"pkceEnabled"`
+	Name               string   `json:"name" binding:"required,max=50"`
+	CallbackURLs       []string `json:"callbackURLs" binding:"required"`
+	LogoutCallbackURLs []string `json:"logoutCallbackURLs"`
+	IsPublic           bool     `json:"isPublic"`
+	PkceEnabled        bool     `json:"pkceEnabled"`
 }
 
 type AuthorizeOidcClientRequestDto struct {
@@ -57,4 +60,11 @@ type OidcCreateTokensDto struct {
 
 type OidcUpdateAllowedUserGroupsDto struct {
 	UserGroupIDs []string `json:"userGroupIds" binding:"required"`
+}
+
+type OidcLogoutDto struct {
+	IdTokenHint           string `form:"id_token_hint"`
+	ClientId              string `form:"client_id"`
+	PostLogoutRedirectUri string `form:"post_logout_redirect_uri"`
+	State                 string `form:"state"`
 }

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 	import { openConfirmDialog } from '$lib/components/confirm-dialog';
 	import CopyToClipboard from '$lib/components/copy-to-clipboard.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -17,6 +16,7 @@
 	import { slide } from 'svelte/transition';
 	import OidcForm from '../oidc-client-form.svelte';
 	import UserGroupSelection from '../user-group-selection.svelte';
+	import CollapsibleCard from '$lib/components/collapsible-card.svelte';
 
 	let { data } = $props();
 	let client = $state({
@@ -33,6 +33,7 @@
 		'OIDC Discovery URL': `https://${$page.url.hostname}/.well-known/openid-configuration`,
 		'Token URL': `https://${$page.url.hostname}/api/oidc/token`,
 		'Userinfo URL': `https://${$page.url.hostname}/api/oidc/userinfo`,
+		'Logout URL': `https://${$page.url.hostname}/api/oidc/end-session`,
 		'Certificate URL': `https://${$page.url.hostname}/.well-known/jwks.json`,
 		PKCE: client.pkceEnabled ? 'Enabled' : 'Disabled'
 	});
@@ -112,15 +113,15 @@
 	</Card.Header>
 	<Card.Content>
 		<div class="flex flex-col">
-			<div class="mb-2 flex">
+			<div class="mb-2 flex flex-col sm:flex-row sm:items-center">
 				<Label class="mb-0 w-44">Client ID</Label>
 				<CopyToClipboard value={client.id}>
 					<span class="text-muted-foreground text-sm" data-testid="client-id"> {client.id}</span>
 				</CopyToClipboard>
 			</div>
 			{#if !client.isPublic}
-				<div class="mb-2 mt-1 flex items-center">
-					<Label class="w-44">Client secret</Label>
+				<div class="mb-2 mt-1 flex flex-col sm:flex-row sm:items-center">
+					<Label class="mb-0 w-44">Client secret</Label>
 					{#if $clientSecretStore}
 						<CopyToClipboard value={$clientSecretStore}>
 							<span class="text-muted-foreground text-sm" data-testid="client-secret">
@@ -128,23 +129,25 @@
 							</span>
 						</CopyToClipboard>
 					{:else}
-						<span class="text-muted-foreground text-sm" data-testid="client-secret"
-							>••••••••••••••••••••••••••••••••</span
-						>
-						<Button
-							class="ml-2"
-							onclick={createClientSecret}
-							size="sm"
-							variant="ghost"
-							aria-label="Create new client secret"><LucideRefreshCcw class="h-3 w-3" /></Button
-						>
+						<div>
+							<span class="text-muted-foreground text-sm" data-testid="client-secret"
+								>••••••••••••••••••••••••••••••••</span
+							>
+							<Button
+								class="ml-2"
+								onclick={createClientSecret}
+								size="sm"
+								variant="ghost"
+								aria-label="Create new client secret"><LucideRefreshCcw class="h-3 w-3" /></Button
+							>
+						</div>
 					{/if}
 				</div>
 			{/if}
 			{#if showAllDetails}
 				<div transition:slide>
 					{#each Object.entries(setupDetails) as [key, value]}
-						<div class="mb-5 flex">
+						<div class="mb-5 flex flex-col sm:flex-row sm:items-center">
 							<Label class="mb-0 w-44">{key}</Label>
 							<CopyToClipboard {value}>
 								<span class="text-muted-foreground text-sm">{value}</span>

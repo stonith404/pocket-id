@@ -1,7 +1,11 @@
 package controller
 
 import (
+	"github.com/pocket-id/pocket-id/backend/internal/common"
+	"github.com/pocket-id/pocket-id/backend/internal/utils/cookie"
+	"log"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +23,8 @@ func NewOidcController(group *gin.RouterGroup, jwtAuthMiddleware *middleware.Jwt
 
 	group.POST("/oidc/token", oc.createTokensHandler)
 	group.GET("/oidc/userinfo", oc.userInfoHandler)
+	group.POST("/oidc/end-session", oc.EndSessionHandler)
+	group.GET("/oidc/end-session", oc.EndSessionHandler)
 
 	group.GET("/oidc/clients", jwtAuthMiddleware.Add(true), oc.listClientsHandler)
 	group.POST("/oidc/clients", jwtAuthMiddleware.Add(true), oc.createClientHandler)
@@ -120,6 +126,44 @@ func (oc *OidcController) userInfoHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, claims)
+}
+
+func (oc *OidcController) EndSessionHandler(c *gin.Context) {
+	var input dto.OidcLogoutDto
+
+	// Bind query parameters to the struct
+	if c.Request.Method == http.MethodGet {
+		if err := c.ShouldBindQuery(&input); err != nil {
+			c.Error(err)
+			return
+		}
+	} else if c.Request.Method == http.MethodPost {
+		// Bind form parameters to the struct
+		if err := c.ShouldBind(&input); err != nil {
+			c.Error(err)
+			return
+		}
+	}
+
+	callbackURL, err := oc.oidcService.ValidateEndSession(input, c.GetString("userID"))
+	if err != nil {
+		// If the validation fails, the user has to confirm the logout manually and doesn't get redirected
+		log.Printf("Error getting logout callback URL, the user has to confirm the logout manually: %v", err)
+		c.Redirect(http.StatusFound, common.EnvConfig.AppURL+"/logout")
+		return
+	}
+
+	// The validation was successful, so we can log out and redirect the user to the callback URL without confirmation
+	cookie.AddAccessTokenCookie(c, 0, "")
+
+	logoutCallbackURL, _ := url.Parse(callbackURL)
+	if input.State != "" {
+		q := logoutCallbackURL.Query()
+		q.Set("state", input.State)
+		logoutCallbackURL.RawQuery = q.Encode()
+	}
+
+	c.Redirect(http.StatusFound, logoutCallbackURL.String())
 }
 
 func (oc *OidcController) getClientHandler(c *gin.Context) {
