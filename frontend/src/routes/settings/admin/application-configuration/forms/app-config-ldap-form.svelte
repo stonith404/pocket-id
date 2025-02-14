@@ -36,6 +36,7 @@
 		ldapAttributeUserEmail: appConfig.ldapAttributeUserEmail,
 		ldapAttributeUserFirstName: appConfig.ldapAttributeUserFirstName,
 		ldapAttributeUserLastName: appConfig.ldapAttributeUserLastName,
+		ldapAttributeGroupMember: appConfig.ldapAttributeGroupMember,
 		ldapAttributeGroupUniqueIdentifier: appConfig.ldapAttributeGroupUniqueIdentifier,
 		ldapAttributeGroupName: appConfig.ldapAttributeGroupName,
 		ldapAttributeAdminGroup: appConfig.ldapAttributeAdminGroup
@@ -54,6 +55,7 @@
 		ldapAttributeUserEmail: z.string().min(1),
 		ldapAttributeUserFirstName: z.string().min(1),
 		ldapAttributeUserLastName: z.string().min(1),
+		ldapAttributeGroupMember: z.string(),
 		ldapAttributeGroupUniqueIdentifier: z.string().min(1),
 		ldapAttributeGroupName: z.string().min(1),
 		ldapAttributeAdminGroup: z.string()
@@ -152,6 +154,12 @@
 			label="User Last Name Attribute"
 			placeholder="sn"
 			bind:input={$inputs.ldapAttributeUserLastName}
+		/>
+		<FormInput
+				label="Group Members Attribute"
+				description="The attribute to use for querying members of a group."
+				placeholder="member"
+				bind:input={$inputs.ldapAttributeGroupMember}
 		/>
 		<FormInput
 			label="Group Unique Identifier Attribute"
